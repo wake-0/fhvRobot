@@ -1,0 +1,163 @@
+\documentclass[11pt]{scrartcl}
+\usepackage{wrapfig}
+\usepackage{verbatim} 
+\usepackage{acronym}
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage{fourier} % Use the Adobe Utopia font for the document - comment this line to return to the LaTeX default
+%\usepackage[english]{babel} % german headers
+\usepackage{ucs}             % neccessary for äöü
+\usepackage[utf8x]{inputenc} % utf8 support
+\usepackage{amsmath,amsfonts,amsthm} % Math packages
+\usepackage{hyperref}   % use for hypertext links, including those to external documents and URLs
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{extramarks} % Required for headers and footers
+\usepackage{graphicx} % Required to insert images
+\usepackage{subfigure} % Required to insert images
+\usepackage{listings} % Required for insertion of code
+\usepackage{courier} % Required for the courier font
+\usepackage{color}
+\usepackage{sectsty} % Allows customizing section commands
+\usepackage{epstopdf}
+\usepackage[pass]{geometry}
+\usepackage{cite}
+\usepackage{textcomp}
+\usepackage{subfiles}
+% Style of citations
+\bibliographystyle{plain}  
+\usepackage{./sty/fhv}
+
+% Remove indent
+\setlength{\parindent}{0pt}
+
+%language
+\usepackage[ngerman]{babel}
+
+%general data
+\newcommand{\myauthor}{Nicolaj Höss, Marko Petrovi\'c, Kevin Wallis}
+\newcommand{\mytitle}{Dokumentation - \textit{fhvRobot}}
+\newcommand{\mysubtitle}{für Beaglebone}
+\newcommand{\myuniversity}{Fachhochschule Vorarlberg}
+\newcommand{\mycourse}{S1: Kopplung und Integration von heterogenen Systemen}
+\newcommand{\mystudy}{Master Informatik (ITM3)}
+\newcommand{\mydate}{\today{}, Dornbirn}
+%document meta data
+\title{\mytitle}
+\author{\myauthor}
+\date{\today{}, Dornbirn}
+
+%header/footer - KOMA
+\usepackage{lastpage}
+\usepackage[automark]{scrpage2}
+\pagestyle{scrheadings}
+\clearscrheadfoot
+%header left
+\ihead[]{\headmark}
+%header center
+\chead[]{}
+%header right
+\ohead[]{\includegraphics[width=2cm]{figures/FHV} }
+%footer left
+\ifoot[]{\myauthor}
+%footer center
+\cfoot[]{}
+%footer right
+\ofoot[]{\thepage\ von \pageref{LastPage}}
+
+\usepackage{color}				% defining syntax colours
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\lstset{ 
+  language=Matlab, 
+  backgroundcolor=\color{white},
+  numbers=left,
+  numbersep=5pt,
+  showstringspaces=false,
+  frame=single,
+  rulecolor=\color{black},
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2,
+  breaklines=true,
+  captionpos=tl,
+  basicstyle=\footnotesize,
+  commentstyle=\color{mygreen},
+  keywordstyle=\color{blue},     
+  stringstyle=\color{mymauve},
+  postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}}}
+
+
+\begin{document}
+
+%%Titelseite
+\begin{titlepage}
+
+\begin{minipage}{.5\textwidth} 
+  \hspace{12cm}\hfill \includegraphics[width=3cm]{figures/FHV} 
+\end{minipage}\vspace{2cm} 
+
+\begin{center}
+~
+\vfill\vfill\vfill
+
+{\Huge\bfseries\mytitle} \\
+{\Large\bfseries\mysubtitle}
+
+\vfill
+
+\Large{eine Arbeit von}
+
+\vfill
+
+{\LARGE\bfseries\myauthor}
+\vfill
+{\Large\bfseries\mystudy}
+\vfill
+\vfill
+\Large{für die Lehrveranstaltung}
+
+\vfill
+
+{\LARGE\bfseries\mycourse}
+
+\vfill\vfill\vfill
+\vfill\vfill\vfill
+\vfill\vfill\vfill
+
+\myuniversity
+\vfill
+\mydate
+\end{center}
+\end{titlepage}
+%%Ende Titelseite
+
+%%Abstract
+\include{chapters/abstract/abstract}
+
+\thispagestyle{plain}
+%%Inhaltsverzeichnis
+\tableofcontents
+
+\newpage
+%%Abbildungsverzeichnis
+\listoffigures
+\newpage
+\pagebreak
+
+\include{chapters/abbreviations/abbreviations}
+\include{chapters/general/general}
+\include{chapters/projectmanagement/projectmanagement}
+\include{chapters/architecture/architecture}
+\include{chapters/security/security}
+\include{chapters/performance/performance}
+\include{chapters/summary/summary}
+
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Literaturverzeichnis}
+\bibliography{./bib/Bibliography}
+
+\end{document}
