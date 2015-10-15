@@ -1,8 +1,9 @@
 .root {
-	-fx-padding: 5;
-	-fx-background-color: lightgray;
+	-fx-font-size: 14;
 }
 
-#gridPane {
-	 -fx-background-color: gray;
+.button {
+	-fx-padding: 10px;
+    -fx-border-insets: 5px;
+    -fx-background-insets: 5px;
 }

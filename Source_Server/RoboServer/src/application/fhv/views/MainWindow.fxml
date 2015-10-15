@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.* ?>
 <?import javafx.scene.control.* ?>
 
-<GridPane alignment="center" xmlns:fx="http://javafx.com/fxml/1"
-	xmlns="http://javafx.com/javafx/8" fx:controller="controllers.MainWindowController"
-	maxHeight="Infinity" maxWidth="Infinity" fx:id="gridPane">
+<GridPane fx:id="gridPane" alignment="center" maxHeight="Infinity" maxWidth="Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainWindowController">
 
 	<columnConstraints>
 		<ColumnConstraints minWidth="10.0" prefWidth="100.0" />
@@ -17,12 +16,11 @@
 	<rowConstraints>
 		<RowConstraints />
 		<RowConstraints />
-		<RowConstraints minHeight="10.0" prefHeight="30.0" />
-		<RowConstraints minHeight="10.0" prefHeight="30.0" />
+		<RowConstraints />
 	</rowConstraints>
 
 	<children>
-		<Label text="Main Window" GridPane.rowSpan="3" GridPane.valignment="TOP" />
+		<Label text="Main Window" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
 		<Button fx:id="btnKill" onAction="#handleKillClick" text="Kill" GridPane.columnIndex="1" />
 		<Button fx:id="btnUp" onAction="#handleUpClick" text="Up" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 		<Button fx:id="btnDown" onAction="#handleDownClick" text="Down" GridPane.columnIndex="1" GridPane.rowIndex="3" />

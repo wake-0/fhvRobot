@@ -24,4 +24,11 @@
 			</plugin>
 		</plugins>
 	</build>
+	<dependencies>
+		<dependency>
+			<groupId>com.guigarage</groupId>
+			<artifactId>flatter</artifactId>
+			<version>0.7</version>
+		</dependency>
+	</dependencies>
 </project>
