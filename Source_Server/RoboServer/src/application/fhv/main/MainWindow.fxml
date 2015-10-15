@@ -1,9 +1,0 @@
-<?import javafx.scene.layout.* ?>
-<?import javafx.scene.control.* ?>
-
-<GridPane fx:controller="main.MainWindowController"
-	xmlns:fx="http://javafx.com/fxml" alignment="center">
-	
-	<Label text="Main Window" />
-	<Button fx:id="btnKill" text="Kill" onAction="#handleKillClick"/>
-</GridPane>
