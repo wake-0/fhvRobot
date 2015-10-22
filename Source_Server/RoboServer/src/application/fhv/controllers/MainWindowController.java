@@ -1,29 +1,29 @@
 package controllers;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
 import models.Client;
+import network.IClientProvider;
 import network.NetworkServer;
 
-public class MainWindowController implements Initializable {
+public class MainWindowController implements Initializable, IClientProvider {
 
 	// fields
 	private NetworkServer server;
 	private Client selectedClient;
+	private ObservableList<Client> observableClients;
 	
 	// FXML fields
 	@FXML
@@ -41,7 +41,11 @@ public class MainWindowController implements Initializable {
 		System.out.println("button kill clicked.");
 		if (selectedClient != null) {
 			Client rememberedClient = selectedClient;
-			resetSelectedClient();
+			
+			lvClients.getItems().remove(lvClients.getSelectionModel().getSelectedItem());
+            ObservableList<Client> c = lvClients.getItems();
+            lvClients.setItems(c);
+			
 			server.kill(rememberedClient);
 		}
 	}
@@ -66,10 +70,6 @@ public class MainWindowController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		List<Client> clients = new ArrayList<>();
-		ObservableList<Client> observableClients = FXCollections.observableList(clients);
-
-		lvClients.setItems(observableClients);
 
 		lvClients.setCellFactory(new Callback<ListView<Client>, ListCell<Client>>() {
 
@@ -79,38 +79,70 @@ public class MainWindowController implements Initializable {
 				ListCell<Client> cell = new ListCell<Client>() {
 
 					@Override
-					protected void updateItem(Client t, boolean bln) {
-						super.updateItem(t, bln);
-						if (t != null) {
-							setText(t.getName());
-						}
+					protected void updateItem(Client client, boolean empty) {
+						super.updateItem(client, empty);
+
+						if (client != null)
+						{
+							setText(client.getName());
+						} 
+//						else if (empty) {
+//                            setText("");
+//                        }
 					}
 				};
 				return cell;
 			}
 		});
 
+		observableClients = FXCollections.observableArrayList();
+		
+		lvClients.setItems(observableClients);
 		lvClients.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Client>() {
 		    @Override
 		    public void changed(ObservableValue<? extends Client> observable, Client oldValue, Client newValue) {
-		    	tfName.textProperty().bindBidirectional(newValue.NameProperty());
-				tfSend.textProperty().bindBidirectional(newValue.SendDataProperty());
-				tfReceive.textProperty().bind(newValue.ReceiveDataProperty());
-				
-				newValue.setSendData("data");
-				
-				selectedClient = newValue;
+		    	if (newValue != null) {
+		    		tfName.textProperty().bindBidirectional(newValue.NameProperty());
+					tfSend.textProperty().bindBidirectional(newValue.SendDataProperty());
+					tfReceive.textProperty().bind(newValue.ReceiveDataProperty());
+		    	} 
+		    	else if (oldValue != null) 
+		    	{
+		    		tfSend.textProperty().unbindBidirectional(oldValue.SendDataProperty());
+		    		tfName.textProperty().unbindBidirectional(oldValue.NameProperty());
+		    		tfReceive.textProperty().unbind();
+		    		
+		    		tfSend.setText("");
+		    		tfReceive.setText("");
+		    		tfName.setText("");
+		    	}
+		    	
+		    	selectedClient = newValue;
 		    }
 		});
 		
-		this.server = new NetworkServer(observableClients);
+		this.server = new NetworkServer(this);
 		new Thread(this.server).start();
 	}
-	
-	private void resetSelectedClient() {
-		tfSend.textProperty().unbind();
-		tfReceive.textProperty().unbind();
-		tfName.textProperty().unbind();
-		selectedClient = null;
+
+	@Override
+	public void addClient(Client client) {
+		// Update list
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				observableClients.add(client);
+			}
+		});	
+	}
+
+	@Override
+	public void removeClient(Client client) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				observableClients.remove(client);
+			}
+		});
 	}
 }

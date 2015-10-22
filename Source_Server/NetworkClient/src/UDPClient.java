@@ -38,10 +38,7 @@ public class UDPClient implements Runnable {
 	String leseNachricht(java.net.Socket socket) throws IOException {
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		char[] buffer = new char[200];
-		int anzahlZeichen = bufferedReader.read(buffer, 0, 200); // blockiert
-																	// bis
-																	// Nachricht
-																	// empfangen
+		int anzahlZeichen = bufferedReader.read(buffer, 0, 200);
 		String nachricht = new String(buffer, 0, anzahlZeichen);
 		return nachricht;
 	}

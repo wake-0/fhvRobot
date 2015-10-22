@@ -38,6 +38,12 @@ public class Client implements Comparable<Client> {
 
     public UUID getId() {return id;}
     
+    public void clear() {
+    	setName("");
+    	setReceiveData("");
+    	setSendData("");
+    }
+    
 	@Override
 	public int compareTo(Client o) {
 		if (o == null) {return -1;}

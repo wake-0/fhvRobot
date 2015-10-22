@@ -5,15 +5,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import models.Client;
 
 public class NetworkServer implements Runnable {
 
 	// field which stores the clients
-	private ObservableList<Client> clients;
+	private IClientProvider clientProvider;
 	
 	// server specific stuff
 	private int port = 997;
@@ -21,9 +20,9 @@ public class NetworkServer implements Runnable {
 	private List<NetworkConnection> connections;
 
 	// constructors
-	public NetworkServer(ObservableList<Client> clients) {
+	public NetworkServer(IClientProvider clientProvider) {
 		try {
-			this.clients = clients;
+			this.clientProvider = clientProvider;
 			this.connections = new ArrayList<>();
 			this.serverSocket = new ServerSocket(port);
 		} catch (IOException e) {
@@ -43,26 +42,18 @@ public class NetworkServer implements Runnable {
 				// start new connection
 				new Thread(connection).start();
 				// update list of connections and clients
-				connections.add(connection);
-
-				// Update list
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						clients.add(connection.getClient());
-					}
-				});
+				addConnection(connection);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-
-	private NetworkConnection getConnectionFromClient(Client client) {
+	
+	public List<Client> getClients() {
 		return connections
-		.stream()
-        .filter(connection -> connection.getClient().compareTo(client) == 0)
-        .findFirst().get();
+			.stream()
+			.map(connection -> connection.getClient())
+			.collect(Collectors.toList());
 	}
 	
 	public void send(Client client) {
@@ -75,8 +66,25 @@ public class NetworkServer implements Runnable {
 	public void kill(Client client) {
 		NetworkConnection connection = getConnectionFromClient(client);
 		if (connection != null) {
-			connections.remove(connection);
-			connection.kill();
+			removeConnection(connection);
+			connection.close();
 		}
+	}
+	
+	private void addConnection(NetworkConnection connection) {
+		connections.add(connection);
+		clientProvider.addClient(connection.getClient());
+	}
+	
+	private void removeConnection(NetworkConnection connection) {
+		connections.remove(connection);
+		clientProvider.removeClient(connection.getClient());
+	}
+	
+	private NetworkConnection getConnectionFromClient(Client client) {
+		return connections
+			.stream()
+	        .filter(connection -> connection.getClient().compareTo(client) == 0)
+	        .findFirst().get();
 	}
 }
