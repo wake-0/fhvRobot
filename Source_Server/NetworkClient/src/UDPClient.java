@@ -2,6 +2,8 @@ import java.io.*;
 import java.net.*;
 
 public class UDPClient implements Runnable {
+	java.net.Socket socket;
+	
 	public static void main(String[] args) {
 		UDPClient client = new UDPClient();
 		try {
@@ -14,13 +16,16 @@ public class UDPClient implements Runnable {
 	void test() throws IOException {
 		String ip = "127.0.0.1"; // localhost
 		int port = 997;
-		java.net.Socket socket = new java.net.Socket(ip, port); // verbindet
-																// sich mit
-																// Server
-		String zuSendendeNachricht = "Hello, world!";
-		schreibeNachricht(socket, zuSendendeNachricht);
-		String empfangeneNachricht = leseNachricht(socket);
-		System.out.println(empfangeneNachricht);
+		socket = new java.net.Socket(ip, port); // verbindet
+		
+		new Thread(this).start();
+		while (true) {
+			String message = new BufferedReader(new InputStreamReader(System.in)).readLine();
+			if (message != null && message != "") {
+				String zuSendendeNachricht = message;
+				schreibeNachricht(socket, zuSendendeNachricht);
+			}
+		}
 	}
 
 	void schreibeNachricht(java.net.Socket socket, String nachricht) throws IOException {
@@ -43,6 +48,15 @@ public class UDPClient implements Runnable {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-
+		while (true) {
+			String empfangeneNachricht;
+			try {
+				empfangeneNachricht = leseNachricht(socket);
+				System.out.println(empfangeneNachricht);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 }
