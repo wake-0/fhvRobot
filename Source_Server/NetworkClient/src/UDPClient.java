@@ -14,8 +14,8 @@ public class UDPClient implements Runnable {
 	}
 
 	void test() throws IOException {
-		//String ip = "127.0.0.1"; // localhost
-		String ip = "83.212.127.13";
+		String ip = "127.0.0.1"; // localhost
+		//String ip = "83.212.127.13";
 		int port = 997;
 		socket = new java.net.Socket(ip, port); // verbindet
 		

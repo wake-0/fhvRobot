@@ -7,24 +7,28 @@
 <?import javafx.scene.layout.* ?>
 <?import javafx.scene.control.* ?>
 
-<GridPane fx:id="gridPane" alignment="center" maxHeight="Infinity" maxWidth="Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainWindowController">
+<GridPane alignment="center" maxHeight="Infinity" maxWidth="Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainWindowController">
 
 	<columnConstraints>
-		<ColumnConstraints minWidth="10.0" prefWidth="100.0" />
+		<ColumnConstraints minWidth="50.0" />
 		<ColumnConstraints />
 	</columnConstraints>
+	
 	<rowConstraints>
 		<RowConstraints />
 		<RowConstraints />
 		<RowConstraints />
+		<RowConstraints />
+      <RowConstraints />
 	</rowConstraints>
 
 	<children>
-<!-- 		<Label text="Main Window" GridPane.rowIndex="1" GridPane.valignment="CENTER" /> -->
-		<TextField fx:id="test" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-		<TextField fx:id="testMe" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
-		<ListView fx:id="lvClients" GridPane.rowIndex="3" />
-		<Button fx:id="btnKill" onAction="#handleKillClick" text="Kill" GridPane.columnIndex="1" />
+		<TextField fx:id="tfName" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+		<TextField fx:id="tfSend" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+       	<TextField fx:id="tfReceive" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+		<ListView fx:id="lvClients" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+		
+		<Button fx:id="btnKill" onAction="#handleKillClick" text="Kill" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 		<Button fx:id="btnUp" onAction="#handleUpClick" text="Up" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 		<Button fx:id="btnDown" onAction="#handleDownClick" text="Down" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 	</children>

@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -18,11 +21,11 @@ import network.NetworkServer;
 
 public class MainWindowController implements Initializable {
 
-	private List<Client> clients;
-
-	private Client testClientModel;
+	// fields
 	private NetworkServer server;
-		
+	private Client selectedClient;
+	
+	// FXML fields
 	@FXML
 	private Button btnKill;
 	@FXML
@@ -32,14 +35,13 @@ public class MainWindowController implements Initializable {
 	@FXML
 	private ListView<Client> lvClients;
 	@FXML
-	private TextField test;
+	private TextField tfSend;
 	@FXML
-	private TextField testMe;
+	private TextField tfReceive;
+	@FXML
+	private TextField tfName;
 	
-	public MainWindowController() {
-		this.testClientModel = new Client();
-	}
-
+	// methods
 	@FXML
 	private void handleKillClick() {
 		System.out.println("button kill clicked.");
@@ -48,7 +50,9 @@ public class MainWindowController implements Initializable {
 	@FXML
 	private void handleUpClick() {
 		System.out.println("button up clicked.");
-		server.Send();
+		if (selectedClient != null) {
+			server.send(selectedClient);
+		}
 	}
 
 	@FXML
@@ -59,18 +63,19 @@ public class MainWindowController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
-		clients = new ArrayList<>();
-		Client c = new Client();
-		c.setName("A");
-		clients.add(c);
-		c = new Client();
-		c.setName("B");
-		clients.add(c);
-		c = new Client();
-		c.setName("C");
-		clients.add(c);
+		List<Client> clients = new ArrayList<>();
+		ObservableList<Client> observableClients = FXCollections.observableList(clients);
+//		Client c = new Client();
+//		c.setName("A");
+//		clients.add(c);
+//		c = new Client();
+//		c.setName("B");
+//		clients.add(c);
+//		c = new Client();
+//		c.setName("C");
+//		clients.add(c);
 
-		lvClients.setItems(FXCollections.observableList(clients));
+		lvClients.setItems(observableClients);
 
 		lvClients.setCellFactory(new Callback<ListView<Client>, ListCell<Client>>() {
 
@@ -91,14 +96,23 @@ public class MainWindowController implements Initializable {
 			}
 		});
 
-		test.textProperty().bind(testClientModel.NameProperty());
-		testMe.textProperty().bindBidirectional(testClientModel.DataProperty());
+		lvClients.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Client>() {
+		    @Override
+		    public void changed(ObservableValue<? extends Client> observable, Client oldValue, Client newValue) {
+		    	tfName.textProperty().bind(newValue.NameProperty());
+				tfSend.textProperty().bindBidirectional(newValue.SendDataProperty());
+				tfReceive.textProperty().bindBidirectional(newValue.ReceiveDataProperty());
+				
+				newValue.setName("testss");
+				newValue.setSendData("data");
+				
+				selectedClient = newValue;
+		    }
+		});
 		
-		this.server = new NetworkServer(testClientModel);
-		
+		this.server = new NetworkServer(observableClients);
 		new Thread(this.server).start();
 
-		testClientModel.setName("testss");
-		testClientModel.setData("data");
+
 	}
 }
