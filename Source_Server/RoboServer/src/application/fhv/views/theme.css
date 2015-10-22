@@ -7,3 +7,7 @@
     -fx-border-insets: 5px;
     -fx-background-insets: 5px;
 }
+
+#btnUp {
+	-fx-background-image: url('/testing/background.jpg');
+}
