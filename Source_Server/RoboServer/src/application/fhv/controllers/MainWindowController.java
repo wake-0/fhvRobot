@@ -14,7 +14,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
 import models.Client;
-import network.NetworkClient;
 import network.NetworkServer;
 
 public class MainWindowController implements Initializable {
@@ -22,7 +21,6 @@ public class MainWindowController implements Initializable {
 	private List<Client> clients;
 
 	private Client testClientModel;
-	//private NetworkClient networkClient;
 	private NetworkServer server;
 		
 	@FXML
@@ -50,7 +48,6 @@ public class MainWindowController implements Initializable {
 	@FXML
 	private void handleUpClick() {
 		System.out.println("button up clicked.");
-		//networkClient.Send();
 		server.Send();
 	}
 
@@ -94,11 +91,9 @@ public class MainWindowController implements Initializable {
 			}
 		});
 
-		// testClientModel.setName("testss");
 		test.textProperty().bind(testClientModel.NameProperty());
 		testMe.textProperty().bindBidirectional(testClientModel.DataProperty());
 		
-		//this.networkClient = new NetworkClient(testClientModel);
 		this.server = new NetworkServer(testClientModel);
 		
 		new Thread(this.server).start();
