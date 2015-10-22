@@ -33,7 +33,9 @@ public class MainWindowController implements Initializable {
 	private ListView<Client> lvClients;
 	@FXML
 	private TextField test;
-
+	@FXML
+	private TextField testMe;
+	
 	public MainWindowController() {
 		this.testClientModel = new Client();
 	}
@@ -46,6 +48,7 @@ public class MainWindowController implements Initializable {
 	@FXML
 	private void handleUpClick() {
 		System.out.println("button up clicked.");
+		networkClient.Send();
 	}
 
 	@FXML
@@ -90,11 +93,13 @@ public class MainWindowController implements Initializable {
 
 		// testClientModel.setName("testss");
 		test.textProperty().bind(testClientModel.NameProperty());
-
+		testMe.textProperty().bindBidirectional(testClientModel.DataProperty());
+		
 		this.networkClient = new NetworkClient(testClientModel);
 		
 		new Thread(this.networkClient).start();
 
 		testClientModel.setName("testss");
+		testClientModel.setData("data");
 	}
 }

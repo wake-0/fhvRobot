@@ -18,12 +18,15 @@ public class NetworkClient implements Runnable {
 	byte[] dataIn;
 	byte[] dataOut;
 
+	InetAddress inetAddress;
 	
 	public NetworkClient(Client client) {
 		
 		this.client = client;
 		
 		try {
+			inetAddress = InetAddress.getLocalHost();
+			
 			readFromKeyBoard = new BufferedReader(new InputStreamReader(System.in));
 			dataIn = new byte[1024];
 			dataOut = new byte[1024];
@@ -31,7 +34,7 @@ public class NetworkClient implements Runnable {
 
 			//new Thread(this).start();
 
-//			InetAddress inetAddress = InetAddress.getLocalHost();
+//			
 //			while (true) {
 //				String message = readFromKeyBoard.readLine();
 //				dataIn = message.getBytes();
@@ -49,12 +52,25 @@ public class NetworkClient implements Runnable {
 			while (true) {
 				packetIn = new DatagramPacket(dataOut, dataOut.length);
 				socket.receive(packetIn);
-				String message = new String(packetIn.getData(), 0, packetIn.getLength());
-				client.setName(message);
-				System.out.println(message);
+				String messageToReceive = new String(packetIn.getData(), 0, packetIn.getLength());
+				client.setName(messageToReceive);
 			}
 		} catch (Exception exp) {
 			exp.printStackTrace();
+		}
+	}
+	
+	public void Send() {
+		String messageToSend = client.getData();
+		if (messageToSend != null || messageToSend != "") {
+			dataIn = messageToSend.getBytes();
+			packetOut = new DatagramPacket(dataIn, messageToSend.length(), inetAddress, 997);
+			try {
+				socket.send(packetOut);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 

@@ -22,7 +22,8 @@
 	<children>
 <!-- 		<Label text="Main Window" GridPane.rowIndex="1" GridPane.valignment="CENTER" /> -->
 		<TextField fx:id="test" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-		<ListView fx:id="lvClients" GridPane.rowIndex="2" GridPane.rowSpan="2" />
+		<TextField fx:id="testMe" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+		<ListView fx:id="lvClients" GridPane.rowIndex="3" />
 		<Button fx:id="btnKill" onAction="#handleKillClick" text="Kill" GridPane.columnIndex="1" />
 		<Button fx:id="btnUp" onAction="#handleUpClick" text="Up" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 		<Button fx:id="btnDown" onAction="#handleDownClick" text="Down" GridPane.columnIndex="1" GridPane.rowIndex="3" />
