@@ -27,12 +27,6 @@ public class MainWindowController implements Initializable {
 	
 	// FXML fields
 	@FXML
-	private Button btnKill;
-	@FXML
-	private Button btnUp;
-	@FXML
-	private Button btnDown;
-	@FXML
 	private ListView<Client> lvClients;
 	@FXML
 	private TextField tfSend;
@@ -50,11 +44,16 @@ public class MainWindowController implements Initializable {
 	@FXML
 	private void handleUpClick() {
 		System.out.println("button up clicked.");
+	}
+
+	@FXML
+	private void handleSendClick() {
+		System.out.println("button send clicked.");
 		if (selectedClient != null) {
 			server.send(selectedClient);
 		}
 	}
-
+	
 	@FXML
 	private void handleDownClick() {
 		System.out.println("button down clicked.");
@@ -62,18 +61,8 @@ public class MainWindowController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		// TODO Auto-generated method stub
 		List<Client> clients = new ArrayList<>();
 		ObservableList<Client> observableClients = FXCollections.observableList(clients);
-//		Client c = new Client();
-//		c.setName("A");
-//		clients.add(c);
-//		c = new Client();
-//		c.setName("B");
-//		clients.add(c);
-//		c = new Client();
-//		c.setName("C");
-//		clients.add(c);
 
 		lvClients.setItems(observableClients);
 
@@ -99,11 +88,10 @@ public class MainWindowController implements Initializable {
 		lvClients.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Client>() {
 		    @Override
 		    public void changed(ObservableValue<? extends Client> observable, Client oldValue, Client newValue) {
-		    	tfName.textProperty().bind(newValue.NameProperty());
+		    	tfName.textProperty().bindBidirectional(newValue.NameProperty());
 				tfSend.textProperty().bindBidirectional(newValue.SendDataProperty());
-				tfReceive.textProperty().bindBidirectional(newValue.ReceiveDataProperty());
+				tfReceive.textProperty().bind(newValue.ReceiveDataProperty());
 				
-				newValue.setName("testss");
 				newValue.setSendData("data");
 				
 				selectedClient = newValue;

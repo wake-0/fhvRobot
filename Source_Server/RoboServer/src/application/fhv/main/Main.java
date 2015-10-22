@@ -2,8 +2,6 @@ package main;
 
 import java.net.URL;
 
-import com.guigarage.flatterfx.FlatterFX;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -27,8 +25,6 @@ public class Main extends Application {
 			Parent root = FXMLLoader.load(mainWindow);
 			Scene scene = new Scene(root,400,400);
 			scene.getStylesheets().add(stylesheet.toExternalForm());
-			// Special Styling
-			FlatterFX.style();
 			
 			// Default stage settings
 			stage.setTitle("FHV Robo Server");

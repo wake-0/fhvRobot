@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import models.Client;
 
@@ -43,18 +44,20 @@ public class NetworkServer implements Runnable {
 				new Thread(connection).start();
 				// update list of connections and clients
 				connections.add(connection);
-				updateClients();
+
+				// Update list
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						clients.add(connection.getClient());
+					}
+				});
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void updateClients() {
-		clients.clear();
-		connections.forEach(connection -> clients.add(connection.getClient()));
-	}
-	
 	public void send(Client client) {
 		connections.forEach(connection ->
 		{
