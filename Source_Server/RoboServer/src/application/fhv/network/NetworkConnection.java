@@ -11,14 +11,17 @@ import models.Client;
 
 public class NetworkConnection implements Runnable, Comparable<NetworkConnection> {
 
+	// fields
 	private Socket socket;
 	private Client client;
 
+	// constructor
 	public NetworkConnection(Socket socket, Client client) {
 		this.socket = socket;
 		this.client = client;
 	}
 
+	// methods
 	public Client getClient() {
 		return client;
 	}
@@ -33,11 +36,12 @@ public class NetworkConnection implements Runnable, Comparable<NetworkConnection
 	private void receive() {
 		BufferedReader bufferedReader;
 		try {
+			if (socket.isInputShutdown()) { return; }
 			
 			bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			char[] buffer = new char[200];
-			int anzahlZeichen = bufferedReader.read(buffer, 0, 200);
-			client.setReceiveData(new String(buffer, 0, anzahlZeichen));
+			int numberOfSigns = bufferedReader.read(buffer, 0, 200);
+			client.setReceiveData(new String(buffer, 0, numberOfSigns));
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -56,6 +60,16 @@ public class NetworkConnection implements Runnable, Comparable<NetworkConnection
 		}
 	}
 
+	public void kill() {
+		try {
+			socket.shutdownInput();
+			socket.shutdownOutput();
+			socket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public int compareTo(NetworkConnection o) {
 		if (o == null) {return -1;}

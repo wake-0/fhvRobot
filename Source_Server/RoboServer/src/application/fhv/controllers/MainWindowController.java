@@ -39,6 +39,11 @@ public class MainWindowController implements Initializable {
 	@FXML
 	private void handleKillClick() {
 		System.out.println("button kill clicked.");
+		if (selectedClient != null) {
+			Client rememberedClient = selectedClient;
+			resetSelectedClient();
+			server.kill(rememberedClient);
+		}
 	}
 
 	@FXML
@@ -100,7 +105,12 @@ public class MainWindowController implements Initializable {
 		
 		this.server = new NetworkServer(observableClients);
 		new Thread(this.server).start();
-
-
+	}
+	
+	private void resetSelectedClient() {
+		tfSend.textProperty().unbind();
+		tfReceive.textProperty().unbind();
+		tfName.textProperty().unbind();
+		selectedClient = null;
 	}
 }

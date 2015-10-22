@@ -13,7 +13,7 @@ import models.Client;
 public class NetworkServer implements Runnable {
 
 	// field which stores the clients
-	private List<Client> clients;
+	private ObservableList<Client> clients;
 	
 	// server specific stuff
 	private int port = 997;
@@ -58,12 +58,25 @@ public class NetworkServer implements Runnable {
 		}
 	}
 
+	private NetworkConnection getConnectionFromClient(Client client) {
+		return connections
+		.stream()
+        .filter(connection -> connection.getClient().compareTo(client) == 0)
+        .findFirst().get();
+	}
+	
 	public void send(Client client) {
-		connections.forEach(connection ->
-		{
-			if (connection.getClient().compareTo(client) == 0) {
-				connection.send();
-			}
-		});
+		NetworkConnection connection = getConnectionFromClient(client);
+		if (connection != null) {
+			connection.send();
+		}
+	}
+
+	public void kill(Client client) {
+		NetworkConnection connection = getConnectionFromClient(client);
+		if (connection != null) {
+			connections.remove(connection);
+			connection.kill();
+		}
 	}
 }
