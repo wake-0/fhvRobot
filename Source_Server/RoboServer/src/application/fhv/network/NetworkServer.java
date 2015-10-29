@@ -13,7 +13,7 @@ public class NetworkServer implements Runnable {
 	private IClientProvider clientProvider;
 	
 	// server specific stuff
-	private int port = 997;
+	private final int port = 997;
 	private DatagramSocket serverSocket;
 
 	// constructors
@@ -31,17 +31,13 @@ public class NetworkServer implements Runnable {
 	public void run() {
 		try {
 			byte[] receiveData = new byte[1024];
-			byte[] sendData = new byte[1024];
 			
 			while(true) {
 				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 				serverSocket.receive(receivePacket);
-				String sentence = new String(receivePacket.getData());
-				System.out.println("RECEIVED: " + sentence);                   
-				InetAddress IPAddress = receivePacket.getAddress();
 				
 				// Check a client with the ip address does already exists
-				Client client = clientProvider.getClientByIp(IPAddress.getHostName());
+				Client client = clientProvider.getClientByIp(receivePacket.getAddress().getHostName());
 				if (client == null) {
 					client = new Client();
 					client.setIpAddress(receivePacket.getAddress().getHostAddress());
@@ -49,13 +45,12 @@ public class NetworkServer implements Runnable {
 					clientProvider.addClient(client);	
 				}
 				
+				String sentence = new String(receivePacket.getData());
 				client.setReceiveData(sentence);
+				System.out.println("Message received: " + sentence);
+				client.setSendData(sentence);
 				
-				String capitalizedSentence = "answer:" + sentence.toUpperCase();                   
-				sendData = capitalizedSentence.getBytes();
-				
-				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName(client.getIpAddress()), client.getPort());
-				serverSocket.send(sendPacket);
+				send(client);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -64,9 +59,17 @@ public class NetworkServer implements Runnable {
 	
 	public void send(Client client) throws IOException {
 		if (client == null) { return; }
+
+		// Values to send
 		byte[] sendData = client.getSendData().getBytes();
-		DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName(client.getIpAddress()), client.getPort());
+		int length = sendData.length;
+		InetAddress ipAddress = InetAddress.getByName(client.getIpAddress());
+		int port = client.getPort();
+		
+		DatagramPacket sendPacket = new DatagramPacket(sendData, length, ipAddress, port);
 		serverSocket.send(sendPacket);
+		
+		System.out.println("Message send: " + client.getSendData());
 	}
 	
 	public void shutdown() {

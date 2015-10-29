@@ -5,7 +5,6 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -88,9 +87,6 @@ public class MainWindowController implements Initializable, IClientProvider {
 						{
 							setText(client.getName());
 						} 
-//						else if (empty) {
-//                            setText("");
-//                        }
 					}
 				};
 				return cell;
@@ -125,23 +121,12 @@ public class MainWindowController implements Initializable, IClientProvider {
 
 	@Override
 	public void addClient(Client client) {
-		// Update list
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				observableClients.add(client);
-			}
-		});	
+		observableClients.add(client);
 	}
 
 	@Override
 	public void removeClient(Client client) {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				observableClients.remove(client);
-			}
-		});
+		observableClients.remove(client);
 	}
 	
 	public Client getClientByIp(String ip) {
