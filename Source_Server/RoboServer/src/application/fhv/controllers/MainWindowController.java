@@ -1,6 +1,8 @@
 package controllers;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
@@ -13,7 +15,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.media.MediaPlayer;
 import javafx.util.Callback;
 import models.Client;
 import network.IClientProvider;
@@ -43,13 +44,7 @@ public class MainWindowController implements Initializable, IClientProvider {
 	private void handleKillClick() {
 		System.out.println("button kill clicked.");
 		if (selectedClient != null) {
-			Client rememberedClient = selectedClient;
-			
 			lvClients.getItems().remove(lvClients.getSelectionModel().getSelectedItem());
-            ObservableList<Client> c = lvClients.getItems();
-            lvClients.setItems(c);
-			
-			server.kill(rememberedClient);
 		}
 	}
 
@@ -62,7 +57,11 @@ public class MainWindowController implements Initializable, IClientProvider {
 	private void handleSendClick() {
 		System.out.println("button send clicked.");
 		if (selectedClient != null) {
-			server.send(selectedClient);
+			try {
+				server.send(selectedClient);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -148,4 +147,10 @@ public class MainWindowController implements Initializable, IClientProvider {
 			}
 		});
 	}
+	
+	public Client getClientByIp(String ip) {
+		Optional<Client> client = observableClients.stream().filter(c -> c.getIpAddress().equals(ip)).findFirst();
+		return client.isPresent() ? client.get() : null;
+	}
+
 }

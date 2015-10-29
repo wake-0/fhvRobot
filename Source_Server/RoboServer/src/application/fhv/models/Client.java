@@ -1,7 +1,7 @@
 package models;
 
-import java.util.UUID;
-
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -11,16 +11,18 @@ public class Client implements Comparable<Client> {
     private StringProperty name;
     private StringProperty sendData;
     private StringProperty receiveData;
-    private UUID id;
+    private StringProperty ipAddress;
+    private IntegerProperty port;
     
     // constructor
     public Client() {
     	name = new SimpleStringProperty();
     	sendData = new SimpleStringProperty();
     	receiveData = new SimpleStringProperty();
+    	ipAddress = new SimpleStringProperty();
+    	port = new SimpleIntegerProperty();
     	
     	setName("Anonymous");
-    	id = UUID.randomUUID();
     }
     
     // getter and setter for the properties
@@ -36,17 +38,18 @@ public class Client implements Comparable<Client> {
     public final void setReceiveData(String value){receiveData.set(value);}
     public StringProperty ReceiveDataProperty() {return receiveData;}
 
-    public UUID getId() {return id;}
+    public final String getIpAddress() {return ipAddress.get();}
+    public final void setIpAddress(String value){ipAddress.set(value);}
+    public StringProperty IpAddressProperty() {return ipAddress;}
     
-    public void clear() {
-    	setName("");
-    	setReceiveData("");
-    	setSendData("");
-    }
+    public final int getPort() {return port.get();}
+    public final void setPort(int value){port.set(value);}
+    public IntegerProperty PortProperty() {return port;}
     
 	@Override
 	public int compareTo(Client o) {
 		if (o == null) {return -1;}
-		return id == o.id ? 0 : 1; 
+		
+		return  getIpAddress().compareTo(o.getIpAddress()); 
 	}
 }
