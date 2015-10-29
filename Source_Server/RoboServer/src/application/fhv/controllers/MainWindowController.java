@@ -113,10 +113,6 @@ public class MainWindowController implements Initializable, IClientProvider {
 		    		tfSend.textProperty().unbindBidirectional(oldValue.SendDataProperty());
 		    		tfName.textProperty().unbindBidirectional(oldValue.NameProperty());
 		    		tfReceive.textProperty().unbind();
-		    		
-		    		tfSend.setText("");
-		    		tfReceive.setText("");
-		    		tfName.setText("");
 		    	}
 		    	
 		    	selectedClient = newValue;
@@ -151,6 +147,10 @@ public class MainWindowController implements Initializable, IClientProvider {
 	public Client getClientByIp(String ip) {
 		Optional<Client> client = observableClients.stream().filter(c -> c.getIpAddress().equals(ip)).findFirst();
 		return client.isPresent() ? client.get() : null;
+	}
+
+	public void shutdown() {
+		server.shutdown();
 	}
 
 }

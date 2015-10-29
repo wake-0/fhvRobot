@@ -68,4 +68,8 @@ public class NetworkServer implements Runnable {
 		DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName(client.getIpAddress()), client.getPort());
 		serverSocket.send(sendPacket);
 	}
+	
+	public void shutdown() {
+		serverSocket.close();
+	}
 }
