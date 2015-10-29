@@ -23,7 +23,7 @@ public class Main extends Application {
 			
 			// Root window
 			Parent root = FXMLLoader.load(mainWindow);
-			Scene scene = new Scene(root,400,400);
+			Scene scene = new Scene(root);
 			scene.getStylesheets().add(stylesheet.toExternalForm());
 			
 			// Default stage settings

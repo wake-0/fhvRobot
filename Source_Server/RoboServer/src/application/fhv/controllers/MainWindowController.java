@@ -13,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.media.MediaPlayer;
 import javafx.util.Callback;
 import models.Client;
 import network.IClientProvider;
@@ -34,6 +35,8 @@ public class MainWindowController implements Initializable, IClientProvider {
 	private TextField tfReceive;
 	@FXML
 	private TextField tfName;
+	@FXML
+	private MediaPlayer mediaPlayer;
 	
 	// methods
 	@FXML
