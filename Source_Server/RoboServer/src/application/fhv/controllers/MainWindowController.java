@@ -35,8 +35,8 @@ public class MainWindowController implements Initializable, IClientProvider {
 	private TextField tfReceive;
 	@FXML
 	private TextField tfName;
-	@FXML
-	private MediaPlayer mediaPlayer;
+	//@FXML
+	//private MediaPlayer mediaPlayer;
 	
 	// methods
 	@FXML

@@ -1,26 +1,28 @@
 package network;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.Socket;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 
 import models.Client;
 
-public class NetworkConnection implements Runnable, Comparable<NetworkConnection> {
+public class NetworkConnection implements Comparable<NetworkConnection> {
 
 	// fields
-	private Socket socket;
+	private InetAddress ipAddress;
 	private Client client;
 	private boolean closed;
-	
+	private DatagramSocket serverSocket;
+	private int port;
+
 	// constructor
-	public NetworkConnection(Socket socket, Client client) {
-		this.socket = socket;
+	public NetworkConnection(InetAddress ipAddress, Client client, DatagramSocket serverSocket, int port) {
+		this.ipAddress = ipAddress;
 		this.client = client;
 		this.closed = false;
+		this.serverSocket = serverSocket;
+		this.port = port;
 	}
 
 	// methods
@@ -28,52 +30,31 @@ public class NetworkConnection implements Runnable, Comparable<NetworkConnection
 		return client;
 	}
 
-	@Override
-	public void run() {
-		while(!closed) {
-			receive();
-		}
+	public void receive(String message) {
+		client.setReceiveData(message);
 	}
 
-	private void receive() {
-		BufferedReader bufferedReader;
+	public void send(String message) {
 		try {
-			bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			char[] buffer = new char[200];
-			int numberOfSigns = bufferedReader.read(buffer, 0, 200);
-			client.setReceiveData(new String(buffer, 0, numberOfSigns));
-		} catch (IOException e) {
-			e.printStackTrace();
-		} 
-	}
-
-	public void send() {
-		try {
-			
-			PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-			printWriter.print(client.getSendData());
-			printWriter.flush();
-			
+			// byte[] sendData = client.getSendData().getBytes();
+			byte[] sendData = message.getBytes();
+			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ipAddress, port);
+			serverSocket.send(sendPacket);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void close() {
-		try {
-			closed = true;
-			socket.shutdownInput();
-			socket.shutdownOutput();
-			socket.close();
-			client.clear();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		closed = true;
+		client.clear();
 	}
-	
+
 	@Override
 	public int compareTo(NetworkConnection o) {
-		if (o == null) {return -1;}
+		if (o == null) {
+			return -1;
+		}
 		return client.compareTo(o.client);
 	}
 }

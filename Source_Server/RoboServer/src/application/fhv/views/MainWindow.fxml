@@ -56,9 +56,9 @@
 			</children>
 		</AnchorPane>
 		<AnchorPane>
-			<MediaView>
-				<MediaPlayer fx:id="mediaPlayer" autoPlay="true" />
-			</MediaView>
+<!-- 			<MediaView> -->
+<!-- 				<MediaPlayer fx:id="mediaPlayer" autoPlay="true" /> -->
+<!-- 			</MediaView> -->
 		</AnchorPane>
 	</items>
 </SplitPane>
