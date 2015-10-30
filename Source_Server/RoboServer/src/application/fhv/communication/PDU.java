@@ -27,7 +27,8 @@ public class PDU {
 			throw new IllegalArgumentException();
 		}
 		
-		this.data = data.data;
+		// Important call getData
+		this.data = data.getData();
 	}
 	
 	// methods
