@@ -5,6 +5,11 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import communication.NetworkPDUDecorator;
+import communication.PDU;
+import communication.PresentationPDUDecorator;
+import communication.SessionPDUDecorator;
+import communication.TransportPDUDecorator;
 import models.Client;
 
 public class NetworkServer implements Runnable {
@@ -60,13 +65,17 @@ public class NetworkServer implements Runnable {
 	public void send(Client client) throws IOException {
 		if (client == null) { return; }
 
-		// Values to send
-		byte[] sendData = client.getSendData().getBytes();
-		int length = sendData.length;
-		InetAddress ipAddress = InetAddress.getByName(client.getIpAddress());
-		int port = client.getPort();
+		// Create PDU
+		PDU pdu = new PDU(client.getSendData());
+		PDU pduToSend = new SessionPDUDecorator(new PresentationPDUDecorator(pdu));
 		
-		DatagramPacket sendPacket = new DatagramPacket(sendData, length, ipAddress, port);
+		byte[] sendData = pduToSend.getData();
+		int length = sendData.length;
+		// Enhance/Decorate pdu
+		TransportPDUDecorator transport = new TransportPDUDecorator(pduToSend, client.getPort());
+		NetworkPDUDecorator network = new NetworkPDUDecorator(transport, InetAddress.getByName(client.getIpAddress()));
+		
+		DatagramPacket sendPacket = new DatagramPacket(sendData, length, network.getIpAddress(), transport.getPort());
 		serverSocket.send(sendPacket);
 		
 		System.out.println("Message send: " + client.getSendData());

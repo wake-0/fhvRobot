@@ -9,7 +9,7 @@ public class SessionPDUDecorator extends PDUDecorator {
 	@Override
 	protected byte[] enhanceData(byte[] data) {
 		// TODO Auto-generated method stub
-		return null;
+		return data;
 	}
 
 }

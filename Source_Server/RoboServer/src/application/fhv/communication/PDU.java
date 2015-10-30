@@ -2,8 +2,10 @@ package communication;
 
 public class PDU {
 
+	// fields
 	protected byte[] data;
 
+	// ctor
 	public PDU(String data) {
 		if (data == null) {
 			throw new IllegalArgumentException();
@@ -28,7 +30,13 @@ public class PDU {
 		this.data = data.data;
 	}
 	
+	// methods
 	public byte[] getData() {
 		return data;
+	}
+	
+	@Override
+	public String toString() {
+		return data.toString();
 	}
 }
