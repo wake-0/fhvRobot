@@ -2,8 +2,13 @@ package communication;
 
 public class PresentationPDUDecorator extends PDUDecorator {
 
+	public PresentationPDUDecorator(PDU data) {
+		super(data);
+	}
+
 	@Override
-	public String getMessage() {
+	protected byte[] enhanceData(byte[] data) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

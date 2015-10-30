@@ -1,7 +1,17 @@
 package communication;
 
-public abstract class PDUDecorator {
+public abstract class PDUDecorator extends PDU {
 
-	public abstract String getMessage();
+	public PDUDecorator(PDU data) {
+		super(data);
+	}
+
+	@Override
+	public byte[] getData() {
+		return enhanceData(data);
+		
+	}
+	
+	protected abstract byte[] enhanceData(byte[] data);
 	
 }
