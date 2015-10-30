@@ -8,6 +8,7 @@ import javafx.beans.property.StringProperty;
 public class Client implements Comparable<Client> {
 
 	// fields
+	private IntegerProperty id;
     private StringProperty name;
     private StringProperty sendData;
     private StringProperty receiveData;
@@ -16,6 +17,7 @@ public class Client implements Comparable<Client> {
     
     // constructor
     public Client() {
+    	id = new SimpleIntegerProperty();
     	name = new SimpleStringProperty();
     	sendData = new SimpleStringProperty();
     	receiveData = new SimpleStringProperty();
@@ -26,6 +28,10 @@ public class Client implements Comparable<Client> {
     }
     
     // getter and setter for the properties
+    public final int getId() {return id.get();}
+    public final void setId(int value){id.set(value);}
+    public IntegerProperty IdProperty() {return id;}
+    
     public final String getName() {return name.get();}
     public final void setName(String value){name.set(value);}
     public StringProperty NameProperty() {return name;}
