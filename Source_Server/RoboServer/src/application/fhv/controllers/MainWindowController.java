@@ -13,6 +13,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
 import models.Client;
@@ -28,7 +30,16 @@ public class MainWindowController implements Initializable, IClientProvider {
 	
 	// FXML fields
 	@FXML
-	private ListView<Client> lvClients;
+	private TableView<Client> tvClients;
+	@FXML
+	private TableColumn<Client, Number> tcId;
+	@FXML
+    private TableColumn<Client, String> tcName;
+    @FXML
+    private TableColumn<Client, String> tcIp;
+
+	
+	
 	@FXML
 	private TextField tfSend;
 	@FXML
@@ -43,7 +54,7 @@ public class MainWindowController implements Initializable, IClientProvider {
 	private void handleKillClick() {
 		System.out.println("button kill clicked.");
 		if (selectedClient != null) {
-			lvClients.getItems().remove(lvClients.getSelectionModel().getSelectedItem());
+			tvClients.getItems().remove(tvClients.getSelectionModel().getSelectedItem());
 		}
 	}
 
@@ -71,32 +82,16 @@ public class MainWindowController implements Initializable, IClientProvider {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
-		lvClients.setCellFactory(new Callback<ListView<Client>, ListCell<Client>>() {
-
-			@Override
-			public ListCell<Client> call(ListView<Client> p) {
-
-				ListCell<Client> cell = new ListCell<Client>() {
-
-					@Override
-					protected void updateItem(Client client, boolean empty) {
-						super.updateItem(client, empty);
-
-						if (client != null)
-						{
-							setText(client.getName());
-						} 
-					}
-				};
-				return cell;
-			}
-		});
-
 		observableClients = FXCollections.observableArrayList();
 		
-		lvClients.setItems(observableClients);
-		lvClients.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Client>() {
+		// Initialize the person table with the two columns.
+		
+		tcId.setCellValueFactory(cellData -> cellData.getValue().IdProperty());
+        tcName.setCellValueFactory(cellData -> cellData.getValue().NameProperty());
+        tcIp.setCellValueFactory(cellData -> cellData.getValue().IpAddressProperty());
+		
+		tvClients.setItems(observableClients);
+		tvClients.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Client>() {
 		    @Override
 		    public void changed(ObservableValue<? extends Client> observable, Client oldValue, Client newValue) {
 		    	if (newValue != null) {

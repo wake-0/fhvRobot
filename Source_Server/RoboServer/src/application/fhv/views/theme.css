@@ -14,6 +14,12 @@
     -fx-background-insets: 5px;
 }
 
+.table-view {
+	-fx-padding: 5px;
+    -fx-border-insets: 5px;
+    -fx-background-insets: 5px;
+}
+
 .text-field {
    	-fx-padding: 10px;
     -fx-border-insets: 5px;
