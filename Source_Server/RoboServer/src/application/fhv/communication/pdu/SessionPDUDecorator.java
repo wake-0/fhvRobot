@@ -1,8 +1,8 @@
-package communication;
+package communication.pdu;
 
-public class PresentationPDUDecorator extends PDUDecorator {
+public class SessionPDUDecorator extends PDUDecorator {
 
-	public PresentationPDUDecorator(PDU data) {
+	public SessionPDUDecorator(PDU data) {
 		super(data);
 	}
 

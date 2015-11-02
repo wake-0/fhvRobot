@@ -1,4 +1,4 @@
-package communication;
+package communication.pdu;
 
 public class PDU {
 

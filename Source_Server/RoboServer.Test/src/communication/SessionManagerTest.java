@@ -7,13 +7,15 @@ import java.lang.reflect.Method;
 import org.junit.Before;
 import org.junit.Test;
 
+import communication.managers.SessionManager;
+
 public class SessionManagerTest {
 
 	private SessionManager sessionManager;
 
 	@Before
 	public void setUp() {
-		sessionManager = SessionManager.getInstance();
+		sessionManager = new SessionManager();
 	}
 
 	@Test

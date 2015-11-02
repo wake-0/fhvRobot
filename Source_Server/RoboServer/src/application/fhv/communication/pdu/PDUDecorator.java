@@ -1,4 +1,4 @@
-package communication;
+package communication.pdu;
 
 public abstract class PDUDecorator extends PDU {
 

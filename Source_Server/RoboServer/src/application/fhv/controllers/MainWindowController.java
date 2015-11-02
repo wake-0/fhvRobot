@@ -11,12 +11,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.util.Callback;
 import models.Client;
 import network.IClientProvider;
 import network.NetworkServer;
@@ -37,9 +34,6 @@ public class MainWindowController implements Initializable, IClientProvider {
     private TableColumn<Client, String> tcName;
     @FXML
     private TableColumn<Client, String> tcIp;
-
-	
-	
 	@FXML
 	private TextField tfSend;
 	@FXML
@@ -85,7 +79,6 @@ public class MainWindowController implements Initializable, IClientProvider {
 		observableClients = FXCollections.observableArrayList();
 		
 		// Initialize the person table with the two columns.
-		
 		tcId.setCellValueFactory(cellData -> cellData.getValue().IdProperty());
         tcName.setCellValueFactory(cellData -> cellData.getValue().NameProperty());
         tcIp.setCellValueFactory(cellData -> cellData.getValue().IpAddressProperty());

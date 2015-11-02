@@ -1,4 +1,4 @@
-package communication;
+package communication.pdu;
 
 import java.net.InetAddress;
 
