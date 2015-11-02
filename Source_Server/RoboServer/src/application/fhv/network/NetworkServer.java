@@ -71,16 +71,7 @@ public class NetworkServer implements Runnable {
 	public void send(Client client) throws IOException {
 		if (client == null) { return; }
 		
-		// Create PDU
-		PDU pdu = communicationManager.createPDU(client, client.getSendData());
-		byte[] sendData = pdu.getData();
-		int length = sendData.length;
-		
-		DatagramPacket sendPacket = new DatagramPacket(
-				sendData, length, 
-				communicationManager.getIpAddress(client), 
-				communicationManager.getPort(client));
-		
+		DatagramPacket sendPacket = communicationManager.createDatagramPacket(client, client.getSendData()); 
 		serverSocket.send(sendPacket);
 		
 		System.out.println("Message send: " + client.getSendData());

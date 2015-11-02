@@ -1,5 +1,6 @@
 package communication.managers;
 
+import java.net.DatagramPacket;
 import java.net.InetAddress;
 
 import communication.pdu.NetworkPDUDecorator;
@@ -54,5 +55,14 @@ public class CommunicationManager {
 	
 	public PDU createPDU(Client client, String message) {
 		return new NetworkPDUDecorator(new TransportPDUDecorator(new SessionPDUDecorator(new PDU(message)), getPort(client)), getIpAddress(client));
+	}
+
+	public DatagramPacket createDatagramPacket(Client client, String message) {
+		// Create PDU
+		PDU pdu = createPDU(client, client.getSendData());
+		byte[] sendData = pdu.getData();
+		int length = sendData.length;
+		
+		return new DatagramPacket(sendData, length, getIpAddress(client), getPort(client));
 	}
 }
