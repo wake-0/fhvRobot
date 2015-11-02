@@ -2,8 +2,11 @@ package communication.managers;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import com.google.inject.Singleton;
+
 import models.Client;
 
+@Singleton
 public class SessionManager extends LayerManager<Integer> {
 
 	// Fields

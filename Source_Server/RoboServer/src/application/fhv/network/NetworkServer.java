@@ -5,11 +5,14 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 import communication.managers.CommunicationManager;
-import communication.pdu.PDU;
 import models.Client;
 import models.ClientFactory;
 
+@Singleton
 public class NetworkServer implements Runnable {
 
 	// field which stores the clients
@@ -21,11 +24,12 @@ public class NetworkServer implements Runnable {
 	private DatagramSocket serverSocket;
 
 	// constructors
-	public NetworkServer(IClientProvider clientProvider) {
+	@Inject
+	public NetworkServer(IClientProvider clientProvider, CommunicationManager communicationManager) {
 		try {
 			this.clientProvider = clientProvider;
 			this.serverSocket = new DatagramSocket(port);
-			this.communicationManager = new CommunicationManager();
+			this.communicationManager = communicationManager;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

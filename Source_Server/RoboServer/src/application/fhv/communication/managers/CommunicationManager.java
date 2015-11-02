@@ -3,22 +3,27 @@ package communication.managers;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 import communication.pdu.NetworkPDUDecorator;
 import communication.pdu.PDU;
 import communication.pdu.SessionPDUDecorator;
 import communication.pdu.TransportPDUDecorator;
 import models.Client;
 
+@Singleton
 public class CommunicationManager {
 	
 	private NetworkManager networkManager;
 	private TransportManager transportManager;
 	private SessionManager sessionManager;
 
-	public CommunicationManager() {
-		networkManager = new NetworkManager();
-		transportManager = new TransportManager();
-		sessionManager = new SessionManager();
+	@Inject
+	public CommunicationManager(NetworkManager networkManager, TransportManager transportManager, SessionManager sessionManager) {
+		this.networkManager = networkManager;
+		this.transportManager = transportManager;
+		this.sessionManager = sessionManager;
 	}
 	
 	public void addClient(Client client) {

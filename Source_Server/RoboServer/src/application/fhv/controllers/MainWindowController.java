@@ -5,6 +5,10 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -18,6 +22,7 @@ import models.Client;
 import network.IClientProvider;
 import network.NetworkServer;
 
+@Singleton
 public class MainWindowController implements Initializable, IClientProvider {
 
 	// fields
@@ -103,7 +108,8 @@ public class MainWindowController implements Initializable, IClientProvider {
 		    }
 		});
 		
-		this.server = new NetworkServer(this);
+		Injector injector = Guice.createInjector(new AppInjector(this));
+		this.server = injector.getInstance(NetworkServer.class);
 		new Thread(this.server).start();
 	}
 
