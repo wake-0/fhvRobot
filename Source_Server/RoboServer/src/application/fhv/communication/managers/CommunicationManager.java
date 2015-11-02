@@ -20,6 +20,18 @@ public class CommunicationManager {
 		sessionManager = new SessionManager();
 	}
 	
+	public void addClient(Client client) {
+		networkManager.addClient(client);
+		transportManager.addClient(client);
+		sessionManager.addClient(client);
+	}
+	
+	public void removeClient(Client client) {
+		networkManager.removeClient(client);
+		transportManager.removeClient(client);
+		sessionManager.removeClient(client);
+	}
+	
 	public InetAddress getIpAddress(Client client) {
 		return networkManager.getValue(client);
 	}
