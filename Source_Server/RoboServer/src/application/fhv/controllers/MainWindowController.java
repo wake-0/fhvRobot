@@ -29,6 +29,7 @@ public class MainWindowController implements Initializable, IClientProvider {
 	private NetworkServer server;
 	private Client selectedClient;
 	private ObservableList<Client> observableClients;
+	private Thread serverThread;
 	
 	// FXML fields
 	@FXML
@@ -110,7 +111,8 @@ public class MainWindowController implements Initializable, IClientProvider {
 		
 		Injector injector = Guice.createInjector(new AppInjector(this));
 		this.server = injector.getInstance(NetworkServer.class);
-		new Thread(this.server).start();
+		serverThread = new Thread(server);
+		serverThread.start();
 	}
 
 	@Override
@@ -129,7 +131,12 @@ public class MainWindowController implements Initializable, IClientProvider {
 	}
 
 	public void shutdown() {
-		server.shutdown();
+		try {
+			server.shutdown();
+			serverThread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

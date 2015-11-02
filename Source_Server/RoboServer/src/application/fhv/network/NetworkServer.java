@@ -18,6 +18,7 @@ public class NetworkServer implements Runnable {
 	// field which stores the clients
 	private IClientProvider clientProvider;
 	private CommunicationManager communicationManager;
+	private boolean isRunning = true;
 	
 	// server specific stuff
 	private final int port = 997;
@@ -41,7 +42,7 @@ public class NetworkServer implements Runnable {
 		try {
 			byte[] receiveData = new byte[1024];
 			
-			while(true) {
+			while(isRunning) {
 				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 				serverSocket.receive(receivePacket);
 				
@@ -83,5 +84,6 @@ public class NetworkServer implements Runnable {
 	
 	public void shutdown() {
 		serverSocket.close();
+		isRunning = false;
 	}
 }
