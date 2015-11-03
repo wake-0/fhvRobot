@@ -8,6 +8,7 @@ import java.net.InetAddress;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import communication.managers.ClientType;
 import communication.managers.CommunicationManager;
 import models.Client;
 import models.ClientFactory;
@@ -58,6 +59,8 @@ public class NetworkServer implements Runnable {
 				
 				// Use CommunicationManager
 				communicationManager.addClient(client);
+				// Find correct type of the connected client
+				communicationManager.setClientType(client, ClientType.ROBO);
 				communicationManager.setIpAddress(client, InetAddress.getByName(client.getIpAddress()));
 				communicationManager.setPort(client, client.getPort());
 				
@@ -71,6 +74,10 @@ public class NetworkServer implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void removeClient(Client client) {
+		communicationManager.removeClient(client);
 	}
 	
 	public void send(Client client) throws IOException {

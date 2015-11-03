@@ -54,7 +54,9 @@ public class MainWindowController implements Initializable, IClientProvider {
 	private void handleKillClick() {
 		System.out.println("button kill clicked.");
 		if (selectedClient != null) {
-			tvClients.getItems().remove(tvClients.getSelectionModel().getSelectedItem());
+			//tvClients.getItems().remove(tvClients.getSelectionModel().getSelectedItem());
+			removeClient(selectedClient);
+			
 		}
 	}
 
@@ -123,6 +125,7 @@ public class MainWindowController implements Initializable, IClientProvider {
 	@Override
 	public void removeClient(Client client) {
 		observableClients.remove(client);
+		server.removeClient(client);
 	}
 	
 	public Client getClientByIp(String ip) {
