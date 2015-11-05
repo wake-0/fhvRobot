@@ -7,6 +7,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+import java.net.SocketException;
+
+import robo.fhv.roboapp.robo.fhv.roboapp.network.NetworkClient;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -33,7 +39,11 @@ public class RoboControlActivity extends AppCompatActivity {
 
     private View mContentView;
     private View mControlsView;
+    private TextView textView;;
+
     private boolean mVisible;
+
+    private Thread clientThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +54,8 @@ public class RoboControlActivity extends AppCompatActivity {
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
-
+        textView = (TextView) findViewById(R.id.textView);
+        textView.setText("testssssst");
 
         // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(new View.OnClickListener() {
@@ -58,6 +69,12 @@ public class RoboControlActivity extends AppCompatActivity {
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+
+        try {
+            clientThread = new Thread(new NetworkClient(textView));
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
