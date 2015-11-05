@@ -1,30 +1,37 @@
 package network;
 
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
+import communication.managers.ClientType;
+import communication.managers.CommunicationManager;
 import models.Client;
+import models.ClientFactory;
 
+@Singleton
 public class NetworkServer implements Runnable {
 
 	// field which stores the clients
 	private IClientProvider clientProvider;
+	private CommunicationManager communicationManager;
+	private boolean isRunning = true;
 	
 	// server specific stuff
-	private int port = 997;
-	private ServerSocket serverSocket;
-	private List<NetworkConnection> connections;
+	private final int port = 997;
+	private DatagramSocket serverSocket;
 
 	// constructors
-	public NetworkServer(IClientProvider clientProvider) {
+	@Inject
+	public NetworkServer(IClientProvider clientProvider, CommunicationManager communicationManager) {
 		try {
 			this.clientProvider = clientProvider;
-			this.connections = new ArrayList<>();
-			this.serverSocket = new ServerSocket(port);
+			this.serverSocket = new DatagramSocket(port);
+			this.communicationManager = communicationManager;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -34,57 +41,56 @@ public class NetworkServer implements Runnable {
 	@Override
 	public void run() {
 		try {
-			while(true) {
-				// wait for connection
-				Socket clientSocket = serverSocket.accept();
-				// create new connection
-				NetworkConnection connection = new NetworkConnection(clientSocket, new Client());
-				// start new connection
-				new Thread(connection).start();
-				// update list of connections and clients
-				addConnection(connection);
+			byte[] receiveData = new byte[1024];
+			
+			while(isRunning) {
+				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+				serverSocket.receive(receivePacket);
+				
+				// Check a client with the ip address does already exists
+				Client client = clientProvider.getClientByIp(receivePacket.getAddress().getHostName());
+				if (client == null) {
+					client = ClientFactory.createClient(
+							receivePacket.getAddress().getHostAddress(), 
+							receivePacket.getPort());
+					
+					clientProvider.addClient(client);	
+				}
+				
+				// Use CommunicationManager
+				communicationManager.addClient(client);
+				// Find correct type of the connected client
+				communicationManager.setClientType(client, ClientType.ROBO);
+				communicationManager.setIpAddress(client, InetAddress.getByName(client.getIpAddress()));
+				communicationManager.setPort(client, client.getPort());
+				
+				String sentence = new String(receivePacket.getData());
+				client.setReceiveData(sentence);
+				System.out.println("Message received: " + sentence);
+				client.setSendData(sentence);
+				
+				send(client);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public List<Client> getClients() {
-		return connections
-			.stream()
-			.map(connection -> connection.getClient())
-			.collect(Collectors.toList());
+	public void removeClient(Client client) {
+		communicationManager.removeClient(client);
 	}
 	
-	public void send(Client client) {
-		NetworkConnection connection = getConnectionFromClient(client);
-		if (connection != null) {
-			connection.send();
-		}
-	}
-
-	public void kill(Client client) {
-		NetworkConnection connection = getConnectionFromClient(client);
-		if (connection != null) {
-			removeConnection(connection);
-			connection.close();
-		}
+	public void send(Client client) throws IOException {
+		if (client == null) { return; }
+		
+		DatagramPacket sendPacket = communicationManager.createDatagramPacket(client, client.getSendData()); 
+		serverSocket.send(sendPacket);
+		
+		System.out.println("Message send: " + client.getSendData());
 	}
 	
-	private void addConnection(NetworkConnection connection) {
-		connections.add(connection);
-		clientProvider.addClient(connection.getClient());
-	}
-	
-	private void removeConnection(NetworkConnection connection) {
-		connections.remove(connection);
-		clientProvider.removeClient(connection.getClient());
-	}
-	
-	private NetworkConnection getConnectionFromClient(Client client) {
-		return connections
-			.stream()
-	        .filter(connection -> connection.getClient().compareTo(client) == 0)
-	        .findFirst().get();
+	public void shutdown() {
+		serverSocket.close();
+		isRunning = false;
 	}
 }

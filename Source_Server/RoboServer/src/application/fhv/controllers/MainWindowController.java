@@ -1,52 +1,62 @@
 package controllers;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
-import javafx.application.Platform;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.util.Callback;
 import models.Client;
 import network.IClientProvider;
 import network.NetworkServer;
 
+@Singleton
 public class MainWindowController implements Initializable, IClientProvider {
 
 	// fields
 	private NetworkServer server;
 	private Client selectedClient;
 	private ObservableList<Client> observableClients;
+	private Thread serverThread;
 	
 	// FXML fields
 	@FXML
-	private ListView<Client> lvClients;
+	private TableView<Client> tvClients;
+	@FXML
+	private TableColumn<Client, Number> tcId;
+	@FXML
+    private TableColumn<Client, String> tcName;
+    @FXML
+    private TableColumn<Client, String> tcIp;
 	@FXML
 	private TextField tfSend;
 	@FXML
 	private TextField tfReceive;
 	@FXML
 	private TextField tfName;
+	//@FXML
+	//private MediaPlayer mediaPlayer;
 	
 	// methods
 	@FXML
 	private void handleKillClick() {
 		System.out.println("button kill clicked.");
 		if (selectedClient != null) {
-			Client rememberedClient = selectedClient;
+			//tvClients.getItems().remove(tvClients.getSelectionModel().getSelectedItem());
+			removeClient(selectedClient);
 			
-			lvClients.getItems().remove(lvClients.getSelectionModel().getSelectedItem());
-            ObservableList<Client> c = lvClients.getItems();
-            lvClients.setItems(c);
-			
-			server.kill(rememberedClient);
 		}
 	}
 
@@ -59,7 +69,11 @@ public class MainWindowController implements Initializable, IClientProvider {
 	private void handleSendClick() {
 		System.out.println("button send clicked.");
 		if (selectedClient != null) {
-			server.send(selectedClient);
+			try {
+				server.send(selectedClient);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -70,35 +84,15 @@ public class MainWindowController implements Initializable, IClientProvider {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
-		lvClients.setCellFactory(new Callback<ListView<Client>, ListCell<Client>>() {
-
-			@Override
-			public ListCell<Client> call(ListView<Client> p) {
-
-				ListCell<Client> cell = new ListCell<Client>() {
-
-					@Override
-					protected void updateItem(Client client, boolean empty) {
-						super.updateItem(client, empty);
-
-						if (client != null)
-						{
-							setText(client.getName());
-						} 
-//						else if (empty) {
-//                            setText("");
-//                        }
-					}
-				};
-				return cell;
-			}
-		});
-
 		observableClients = FXCollections.observableArrayList();
 		
-		lvClients.setItems(observableClients);
-		lvClients.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Client>() {
+		// Initialize the person table with the two columns.
+		tcId.setCellValueFactory(cellData -> cellData.getValue().IdProperty());
+        tcName.setCellValueFactory(cellData -> cellData.getValue().NameProperty());
+        tcIp.setCellValueFactory(cellData -> cellData.getValue().IpAddressProperty());
+		
+		tvClients.setItems(observableClients);
+		tvClients.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Client>() {
 		    @Override
 		    public void changed(ObservableValue<? extends Client> observable, Client oldValue, Client newValue) {
 		    	if (newValue != null) {
@@ -111,38 +105,41 @@ public class MainWindowController implements Initializable, IClientProvider {
 		    		tfSend.textProperty().unbindBidirectional(oldValue.SendDataProperty());
 		    		tfName.textProperty().unbindBidirectional(oldValue.NameProperty());
 		    		tfReceive.textProperty().unbind();
-		    		
-		    		tfSend.setText("");
-		    		tfReceive.setText("");
-		    		tfName.setText("");
 		    	}
 		    	
 		    	selectedClient = newValue;
 		    }
 		});
 		
-		this.server = new NetworkServer(this);
-		new Thread(this.server).start();
+		Injector injector = Guice.createInjector(new AppInjector(this));
+		this.server = injector.getInstance(NetworkServer.class);
+		serverThread = new Thread(server);
+		serverThread.start();
 	}
 
 	@Override
 	public void addClient(Client client) {
-		// Update list
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				observableClients.add(client);
-			}
-		});	
+		observableClients.add(client);
 	}
 
 	@Override
 	public void removeClient(Client client) {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				observableClients.remove(client);
-			}
-		});
+		observableClients.remove(client);
+		server.removeClient(client);
 	}
+	
+	public Client getClientByIp(String ip) {
+		Optional<Client> client = observableClients.stream().filter(c -> c.getIpAddress().equals(ip)).findFirst();
+		return client.isPresent() ? client.get() : null;
+	}
+
+	public void shutdown() {
+		try {
+			server.shutdown();
+			serverThread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
 }

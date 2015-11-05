@@ -7,4 +7,5 @@ public interface IClientProvider {
 	public void addClient(Client client);
 	public void removeClient(Client client);
 	
+	public Client getClientByIp(String ip);
 }
