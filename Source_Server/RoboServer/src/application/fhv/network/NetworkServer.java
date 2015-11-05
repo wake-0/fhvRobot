@@ -3,12 +3,10 @@ package network;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import communication.managers.ClientType;
 import communication.managers.CommunicationManager;
 import models.Client;
 import models.ClientFactory;
@@ -19,19 +17,23 @@ public class NetworkServer implements Runnable {
 	// field which stores the clients
 	private IClientProvider clientProvider;
 	private CommunicationManager communicationManager;
+	private NetworkHelper helper;
+	
 	private boolean isRunning = true;
 	
 	// server specific stuff
-	private final int port = 997;
+	//private final int port = 997;
+	private final int port = 8632;
 	private DatagramSocket serverSocket;
 
 	// constructors
 	@Inject
-	public NetworkServer(IClientProvider clientProvider, CommunicationManager communicationManager) {
+	public NetworkServer(IClientProvider clientProvider, CommunicationManager communicationManager, NetworkHelper helper) {
 		try {
 			this.clientProvider = clientProvider;
 			this.serverSocket = new DatagramSocket(port);
 			this.communicationManager = communicationManager;
+			this.helper = helper;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -57,17 +59,10 @@ public class NetworkServer implements Runnable {
 					clientProvider.addClient(client);	
 				}
 				
-				// Use CommunicationManager
-				communicationManager.addClient(client);
-				// Find correct type of the connected client
-				communicationManager.setClientType(client, ClientType.ROBO);
-				communicationManager.setIpAddress(client, InetAddress.getByName(client.getIpAddress()));
-				communicationManager.setPort(client, client.getPort());
+				String message = helper.handleReceivedData(receivePacket, client);
 				
-				String sentence = new String(receivePacket.getData());
-				client.setReceiveData(sentence);
-				System.out.println("Message received: " + sentence);
-				client.setSendData(sentence);
+				System.out.println("Message received: " + message);
+				client.setSendData(message);
 				
 				send(client);
 			}
@@ -83,10 +78,10 @@ public class NetworkServer implements Runnable {
 	public void send(Client client) throws IOException {
 		if (client == null) { return; }
 		
-		DatagramPacket sendPacket = communicationManager.createDatagramPacket(client, client.getSendData()); 
+		DatagramPacket sendPacket = helper.handleSendData(client); 
 		serverSocket.send(sendPacket);
 		
-		System.out.println("Message send: " + client.getSendData());
+		System.out.println("Message send: " + sendPacket.getData());
 	}
 	
 	public void shutdown() {

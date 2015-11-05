@@ -9,7 +9,8 @@ public class UDPClient {
 			String address = "127.0.0.1";
 			//String address = "83.212.127.13";
 			InetAddress IPAddress = InetAddress.getByName(address);
-			int port = 997;
+			//int port = 997;
+			int port = 8632;
 			byte[] sendData = new byte[1024];
 			byte[] receiveData = new byte[1024];
 			String sentence = inFromUser.readLine();
