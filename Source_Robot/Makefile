@@ -23,18 +23,23 @@ OBJDIR = ./object
 DEPS = \
  Makefile \
  source/dmcc_lib/dmcc.h \
- include/Robot.h
+ include/Robot.h \
+ include/ConnectionLayer.h \
+ include/mocks/TransportMock.h
 
 # Compiler object files 
 COBJ = \
  $(OBJDIR)/dmcc_lib/dmcc.o
  
 CPPOBJ = \
- $(OBJDIR)/impl/Robot.o
+ $(OBJDIR)/impl/Robot.o \
+ $(OBJDIR)/impl/ConnectionLayer.o \
+ $(OBJDIR)/tests/TransportMock.o
  
 CPPSRC = \
  ./source/main.cpp \
- ./source/impl/Robot.cpp
+ ./source/impl/Robot.cpp \
+ ./source/impl/ConnectionLayer.cpp
 
 # gcc binaries to use
 CC = "C:\Linaro-gcc\bin\arm-linux-gnueabihf-gcc.exe"
@@ -64,14 +69,17 @@ MSG_LINKING = ---LINK---
 MSG_SUCCESS = ---SUCCESS--- 
 
 # Main project
-all: $(PROJECT)
+all: $(PROJECT) $(CPPSRC) $(DEPS)
 
 # Linker call
 $(PROJECT): $(COBJ)
 	$(CXX) -c ./source/main.cpp -o $(OBJDIR)/main.o -Wall
 	$(CXX) -c ./source/impl/Robot.cpp -o $(OBJDIR)/impl/Robot.o -Wall
+	$(CXX) -c ./source/impl/ConnectionLayer.cpp -o $(OBJDIR)/impl/ConnectionLayer.o -Wall
 
+	$(CXX) -c ./source/impl/mocks/TransportMock.cpp -o $(OBJDIR)/tests/TransportMock.o -Wall
 	$(CXX) -c ./source/tests/testsuite.cpp -o $(OBJDIR)/tests/testsuite.o -Wall
+	
 	@echo $(MSG_EMPTYLINE)
 	@echo $(MSG_LINKING)
 	$(LD) -o $@ $^ $(CPPOBJ) $(OBJDIR)/main.o $(CFLAGS)
