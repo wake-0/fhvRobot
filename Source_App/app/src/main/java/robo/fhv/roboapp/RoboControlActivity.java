@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import java.net.SocketException;
@@ -49,7 +48,7 @@ public class RoboControlActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_robo_control);
+        setContentView(R.layout.activity_robo_layout);
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
