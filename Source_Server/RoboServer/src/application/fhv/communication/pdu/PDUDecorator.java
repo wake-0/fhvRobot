@@ -9,9 +9,14 @@ public abstract class PDUDecorator extends PDU {
 	@Override
 	public byte[] getData() {
 		return enhanceData(data);
-		
+	}
+	
+	public byte[] getInnerData() {
+		return innerData(data);
 	}
 	
 	protected abstract byte[] enhanceData(byte[] data);
+	
+	protected abstract byte[] innerData(byte[] data);
 	
 }

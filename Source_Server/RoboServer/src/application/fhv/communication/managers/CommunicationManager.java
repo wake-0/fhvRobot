@@ -6,8 +6,10 @@ import java.net.InetAddress;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import communication.pdu.ApplicationPDUDecorator;
 import communication.pdu.NetworkPDUDecorator;
 import communication.pdu.PDU;
+import communication.pdu.PresentationPDUDecorator;
 import communication.pdu.SessionPDUDecorator;
 import communication.pdu.TransportPDUDecorator;
 import models.Client;
@@ -72,9 +74,11 @@ public class CommunicationManager {
 	}
 	
 	public PDU createPDU(Client client, String message) {
-		return new NetworkPDUDecorator(new TransportPDUDecorator(new SessionPDUDecorator(new PDU(message)), getPort(client)), getIpAddress(client));
+		return new NetworkPDUDecorator(getIpAddress(client), new TransportPDUDecorator(getPort(client), new SessionPDUDecorator(new PresentationPDUDecorator(new ApplicationPDUDecorator(new PDU(message))))));
 	}
 
+	
+	
 	public DatagramPacket createDatagramPacket(Client client, String message) {
 		// Create PDU
 		PDU pdu = createPDU(client, client.getSendData());

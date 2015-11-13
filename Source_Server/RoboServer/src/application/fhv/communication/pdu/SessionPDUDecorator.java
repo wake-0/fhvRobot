@@ -11,5 +11,11 @@ public class SessionPDUDecorator extends PDUDecorator {
 		// TODO Auto-generated method stub
 		return data;
 	}
+	
+	@Override
+	protected byte[] innerData(byte[] data) {
+		// TODO Auto-generated method stub
+		return data;
+	}
 
 }

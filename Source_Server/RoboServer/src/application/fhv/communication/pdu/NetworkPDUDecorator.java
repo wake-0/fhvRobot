@@ -8,7 +8,7 @@ public class NetworkPDUDecorator extends PDUDecorator {
 	private InetAddress ipAddress;
 	
 	// ctor
-	public NetworkPDUDecorator(PDU data, InetAddress ipAddress) {
+	public NetworkPDUDecorator(InetAddress ipAddress, PDU data) {
 		super(data);
 		
 		this.ipAddress = ipAddress;
@@ -21,6 +21,12 @@ public class NetworkPDUDecorator extends PDUDecorator {
 	
 	@Override
 	protected byte[] enhanceData(byte[] data) {
+		// TODO Auto-generated method stub
+		return data;
+	}
+
+	@Override
+	protected byte[] innerData(byte[] data) {
 		// TODO Auto-generated method stub
 		return data;
 	}
