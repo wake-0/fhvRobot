@@ -1,7 +1,7 @@
 package communication.pdu;
 
 public abstract class PDUDecorator extends PDU {
-
+	
 	public PDUDecorator(PDU data) {
 		super(data);
 	}
