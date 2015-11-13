@@ -1,5 +1,13 @@
 package communication.managers;
 
-public class ApplicationManager {
+import com.google.inject.Singleton;
+
+@Singleton
+public class ApplicationManager extends LayerManager<String> {
+
+	@Override
+	protected String getDefaultValue() {
+		return "";
+	}
 
 }

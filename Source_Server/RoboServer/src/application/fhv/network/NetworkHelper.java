@@ -29,7 +29,6 @@ public class NetworkHelper {
 		// Use CommunicationManager
 		communicationManager.addClient(client);
 		// Find correct type of the connected client
-		communicationManager.setClientType(client, ClientType.ROBO);
 		communicationManager.setIpAddress(client, InetAddress.getByName(client.getIpAddress()));
 		communicationManager.setPort(client, client.getPort());
 		

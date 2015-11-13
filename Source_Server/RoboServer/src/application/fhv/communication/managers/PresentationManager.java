@@ -3,10 +3,10 @@ package communication.managers;
 import com.google.inject.Singleton;
 
 @Singleton
-public class PresentationManager extends LayerManager<ClientType>{
+public class PresentationManager extends LayerManager<String>{
 
 	@Override
-	protected ClientType getDefaultValue() {
-		return ClientType.ROBO;
+	protected String getDefaultValue() {
+		return "";
 	}
 }
