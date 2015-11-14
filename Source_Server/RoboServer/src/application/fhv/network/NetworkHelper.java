@@ -33,6 +33,7 @@ public class NetworkHelper {
 		communicationManager.setPort(client, client.getPort());
 		
 		String message = new String(packet.getData());
+		// TODO: create PDU and get the inner data of it
 		client.setReceiveData(message);
 		
 		return message;

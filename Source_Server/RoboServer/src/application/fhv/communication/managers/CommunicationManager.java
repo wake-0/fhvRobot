@@ -69,7 +69,7 @@ public class CommunicationManager {
 		return sessionManager.getSession(client);
 	}
 
-	public PDU createPDU(Client client, String message) {
+	private PDU createPDU(Client client, String message) {
 		return new NetworkPDUDecorator(getIpAddress(client), new TransportPDUDecorator(getPort(client),
 				new SessionPDUDecorator(new PresentationPDUDecorator(new ApplicationPDUDecorator(new PDU(message))))));
 	}
@@ -77,7 +77,7 @@ public class CommunicationManager {
 	public DatagramPacket createDatagramPacket(Client client, String message) {
 		// Create PDU
 		PDU pdu = createPDU(client, client.getSendData());
-		byte[] sendData = pdu.getData();
+		byte[] sendData = pdu.getEnhancedData();
 		int length = sendData.length;
 
 		return new DatagramPacket(sendData, length, getIpAddress(client), getPort(client));
