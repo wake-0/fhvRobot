@@ -7,7 +7,7 @@ public abstract class PDUDecorator extends PDU {
 	}
 
 	@Override
-	public byte[] getData() {
+	public byte[] getEnhancedData() {
 		return enhanceData(data);
 	}
 	

@@ -20,7 +20,6 @@ public class TransportPDUDecorator extends PDUDecorator {
 
 	@Override
 	protected byte[] innerData(byte[] data) {
-		// TODO Auto-generated method stub
 		return data;
 	}
 }

@@ -21,13 +21,11 @@ public class NetworkPDUDecorator extends PDUDecorator {
 	
 	@Override
 	protected byte[] enhanceData(byte[] data) {
-		// TODO Auto-generated method stub
 		return data;
 	}
 
 	@Override
 	protected byte[] innerData(byte[] data) {
-		// TODO Auto-generated method stub
 		return data;
 	}
 

@@ -1,5 +1,9 @@
 package communication.pdu;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+
 public class ApplicationPDUDecorator extends PDUDecorator {
 
 	private byte[] flags;
@@ -12,13 +16,21 @@ public class ApplicationPDUDecorator extends PDUDecorator {
 
 	@Override
 	protected byte[] enhanceData(byte[] data) {
-		return data;
+		try {
+
+			// Add flag bytes
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			outputStream.write(flags);
+			outputStream.write(data);
+			return outputStream.toByteArray();
+
+		} catch (IOException e) {
+			return data;
+		}
 	}
 
 	@Override
 	protected byte[] innerData(byte[] data) {
-		// TODO Auto-generated method stub
-		return data;
+		return Arrays.copyOfRange(data, flags.length, data.length);
 	}
-
 }

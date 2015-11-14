@@ -36,6 +36,14 @@ public class PDU {
 		return data;
 	}
 	
+	public byte[] getEnhancedData() {
+		return data;
+	}
+	
+	public byte[] getInnerData() {
+		return data;
+	}
+	
 	@Override
 	public String toString() {
 		return data.toString();
