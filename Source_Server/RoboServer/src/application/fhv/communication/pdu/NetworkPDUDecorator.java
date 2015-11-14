@@ -20,13 +20,13 @@ public class NetworkPDUDecorator extends PDUDecorator {
 	}
 	
 	@Override
-	protected byte[] enhanceData(byte[] data) {
-		return data;
+	protected byte[] enhanceData(PDU packet) {
+		return packet.getEnhancedData();
 	}
 
 	@Override
-	protected byte[] innerData(byte[] data) {
-		return data;
+	protected byte[] innerData(PDU packet) {
+		return packet.getInnerData();
 	}
 
 }

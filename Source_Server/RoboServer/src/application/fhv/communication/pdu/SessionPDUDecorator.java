@@ -17,14 +17,14 @@ public class SessionPDUDecorator extends PDUDecorator {
 	}
 
 	@Override
-	protected byte[] enhanceData(byte[] data) {
+	protected byte[] enhanceData(PDU packet) {
 		try {
 			
 			// Add flag and session bytes
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			outputStream.write(flags);
 			outputStream.write(sessionId);
-			outputStream.write(data);
+			outputStream.write(packet.getEnhancedData());
 			return outputStream.toByteArray();
 			
 		} catch (IOException e) {
@@ -33,8 +33,9 @@ public class SessionPDUDecorator extends PDUDecorator {
 	}
 	
 	@Override
-	protected byte[] innerData(byte[] data) {
+	protected byte[] innerData(PDU packet) {
 		// Remove the flag and session bytes
+		byte[] data = packet.getInnerData();
 		return Arrays.copyOfRange(data, flags.length + sessionId.length , data.length);
 	}
 

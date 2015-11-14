@@ -15,7 +15,7 @@ public class ApplicationPDUDecorator extends PDUDecorator {
 	}
 
 	@Override
-	protected byte[] enhanceData(byte[] data) {
+	protected byte[] enhanceData(PDU packet) {
 		try {
 
 			// Add flag bytes
@@ -30,7 +30,7 @@ public class ApplicationPDUDecorator extends PDUDecorator {
 	}
 
 	@Override
-	protected byte[] innerData(byte[] data) {
-		return Arrays.copyOfRange(data, flags.length, data.length);
+	protected byte[] innerData(PDU packet) {
+		return Arrays.copyOfRange(packet.getInnerData(), flags.length, data.length);
 	}
 }

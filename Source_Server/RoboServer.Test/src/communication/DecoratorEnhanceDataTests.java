@@ -23,7 +23,7 @@ public class DecoratorEnhanceDataTests {
 			InetAddress expectedAddress = InetAddress.getByName("127.0.0.1");
 			NetworkPDUDecorator decorator = new NetworkPDUDecorator(expectedAddress, new PDU(expectedData));
 
-			byte[] data = decorator.getData();
+			byte[] data = decorator.getEnhancedData();
 			assertArrayEquals(expectedData, data);
 
 			InetAddress actualAddress = decorator.getIpAddress();
@@ -39,7 +39,7 @@ public class DecoratorEnhanceDataTests {
 		int expectedPort = 12;
 		TransportPDUDecorator decorator = new TransportPDUDecorator(expectedPort, new PDU(expectedData));
 
-		byte[] data = decorator.getData();
+		byte[] data = decorator.getEnhancedData();
 		int port = decorator.getPort();
 		assertArrayEquals(expectedData, data);
 		assertEquals(expectedPort, port);
@@ -54,7 +54,7 @@ public class DecoratorEnhanceDataTests {
 		SessionPDUDecorator decorator = new SessionPDUDecorator(new PDU(data));
 
 		byte[] expectedData = new byte[] { expectedId[0], expectedFlags[0], data[0] };
-		byte[] actualData = decorator.getData();
+		byte[] actualData = decorator.getEnhancedData();
 		assertArrayEquals(expectedData, actualData);
 		byte[] sessionId = decorator.getSessionId();
 		assertArrayEquals(expectedId, sessionId);
@@ -70,7 +70,7 @@ public class DecoratorEnhanceDataTests {
 		PresentationPDUDecorator decorator = new PresentationPDUDecorator(new PDU(data));
 
 		byte[] expectedData = new byte[] { expectedFlags[0], data[0] };
-		byte[] actualData = decorator.getData();
+		byte[] actualData = decorator.getEnhancedData();
 
 		assertArrayEquals(expectedData, actualData);
 	}
@@ -83,7 +83,7 @@ public class DecoratorEnhanceDataTests {
 		ApplicationPDUDecorator decorator = new ApplicationPDUDecorator(new PDU(data));
 
 		byte[] expectedData = new byte[] { expectedFlags[0], data[0] };
-		byte[] actualData = decorator.getData();
+		byte[] actualData = decorator.getEnhancedData();
 
 		assertArrayEquals(expectedData, actualData);
 	}
@@ -104,7 +104,7 @@ public class DecoratorEnhanceDataTests {
 			byte[] applicationFlags = new byte[] { 0b00000000 };
 			byte[] expectedData = new byte[] { sessionFlags[0], sessionId[0], presentationFlags[0], applicationFlags[0], data[0] };
 			
-			byte[] actualData = combinedDecorator.getData();
+			byte[] actualData = combinedDecorator.getEnhancedData();
 
 			assertArrayEquals(expectedData, actualData);
 		} catch (UnknownHostException e) {
