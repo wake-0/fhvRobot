@@ -75,18 +75,18 @@ public class CommunicationManager {
 	}
 
 	public DatagramPacket createDatagramPacket(IClient client, String message) {
-		// Create PDU
 		PDU pdu = createPDU(client, message);
-		byte[] sendData = pdu.getEnhancedData();
-		int length = sendData.length;
+		byte[] data = pdu.getEnhancedData();
+		int length = data.length;
 
-		return new DatagramPacket(sendData, length, getIpAddress(client), getPort(client));
+		return new DatagramPacket(data, length, getIpAddress(client), getPort(client));
 	}
 	
 	public String readDatagramPacket(IClient client, DatagramPacket packet) {
 		String message = new String(packet.getData());
 		PDU pdu = createPDU(client, message);
+		byte[] data = pdu.getInnerData();
 		
-		return new String(pdu.getInnerData());
+		return new String(data);
 	}
 }
