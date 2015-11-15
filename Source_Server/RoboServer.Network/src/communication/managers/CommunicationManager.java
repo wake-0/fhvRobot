@@ -6,13 +6,13 @@ import java.net.InetAddress;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import communication.IClient;
 import communication.pdu.ApplicationPDUDecorator;
 import communication.pdu.NetworkPDUDecorator;
 import communication.pdu.PDU;
 import communication.pdu.PresentationPDUDecorator;
 import communication.pdu.SessionPDUDecorator;
 import communication.pdu.TransportPDUDecorator;
-import models.Client;
 
 @Singleton
 public class CommunicationManager {
@@ -33,7 +33,7 @@ public class CommunicationManager {
 		this.applicationManager = applicationManager;
 	}
 
-	public void addClient(Client client) {
+	public void addClient(IClient client) {
 		networkManager.addClient(client);
 		transportManager.addClient(client);
 		sessionManager.addClient(client);
@@ -41,7 +41,7 @@ public class CommunicationManager {
 		applicationManager.addClient(client);
 	}
 
-	public void removeClient(Client client) {
+	public void removeClient(IClient client) {
 		networkManager.removeClient(client);
 		transportManager.removeClient(client);
 		sessionManager.removeClient(client);
@@ -49,34 +49,34 @@ public class CommunicationManager {
 		applicationManager.removeClient(client);
 	}
 
-	public InetAddress getIpAddress(Client client) {
+	public InetAddress getIpAddress(IClient client) {
 		return networkManager.getValue(client);
 	}
 
-	public void setIpAddress(Client client, InetAddress ipAddress) {
+	public void setIpAddress(IClient client, InetAddress ipAddress) {
 		networkManager.setValueOfClient(client, ipAddress);
 	}
 
-	public int getPort(Client client) {
+	public int getPort(IClient client) {
 		return transportManager.getValue(client);
 	}
 
-	public void setPort(Client client, int port) {
+	public void setPort(IClient client, int port) {
 		transportManager.setValueOfClient(client, port);
 	}
 
-	public int getSession(Client client) {
+	public int getSession(IClient client) {
 		return sessionManager.getSession(client);
 	}
 
-	private PDU createPDU(Client client, String message) {
+	public PDU createPDU(IClient client, String message) {
 		return new NetworkPDUDecorator(getIpAddress(client), new TransportPDUDecorator(getPort(client),
 				new SessionPDUDecorator(new PresentationPDUDecorator(new ApplicationPDUDecorator(new PDU(message))))));
 	}
 
-	public DatagramPacket createDatagramPacket(Client client, String message) {
+	public DatagramPacket createDatagramPacket(IClient client, String message) {
 		// Create PDU
-		PDU pdu = createPDU(client, client.getSendData());
+		PDU pdu = createPDU(client, message);
 		byte[] sendData = pdu.getEnhancedData();
 		int length = sendData.length;
 

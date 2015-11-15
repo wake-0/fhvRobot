@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>RoboServer.Test</name>
+	<name>RoboServer.Network</name>
 	<comment></comment>
 	<projects>
-		<project>RoboServer</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

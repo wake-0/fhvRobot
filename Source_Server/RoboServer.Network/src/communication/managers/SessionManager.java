@@ -4,7 +4,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import com.google.inject.Singleton;
 
-import models.Client;
+import communication.IClient;
 
 @Singleton
 public class SessionManager extends LayerManager<Integer> {
@@ -14,11 +14,11 @@ public class SessionManager extends LayerManager<Integer> {
 	private final int maxSessionNumber = 255;
 	
 	// Methods
-	public int getSession(Client client) {
+	public int getSession(IClient client) {
 		return clientMap.get(client);
 	}
 	
-	public int createSession(Client client) {
+	public int createSession(IClient client) {
 		addClient(client);
 		
 		// Set new session id

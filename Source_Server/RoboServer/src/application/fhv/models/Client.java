@@ -1,11 +1,12 @@
 package models;
 
+import communication.IClient;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Client implements Comparable<Client> {
+public class Client implements Comparable<Client>, IClient {
 
 	// fields
 	private IntegerProperty id;

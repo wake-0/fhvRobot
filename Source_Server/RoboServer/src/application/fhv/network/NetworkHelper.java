@@ -7,8 +7,8 @@ import java.net.UnknownHostException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import communication.managers.ClientType;
 import communication.managers.CommunicationManager;
+import communication.pdu.PDU;
 import models.Client;
 
  @Singleton
@@ -33,9 +33,11 @@ public class NetworkHelper {
 		communicationManager.setPort(client, client.getPort());
 		
 		String message = new String(packet.getData());
-		// TODO: create PDU and get the inner data of it
-		client.setReceiveData(message);
+		PDU pdu = communicationManager.createPDU(client, message);
 		
-		return message;
+		String onlyData = new String(pdu.getInnerData());
+		client.setReceiveData(onlyData);
+		
+		return onlyData;
 	}
 }

@@ -2,12 +2,12 @@ package communication.managers;
 
 import java.util.HashMap;
 
-import models.Client;
+import communication.IClient;
 
 public abstract class LayerManager<T> {
 
 	// fields
-	protected HashMap<Client, T> clientMap;
+	protected HashMap<IClient, T> clientMap;
 	
 	// Constructor
 	public LayerManager() {
@@ -15,11 +15,11 @@ public abstract class LayerManager<T> {
 	}
 	
 	// Methods
-	public T getValue(Client client) {
+	public T getValue(IClient client) {
 		return clientMap.get(client);
 	}
 	
-	public void setValueOfClient(Client client, T value) {
+	public void setValueOfClient(IClient client, T value) {
 		if (clientMap.containsKey(client)) {
 			clientMap.replace(client, value);
 			return;
@@ -28,15 +28,15 @@ public abstract class LayerManager<T> {
 		clientMap.put(client, value);
 	}
 	
-	public void removeClient(Client client) {
+	public void removeClient(IClient client) {
 		clientMap.remove(client);
 	}
 	
-	public void addClient(Client client, T value) {
+	public void addClient(IClient client, T value) {
 		clientMap.put(client, value);
 	}
 	
-	public void addClient(Client client) {
+	public void addClient(IClient client) {
 		if (!clientMap.containsKey(client)) {
 			clientMap.put(client, getDefaultValue());
 		} 
