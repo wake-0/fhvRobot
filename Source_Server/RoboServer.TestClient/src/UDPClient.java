@@ -8,7 +8,6 @@ import com.google.inject.Inject;
 
 import communication.IClient;
 import communication.managers.CommunicationManager;
-import communication.pdu.PDU;
 
 public class UDPClient implements Runnable, IClient {
 
@@ -54,11 +53,9 @@ public class UDPClient implements Runnable, IClient {
 				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 				clientSocket.receive(receivePacket);
 
-				String modifiedSentence = new String(receivePacket.getData());
-				
-				System.out.println("Receive message:" + modifiedSentence);
-				PDU pdu = manager.createPDU(this, modifiedSentence);
-				System.out.println("Enhanced receive message:" + new String(pdu.getInnerData()));
+				System.out.println("Receive message:" + new String(receivePacket.getData()));
+				String receivedMessage = manager.readDatagramPacket(this, receivePacket);
+				System.out.println("Enhanced receive message:" + receivedMessage);
 				
 			} catch (Exception ex) {
 

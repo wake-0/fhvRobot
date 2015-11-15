@@ -8,7 +8,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import communication.managers.CommunicationManager;
-import communication.pdu.PDU;
 import models.Client;
 
  @Singleton
@@ -26,18 +25,13 @@ public class NetworkHelper {
 	}
 	
 	public String handleReceivedData(DatagramPacket packet, Client client) throws UnknownHostException {
-		// Use CommunicationManager
 		communicationManager.addClient(client);
-		// Find correct type of the connected client
 		communicationManager.setIpAddress(client, InetAddress.getByName(client.getIpAddress()));
 		communicationManager.setPort(client, client.getPort());
 		
-		String message = new String(packet.getData());
-		PDU pdu = communicationManager.createPDU(client, message);
+		String message = communicationManager.readDatagramPacket(client, packet);
+		client.setReceiveData(message);
 		
-		String onlyData = new String(pdu.getInnerData());
-		client.setReceiveData(onlyData);
-		
-		return onlyData;
+		return message;
 	}
 }
