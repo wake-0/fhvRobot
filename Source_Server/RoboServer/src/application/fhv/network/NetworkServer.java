@@ -29,13 +29,13 @@ public class NetworkServer implements Runnable {
 	
 	// server specific stuff
 	private boolean isRunning = true;
-	private final int port = 997;
+	private final int roboPort = 997;
 	private final int receivePacketSize = 1024;
 	
 	// constructors
 	@Inject
 	public NetworkServer(IClientProvider clientProvider, CommunicationManager communicationManager, NetworkHelper helper) throws SocketException {
-		this.serverSocket = new DatagramSocket(port);
+		this.serverSocket = new DatagramSocket(roboPort);
 		this.clientProvider = clientProvider;
 		this.communicationManager = communicationManager;
 		this.helper = helper;
