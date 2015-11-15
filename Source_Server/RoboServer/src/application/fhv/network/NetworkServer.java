@@ -49,9 +49,9 @@ public class NetworkServer implements Runnable {
 	@Override
 	public void run() {
 		try {
-			byte[] receiveData = new byte[receivePacketSize];
 			
 			while(isRunning) {
+				byte[] receiveData = new byte[receivePacketSize];
 				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 				receiver.receive(receivePacket);
 				

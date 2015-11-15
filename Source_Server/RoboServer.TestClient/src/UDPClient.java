@@ -39,7 +39,6 @@ public class UDPClient implements Runnable, IClient {
 	@Override
 	public void run() {
 		while(true) {
-			byte[] receiveData = new byte[1024];
 			
 			try {
 				BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
@@ -51,6 +50,7 @@ public class UDPClient implements Runnable, IClient {
 				
 				clientSocket.send(sendPacket);
 				
+				byte[] receiveData = new byte[1024];
 				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 				clientSocket.receive(receivePacket);
 
