@@ -7,11 +7,13 @@ import java.net.UnknownHostException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import communication.IClient;
 import communication.managers.CommunicationManager;
+import communication.managers.IApplicationMessageHandler;
 import models.Client;
 
  @Singleton
-public class NetworkHelper {
+public class NetworkHelper implements IApplicationMessageHandler{
 
 	private final CommunicationManager communicationManager;
 	
@@ -24,14 +26,18 @@ public class NetworkHelper {
 		return communicationManager.createDatagramPacket(client, client.getSendData());
 	}
 	
-	public String handleReceivedData(DatagramPacket packet, Client client) throws UnknownHostException {
+	public void handleReceivedData(DatagramPacket packet, Client client) throws UnknownHostException {
 		communicationManager.addClient(client);
 		communicationManager.setIpAddress(client, InetAddress.getByName(client.getIpAddress()));
 		communicationManager.setPort(client, client.getPort());
+		communicationManager.readDatagramPacket(client, packet, this);
+	}
+
+	@Override
+	public void handleMessage(IClient client, String message) {
 		
-		String message = communicationManager.readDatagramPacket(client, packet);
-		client.setReceiveData(message);
-		
-		return message;
+		if (client instanceof Client) {
+			((Client)client).setReceiveData(message);
+		}
 	}
 }

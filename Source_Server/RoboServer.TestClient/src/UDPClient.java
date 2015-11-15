@@ -8,8 +8,9 @@ import com.google.inject.Inject;
 
 import communication.IClient;
 import communication.managers.CommunicationManager;
+import communication.managers.IApplicationMessageHandler;
 
-public class UDPClient implements Runnable, IClient {
+public class UDPClient implements Runnable, IClient, IApplicationMessageHandler {
 
 	private String address = "127.0.0.1";
 	//private String address = "83.212.127.13";
@@ -54,13 +55,17 @@ public class UDPClient implements Runnable, IClient {
 				clientSocket.receive(receivePacket);
 
 				System.out.println("Receive message:" + new String(receivePacket.getData()));
-				String receivedMessage = manager.readDatagramPacket(this, receivePacket);
-				System.out.println("Enhanced receive message:" + receivedMessage);
-				
+				manager.readDatagramPacket(this, receivePacket, this);
+								
 			} catch (Exception ex) {
 
 			}
 		}
 		//clientSocket.close();
+	}
+
+	@Override
+	public void handleMessage(IClient client, String message) {
+		System.out.println("Enhanced receive message:" + message);
 	}
 }

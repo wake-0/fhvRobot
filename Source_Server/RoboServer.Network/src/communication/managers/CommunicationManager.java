@@ -69,6 +69,15 @@ public class CommunicationManager {
 		return sessionManager.getSession(client);
 	}
 
+	public boolean isConnectionOpen(DatagramPacket packet) {
+		
+		return false;
+	}
+	
+	public void openConnection() {
+		
+	}
+	
 	private PDU createPDU(IClient client, String message) {
 		return new NetworkPDUDecorator(getIpAddress(client), new TransportPDUDecorator(getPort(client),
 				new SessionPDUDecorator(new PresentationPDUDecorator(new ApplicationPDUDecorator(new PDU(message))))));
@@ -82,11 +91,13 @@ public class CommunicationManager {
 		return new DatagramPacket(data, length, getIpAddress(client), getPort(client));
 	}
 	
-	public String readDatagramPacket(IClient client, DatagramPacket packet) {
+	public void readDatagramPacket(IClient client, DatagramPacket packet, IApplicationMessageHandler handler) {
 		String message = new String(packet.getData());
 		PDU pdu = createPDU(client, message);
 		byte[] data = pdu.getInnerData();
-		
-		return new String(data);
+
+		// Use handler so it is possible to decide if the message 
+		// should be handled by the application
+		handler.handleMessage(client, new String(data));
 	}
 }

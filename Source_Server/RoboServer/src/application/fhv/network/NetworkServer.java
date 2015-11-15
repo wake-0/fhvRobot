@@ -58,10 +58,10 @@ public class NetworkServer implements Runnable {
 				// Check a client with the ip address does already exists otherwise add them and return this client
 				Client client = getClientFromPacket(receivePacket);
 				// This message is not needed when test phase is over
-				String message = helper.handleReceivedData(receivePacket, client);
+				helper.handleReceivedData(receivePacket, client);
 				
 				// Only for test purposes
-				client.setSendData(message);
+				client.setSendData(client.getReceiveData());
 				send(client);
 			}
 		} catch (IOException e) {
@@ -97,4 +97,6 @@ public class NetworkServer implements Runnable {
 		serverSocket.close();
 		isRunning = false;
 	}
+
+
 }
