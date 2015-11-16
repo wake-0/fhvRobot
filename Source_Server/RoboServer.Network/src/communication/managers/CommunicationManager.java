@@ -100,16 +100,16 @@ public class CommunicationManager {
 			IDataReceivedHandler applicationHandler, IAnswerHandler sender) {
 		
 		NetworkPDUDecorator network = new NetworkPDUDecorator(new PDU(packet.getData())); 
-		if (networkManager.handleDataReceived(packet, network.getInnerData(), sender)) { return; }
+		if (networkManager.handleDataReceived(packet, network.getData(), sender)) { return; }
 
 		TransportPDUDecorator transport = new TransportPDUDecorator(network);
-		if (transportManager.handleDataReceived(packet, transport.getInnerData(), sender)) { return; }
+		if (transportManager.handleDataReceived(packet, transport.getData(), sender)) { return; }
 		
 		SessionPDUDecorator session = new SessionPDUDecorator(transport);
-		if (sessionManager.handleDataReceived(packet, session.getInnerData(), sender)) { return; }
+		if (sessionManager.handleDataReceived(packet, session.getData(), sender)) { return; }
 		
 		PresentationPDUDecorator presentation = new PresentationPDUDecorator(session);
-		if (presentationManager.handleDataReceived(packet, presentation.getInnerData(), sender)) { return; }
+		if (presentationManager.handleDataReceived(packet, presentation.getData(), sender)) { return; }
 		
 		// Use handler so it is possible to decide if the message 
 		// should be handled by the application

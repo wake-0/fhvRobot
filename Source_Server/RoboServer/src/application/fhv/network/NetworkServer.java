@@ -77,7 +77,7 @@ IAnswerHandler, IClientManager {
 			// TODO: handle other message
 
 			// Only for test purposes
-			client.setSendData(client.getReceiveData());
+			client.setSendData(name);
 			send(client);
 
 		} catch (Exception e) {

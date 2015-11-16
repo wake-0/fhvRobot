@@ -14,12 +14,12 @@ public class SessionPDUDecorator extends PDUDecorator {
 		super(data);
 	}
 	
-	public SessionPDUDecorator(int sessionId, PDU data) {
+	public SessionPDUDecorator(int flags, PDU data) {
 		super(data);
 		
 		// Integer to byte array
-		byte[] bytes = ByteBuffer.allocate(4).putInt(sessionId).array();
-		this.sessionId = new byte[] { bytes[3] };
+		byte[] bytes = ByteBuffer.allocate(4).putInt(flags).array();
+		this.flags = new byte[] { bytes[3] };
 	}
 
 	@Override
