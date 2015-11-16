@@ -1,21 +1,23 @@
 package communication.pdu;
 
-import java.net.InetAddress;
-
 public class NetworkPDUDecorator extends PDUDecorator {
 
 	// fields
-	private InetAddress ipAddress;
+	private String ipAddress;
 	
 	// ctor
-	public NetworkPDUDecorator(InetAddress ipAddress, PDU data) {
+	public NetworkPDUDecorator(PDU data) {
+		super(data);
+	}
+	
+	public NetworkPDUDecorator(String string, PDU data) {
 		super(data);
 		
-		this.ipAddress = ipAddress;
+		this.ipAddress = string;
 	}
 
 	// methods
-	public InetAddress getIpAddress() {
+	public String getIpAddress() {
 		return ipAddress;
 	}
 	

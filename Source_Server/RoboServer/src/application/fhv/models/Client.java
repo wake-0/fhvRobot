@@ -15,6 +15,7 @@ public class Client implements Comparable<Client>, IClient {
     private StringProperty receiveData;
     private StringProperty ipAddress;
     private IntegerProperty port;
+    private IntegerProperty sessionId;
     
     // constructor
     public Client() {
@@ -24,6 +25,7 @@ public class Client implements Comparable<Client>, IClient {
     	receiveData = new SimpleStringProperty();
     	ipAddress = new SimpleStringProperty();
     	port = new SimpleIntegerProperty();
+    	sessionId = new SimpleIntegerProperty();
     	
     	setName("Anonymous");
     }
@@ -52,6 +54,10 @@ public class Client implements Comparable<Client>, IClient {
     public final int getPort() {return port.get();}
     public final void setPort(int value){port.set(value);}
     public IntegerProperty PortProperty() {return port;}
+    
+    public final int getSessionId() {return sessionId.get();}
+    public final void setSessionId(int value){sessionId.set(value);}
+    public IntegerProperty sessionIdProperty() {return sessionId;}
     
 	@Override
 	public int compareTo(Client o) {

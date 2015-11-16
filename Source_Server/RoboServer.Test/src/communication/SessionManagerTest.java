@@ -7,6 +7,8 @@ import java.lang.reflect.Method;
 import org.junit.Before;
 import org.junit.Test;
 
+import communication.managers.CurrentClientService;
+import communication.managers.IClientManager;
 import communication.managers.SessionManager;
 
 public class SessionManagerTest {
@@ -15,7 +17,29 @@ public class SessionManagerTest {
 
 	@Before
 	public void setUp() {
-		sessionManager = new SessionManager();
+		sessionManager = new SessionManager(new IClientManager() {
+			
+			@Override
+			public IClient createClient() {
+				return new IClient() {
+					
+					@Override
+					public void setSessionId(int sessionId) {
+						// TODO Auto-generated method stub
+					}
+					
+					@Override
+					public void setPort(int port) {
+						// TODO Auto-generated method stub
+					}
+					
+					@Override
+					public void setIpAddress(String ipAddress) {
+						// TODO Auto-generated method stub
+					}
+				};
+			}
+		}, new CurrentClientService());
 	}
 
 	@Test

@@ -2,6 +2,7 @@ package communication.managers;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -21,16 +22,17 @@ public class CommunicationManager {
 	private TransportManager transportManager;
 	private SessionManager sessionManager;
 	private PresentationManager presentationManager;
-	private ApplicationManager applicationManager;
-
+	private CurrentClientService currentClientService;
+	
 	@Inject
 	public CommunicationManager(NetworkManager networkManager, TransportManager transportManager,
-			SessionManager sessionManager, PresentationManager presentationManager, ApplicationManager applicationManager) {
+			SessionManager sessionManager, PresentationManager presentationManager,
+			CurrentClientService currentClientService) {
 		this.networkManager = networkManager;
 		this.transportManager = transportManager;
 		this.sessionManager = sessionManager;
 		this.presentationManager = presentationManager;
-		this.applicationManager = applicationManager;
+		this.currentClientService = currentClientService;
 	}
 
 	public void addClient(IClient client) {
@@ -38,7 +40,6 @@ public class CommunicationManager {
 		transportManager.addClient(client);
 		sessionManager.addClient(client);
 		presentationManager.addClient(client);
-		applicationManager.addClient(client);
 	}
 
 	public void removeClient(IClient client) {
@@ -46,58 +47,72 @@ public class CommunicationManager {
 		transportManager.removeClient(client);
 		sessionManager.removeClient(client);
 		presentationManager.removeClient(client);
-		applicationManager.removeClient(client);
 	}
 
-	public InetAddress getIpAddress(IClient client) {
+	public String getIpAddress(IClient client) {
 		return networkManager.getValue(client);
-	}
-
-	public void setIpAddress(IClient client, InetAddress ipAddress) {
-		networkManager.setValueOfClient(client, ipAddress);
-	}
-
-	public int getPort(IClient client) {
-		return transportManager.getValue(client);
 	}
 
 	public void setPort(IClient client, int port) {
 		transportManager.setValueOfClient(client, port);
 	}
+	
+	public void setIpAddress(IClient client, String ipAddress) {
+		networkManager.setValueOfClient(client, ipAddress);
+	}
+	
+	public void setSessionId(IClient client, int sessionId) {
+		sessionManager.setValueOfClient(client, sessionId);
+	}
+	
+	public int getPort(IClient client) {
+		return transportManager.getValue(client);
+	}
 
 	public int getSession(IClient client) {
 		return sessionManager.getSession(client);
 	}
-
-	public boolean isConnectionOpen(DatagramPacket packet) {
-		
-		return false;
-	}
 	
-	public void openConnection() {
-		
+	public IClient getCurrentClient() {
+		return currentClientService.getClient();
 	}
 	
 	private PDU createPDU(IClient client, String message) {
 		return new NetworkPDUDecorator(getIpAddress(client), new TransportPDUDecorator(getPort(client),
-				new SessionPDUDecorator(new PresentationPDUDecorator(new ApplicationPDUDecorator(new PDU(message))))));
+				new SessionPDUDecorator(getSession(client), new PresentationPDUDecorator(new ApplicationPDUDecorator(new PDU(message))))));
 	}
 
 	public DatagramPacket createDatagramPacket(IClient client, String message) {
 		PDU pdu = createPDU(client, message);
 		byte[] data = pdu.getEnhancedData();
 		int length = data.length;
-
-		return new DatagramPacket(data, length, getIpAddress(client), getPort(client));
+		InetAddress ipAddress;
+		try {
+			ipAddress = InetAddress.getByName(getIpAddress(client));
+		} catch (UnknownHostException e) {
+			ipAddress = InetAddress.getLoopbackAddress();
+		}
+		
+		return new DatagramPacket(data, length, ipAddress, getPort(client));
 	}
 	
-	public void readDatagramPacket(IClient client, DatagramPacket packet, IApplicationMessageHandler handler) {
-		String message = new String(packet.getData());
-		PDU pdu = createPDU(client, message);
-		byte[] data = pdu.getInnerData();
+	public void readDatagramPacket(DatagramPacket packet, 
+			IDataReceivedHandler applicationHandler, IAnswerHandler sender) {
+		
+		NetworkPDUDecorator network = new NetworkPDUDecorator(new PDU(packet.getData())); 
+		if (networkManager.handleDataReceived(packet, network.getInnerData(), sender)) { return; }
 
+		TransportPDUDecorator transport = new TransportPDUDecorator(network);
+		if (transportManager.handleDataReceived(packet, transport.getInnerData(), sender)) { return; }
+		
+		SessionPDUDecorator session = new SessionPDUDecorator(transport);
+		if (sessionManager.handleDataReceived(packet, session.getInnerData(), sender)) { return; }
+		
+		PresentationPDUDecorator presentation = new PresentationPDUDecorator(session);
+		if (presentationManager.handleDataReceived(packet, presentation.getInnerData(), sender)) { return; }
+		
 		// Use handler so it is possible to decide if the message 
 		// should be handled by the application
-		handler.handleMessage(client, new String(data));
+		applicationHandler.handleDataReceived(packet, presentation.getInnerData(), sender);
 	}
 }

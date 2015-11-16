@@ -2,9 +2,6 @@ package communication;
 
 import static org.junit.Assert.*;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 import org.junit.Test;
 
 import communication.pdu.ApplicationPDUDecorator;
@@ -18,19 +15,15 @@ public class DecoratorEnhanceDataTests {
 
 	@Test
 	public void NetworkDecoratorEnhanceData() {
-		try {
-			byte[] expectedData = new byte[] { 0b01010101 };
-			InetAddress expectedAddress = InetAddress.getByName("127.0.0.1");
-			NetworkPDUDecorator decorator = new NetworkPDUDecorator(expectedAddress, new PDU(expectedData));
+		byte[] expectedData = new byte[] { 0b01010101 };
+		String expectedAddress = "127.0.0.1";
+		NetworkPDUDecorator decorator = new NetworkPDUDecorator(expectedAddress, new PDU(expectedData));
 
-			byte[] data = decorator.getEnhancedData();
-			assertArrayEquals(expectedData, data);
+		byte[] data = decorator.getEnhancedData();
+		assertArrayEquals(expectedData, data);
 
-			InetAddress actualAddress = decorator.getIpAddress();
-			assertEquals(expectedAddress, actualAddress);
-		} catch (UnknownHostException e) {
-			fail();
-		}
+		String actualAddress = decorator.getIpAddress();
+		assertEquals(expectedAddress, actualAddress);
 	}
 
 	@Test
@@ -90,25 +83,22 @@ public class DecoratorEnhanceDataTests {
 
 	@Test
 	public void CombinedDecoratorEnhanceDataTest() {
-		try {
-			byte[] data = new byte[] { 0b01010101 };
-			InetAddress address = InetAddress.getByName("127.0.0.1");
-			int port = 77;
+		byte[] data = new byte[] { 0b01010101 };
+		String address = "127.0.0.1";
+		int port = 77;
 
-			NetworkPDUDecorator combinedDecorator = new NetworkPDUDecorator(address, new TransportPDUDecorator(port,
-					new SessionPDUDecorator(new PresentationPDUDecorator(new ApplicationPDUDecorator(new PDU(data))))));
+		NetworkPDUDecorator combinedDecorator = new NetworkPDUDecorator(address, new TransportPDUDecorator(port,
+				new SessionPDUDecorator(new PresentationPDUDecorator(new ApplicationPDUDecorator(new PDU(data))))));
 
-			byte[] sessionFlags = new byte[] { 0b00000000 };
-			byte[] sessionId = new byte[] { 0b00000000 };
-			byte[] presentationFlags = new byte[] { 0b00000000 };
-			byte[] applicationFlags = new byte[] { 0b00000000 };
-			byte[] expectedData = new byte[] { sessionFlags[0], sessionId[0], presentationFlags[0], applicationFlags[0], data[0] };
-			
-			byte[] actualData = combinedDecorator.getEnhancedData();
+		byte[] sessionFlags = new byte[] { 0b00000000 };
+		byte[] sessionId = new byte[] { 0b00000000 };
+		byte[] presentationFlags = new byte[] { 0b00000000 };
+		byte[] applicationFlags = new byte[] { 0b00000000 };
+		byte[] expectedData = new byte[] { sessionFlags[0], sessionId[0], presentationFlags[0], applicationFlags[0],
+				data[0] };
 
-			assertArrayEquals(expectedData, actualData);
-		} catch (UnknownHostException e) {
-			fail();
-		}
+		byte[] actualData = combinedDecorator.getEnhancedData();
+
+		assertArrayEquals(expectedData, actualData);
 	}
 }

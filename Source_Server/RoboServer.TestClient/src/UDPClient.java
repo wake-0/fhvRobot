@@ -2,34 +2,35 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 
 import com.google.inject.Inject;
 
 import communication.IClient;
 import communication.managers.CommunicationManager;
-import communication.managers.IApplicationMessageHandler;
+import communication.managers.IDataReceivedHandler;
+import communication.managers.IAnswerHandler;
+import communication.managers.IClientManager;
 
-public class UDPClient implements Runnable, IClient, IApplicationMessageHandler {
+public class UDPClient implements Runnable, IClient, IDataReceivedHandler, IAnswerHandler, IClientManager {
 
 	private String address = "127.0.0.1";
 	//private String address = "83.212.127.13";
-	private InetAddress IPAddress;
 	private int port = 997;
 	private DatagramSocket clientSocket;
+	private int sessionId = 0b10000000;
 	
 	private CommunicationManager manager;
 	
 	@Inject
 	public UDPClient(CommunicationManager manager) {
 		try {
-			IPAddress = InetAddress.getByName(address);
 			clientSocket = new DatagramSocket();
 			
 			this.manager = manager;
 			manager.addClient(this);
-			manager.setIpAddress(this, IPAddress);
+			manager.setIpAddress(this, address);
 			manager.setPort(this, port);
+			manager.setSessionId(this, sessionId);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -55,7 +56,7 @@ public class UDPClient implements Runnable, IClient, IApplicationMessageHandler 
 				clientSocket.receive(receivePacket);
 
 				System.out.println("Receive message:" + new String(receivePacket.getData()));
-				manager.readDatagramPacket(this, receivePacket, this);
+				manager.readDatagramPacket(receivePacket, this, this);
 								
 			} catch (Exception ex) {
 
@@ -65,7 +66,50 @@ public class UDPClient implements Runnable, IClient, IApplicationMessageHandler 
 	}
 
 	@Override
-	public void handleMessage(IClient client, String message) {
-		System.out.println("Enhanced receive message:" + message);
+	public void answer(byte[] data) {
+		
+	}
+
+	@Override
+	public boolean handleDataReceived(DatagramPacket packet, byte[] data, IAnswerHandler sender) {
+		System.out.println("Enhanced receive message:" + new String(data));
+		return false;
+	}
+
+	@Override
+	public void setSessionId(int sessionId) {
+		System.out.println("new session:" + sessionId);
+	}
+
+	@Override
+	public void setIpAddress(String ipAddress) {
+	}
+
+	@Override
+	public void setPort(int port) {
+	}
+
+	@Override
+	public IClient createClient() {
+		return new IClient() {
+			
+			@Override
+			public void setSessionId(int sessionId) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void setPort(int port) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void setIpAddress(String ipAddress) {
+				// TODO Auto-generated method stub
+				
+			}
+		};
 	}
 }

@@ -2,18 +2,24 @@ package communication.pdu;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 public class SessionPDUDecorator extends PDUDecorator {
 
-	private byte[] flags;
-	private byte[] sessionId;
+	private byte[] flags = new byte[] { 0b00000000 };
+	private byte[] sessionId = new byte[] { 0b00000000 };
 	
 	public SessionPDUDecorator(PDU data) {
 		super(data);
+	}
+	
+	public SessionPDUDecorator(int sessionId, PDU data) {
+		super(data);
 		
-		flags = new byte[] { 0b00000000 };
-		sessionId = new byte[] { 0b00000000 };
+		// Integer to byte array
+		byte[] bytes = ByteBuffer.allocate(4).putInt(sessionId).array();
+		this.sessionId = new byte[] { bytes[3] };
 	}
 
 	@Override

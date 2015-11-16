@@ -1,17 +1,24 @@
 package communication.managers;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Map.Entry;
 
 import communication.IClient;
 
-public abstract class LayerManager<T> {
+public abstract class LayerManager<T> implements IDataReceivedHandler {
 
 	// fields
 	protected HashMap<IClient, T> clientMap;
+	protected IClientManager manager;
+	protected CurrentClientService currentClientService;
 	
 	// Constructor
-	public LayerManager() {
+	public LayerManager(IClientManager manager, CurrentClientService currentClientService) {
 		clientMap = new HashMap<>();
+		this.manager = manager;
+		this.currentClientService = currentClientService;
 	}
 	
 	// Methods
@@ -42,5 +49,19 @@ public abstract class LayerManager<T> {
 		} 
 	}
 	
+	protected <E> IClient getClientByValue(Map<IClient, E> map, E value) {
+		IClient client = getKeyByValue(map, value);
+		return client == null ? manager.createClient() : client;
+	}
+	
 	protected abstract T getDefaultValue();
+	
+	public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
+	    for (Entry<T, E> entry : map.entrySet()) {
+	        if (Objects.equals(value, entry.getValue())) {
+	            return entry.getKey();
+	        }
+	    }
+	    return null;
+	}
 }

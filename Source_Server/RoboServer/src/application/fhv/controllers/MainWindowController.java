@@ -2,7 +2,6 @@ package controllers;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.google.inject.Guice;
@@ -117,22 +116,15 @@ public class MainWindowController implements Initializable, IClientProvider {
 		serverThread.start();
 	}
 
-	@Override
 	public void addClient(Client client) {
 		observableClients.add(client);
 	}
 
-	@Override
 	public void removeClient(Client client) {
 		observableClients.remove(client);
 		server.removeClient(client);
 	}
 	
-	public Client getClientByIp(String ip) {
-		Optional<Client> client = observableClients.stream().filter(c -> c.getIpAddress().equals(ip)).findFirst();
-		return client.isPresent() ? client.get() : null;
-	}
-
 	public void shutdown() {
 		try {
 			server.shutdown();
@@ -141,5 +133,4 @@ public class MainWindowController implements Initializable, IClientProvider {
 			e.printStackTrace();
 		}
 	}
-
 }

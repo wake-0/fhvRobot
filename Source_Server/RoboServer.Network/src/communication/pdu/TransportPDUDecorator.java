@@ -4,6 +4,10 @@ public class TransportPDUDecorator extends PDUDecorator {
 
 	private int port;
 	
+	public TransportPDUDecorator(PDU data) {
+		super(data);
+	}
+	
 	public TransportPDUDecorator(int port, PDU data) {
 		super(data);
 		this.port = port;
