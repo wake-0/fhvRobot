@@ -1,21 +1,19 @@
 package communication.managers;
 
 import java.net.DatagramPacket;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
+import java.nio.ByteBuffer;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import communication.IClient;
+import communication.IClientConfiguration;
 
 @Singleton
-public class SessionManager extends LayerManager<Integer> {
+public class SessionManager extends LayerManager {
 
 	@Inject
-	public SessionManager(IClientManager manager, CurrentClientService currentClientService) {
+	public SessionManager(IClientManager manager, CurrentConfigurationService currentClientService) {
 		super(manager, currentClientService);
 	}
 
@@ -27,21 +25,6 @@ public class SessionManager extends LayerManager<Integer> {
 	private final byte initConnectionSession = (byte)0b00000000;
 	
 	// Methods
-	public int getSession(IClient client) {
-		return clientMap.get(client);
-	}
-	
-	public int createSession(IClient client) {
-		addClient(client);
-		
-		// Set new session id
-		int oldSession = getValue(client);
-		int newSession = createNewSessionNumber(oldSession);
-		setValueOfClient(client, newSession);
-		
-		return newSession;
-	}
-	
 	private int createNewSessionNumber(int oldSessionNumber) {
 		int newNumber = oldSessionNumber;
 		{
@@ -53,33 +36,33 @@ public class SessionManager extends LayerManager<Integer> {
 	}
 
 	@Override
-	protected Integer getDefaultValue() {
-		return -1;
-	}
-	
-	@Override
 	public boolean handleDataReceived(DatagramPacket packet, byte[] data, IAnswerHandler sender) {
 		byte flags = data[0];
 		byte sessionId = data[1];
 		boolean handled = false;
 		
-		IClient currentClient = currentClientService.getClient();
+		IClientConfiguration currentClient = currentClientService.getClient();
+		
+		// TODO: add session checking for security
 		
 		if (flags == initConnectionFlags && sessionId == initConnectionSession) {
 			
+			int newSession = createNewSessionNumber(currentClient.getSessionId());
+			byte[] bytes = ByteBuffer.allocate(4).putInt(newSession).array();
+			byte newSessionByte = bytes[3];
+			
 			// TODO: update session stuff
-			byte[] test = new byte[]{ 0b01010101 };
-			sender.answer(test);
+			byte[] answer = data;
+			answer[0] = (byte)0x00;
+			answer[1] = newSessionByte;
+			sender.answer(currentClient, answer);
 
 			// test purpose
-			currentClient.setSessionId(7);
-			clientMap.put(currentClient, 7);
+			currentClient.setSessionId(newSession);
 			
 			handled = true;
 		} 
 		
-		
-		// TODO: return true when session connect called
 		return handled;
 	}
 	

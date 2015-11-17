@@ -6,16 +6,11 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class PresentationManager extends LayerManager<String>{
+public class PresentationManager extends LayerManager {
 
 	@Inject
-	public PresentationManager(IClientManager manager, CurrentClientService currentClientService) {
+	public PresentationManager(IClientManager manager, CurrentConfigurationService currentClientService) {
 		super(manager, currentClientService);
-	}
-
-	@Override
-	protected String getDefaultValue() {
-		return "";
 	}
 
 	@Override

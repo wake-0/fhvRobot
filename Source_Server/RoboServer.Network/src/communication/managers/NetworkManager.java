@@ -1,34 +1,37 @@
 package communication.managers;
 
 import java.net.DatagramPacket;
+import java.util.List;
+import java.util.Optional;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import communication.IClient;
+import communication.IClientConfiguration;
 
 @Singleton
-public class NetworkManager extends LayerManager<String> {
+public class NetworkManager extends LayerManager {
 
 	@Inject
-	public NetworkManager(IClientManager manager, CurrentClientService currentClientService) {
+	public NetworkManager(IClientManager manager, CurrentConfigurationService currentClientService) {
 		super(manager, currentClientService);
-	}
-
-	@Override
-	protected String getDefaultValue() {
-		return "127.0.0.1";
 	}
 
 	@Override
 	public boolean handleDataReceived(DatagramPacket packet, byte[] data, IAnswerHandler sender) {
 		String ipAddress = packet.getAddress().getHostName();
 		
-		IClient client = getClientByValue(clientMap, ipAddress);
-		currentClientService.setClient(client);
+		List<IClientConfiguration> configurations = manager.getConfigurations();
+		Optional<IClientConfiguration> configuration = configurations.stream().filter(c -> c.getIpAddress().equals(ipAddress)).findFirst();
+		IClientConfiguration currentConfiguration = configuration.isPresent() ? configuration.get() : null;
 		
-		client.setIpAddress(ipAddress);
-		setValueOfClient(client, ipAddress);
+		if (currentConfiguration == null) 
+		{
+			currentConfiguration = manager.createClientConfiguration();
+			currentConfiguration.setIpAddress(ipAddress);
+		}
+		
+		currentClientService.setClient(currentConfiguration);
 		return false;
 	}
 }

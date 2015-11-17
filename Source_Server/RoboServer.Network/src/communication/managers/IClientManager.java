@@ -1,8 +1,11 @@
 package communication.managers;
 
-import communication.IClient;
+import java.util.List;
+
+import communication.IClientConfiguration;
 
 public interface IClientManager {
 
-	public IClient createClient();
+	public IClientConfiguration createClientConfiguration();
+	public List<IClientConfiguration> getConfigurations();
 }

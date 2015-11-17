@@ -5,28 +5,22 @@ import java.net.DatagramPacket;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import communication.IClient;
+import communication.IClientConfiguration;
 
 @Singleton
-public class TransportManager extends LayerManager<Integer> {
+public class TransportManager extends LayerManager {
 
 	@Inject
-	public TransportManager(IClientManager manager, CurrentClientService currentClientService) {
+	public TransportManager(IClientManager manager, CurrentConfigurationService currentClientService) {
 		super(manager, currentClientService);
-	}
-
-	@Override
-	protected Integer getDefaultValue() {
-		return -1;
 	}
 
 	@Override
 	public boolean handleDataReceived(DatagramPacket packet, byte[] data, IAnswerHandler sender) {
 		
-		IClient client = currentClientService.getClient();
+		IClientConfiguration client = currentClientService.getClient();
 		int port = packet.getPort();
 		client.setPort(port);
-		setValueOfClient(client, port);
 		
 		return false;
 	}

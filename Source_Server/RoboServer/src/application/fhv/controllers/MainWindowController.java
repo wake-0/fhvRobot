@@ -2,12 +2,15 @@ package controllers;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
+import communication.IClientConfiguration;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -122,7 +125,6 @@ public class MainWindowController implements Initializable, IClientProvider {
 
 	public void removeClient(Client client) {
 		observableClients.remove(client);
-		server.removeClient(client);
 	}
 	
 	public void shutdown() {
@@ -132,5 +134,12 @@ public class MainWindowController implements Initializable, IClientProvider {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+	
+
+	@Override
+	public List<IClientConfiguration> getClients() {
+		// TODO Auto-generated method stub
+		return new ArrayList<>(observableClients);
 	}
 }

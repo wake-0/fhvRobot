@@ -5,11 +5,13 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.List;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import communication.IClient;
+import communication.IClientConfiguration;
 import communication.managers.CommunicationManager;
 import communication.managers.IDataReceivedHandler;
 import communication.managers.IAnswerHandler;
@@ -70,7 +72,7 @@ IAnswerHandler, IClientManager {
 		try {
 			String name = new String(data);
 			
-			Client client = (Client)communicationManager.getCurrentClient();
+			Client client = (Client)communicationManager.getCurrentClientConfiguration();
 			client.setName(name);
 			client.setReceiveData(name);
 			
@@ -95,29 +97,38 @@ IAnswerHandler, IClientManager {
 		sender.send(sendPacket);
 	}	
 
-	public void removeClient(Client client) {
-		communicationManager.removeClient(client);
-	}
-	
 	public void shutdown() {
 		serverSocket.close();
 		isRunning = false;
 	}
 	
 	@Override
-	public void answer(byte[] data) {
-		InetAddress address = receivePacket.getAddress();
-		DatagramPacket answerPacket = new DatagramPacket(data, data.length, address, roboPort);
+	public void answer(IClientConfiguration configuration, byte[] data) {
+		InetAddress address;
+		try {
+			address = InetAddress.getByName(configuration.getIpAddress());
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+			address = InetAddress.getLoopbackAddress();
+		}
+		
+		int port = configuration.getPort();
+		DatagramPacket answerPacket = new DatagramPacket(data, data.length, address, port);
+		
 		sender.send(answerPacket);
 	}
 
 	
 	@Override
-	public IClient createClient() {
+	public IClientConfiguration createClientConfiguration() {
 		Client client = new Client();
-		// Add client to the right layers
 		clientProvider.addClient(client);
-		communicationManager.addClient(client);
 		return client;
+	}
+	
+
+	@Override
+	public List<IClientConfiguration> getConfigurations() {
+		return clientProvider.getClients();
 	}
 }
