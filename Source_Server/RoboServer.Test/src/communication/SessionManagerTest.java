@@ -3,11 +3,16 @@ package communication;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import communication.managers.CurrentConfigurationService;
+import communication.managers.IClientManager;
 import communication.managers.SessionManager;
+import mocks.ConfigurationMock;
 
 public class SessionManagerTest {
 
@@ -15,7 +20,17 @@ public class SessionManagerTest {
 
 	@Before
 	public void setUp() {
-		sessionManager = new SessionManager();
+		sessionManager = new SessionManager(new IClientManager() {
+			@Override
+			public List<IClientConfiguration> getConfigurations() {
+				return new ArrayList<>();
+			}
+
+			@Override
+			public IClientConfiguration createClientConfiguration() {
+				return new ConfigurationMock();
+			}
+		}, new CurrentConfigurationService());
 	}
 
 	@Test
@@ -28,7 +43,7 @@ public class SessionManagerTest {
 		assertTrue((int) newSession >= 0);
 		assertTrue((int) newSession <= 255);
 		assertNotEquals(oldSession, (int) newSession);
-		
+
 		oldSession = 77;
 		newSession = createNewSessionNumber(oldSession);
 
@@ -47,7 +62,7 @@ public class SessionManagerTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
 

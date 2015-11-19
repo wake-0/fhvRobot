@@ -4,93 +4,131 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.List;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import communication.managers.ClientType;
+import communication.IClientConfiguration;
 import communication.managers.CommunicationManager;
+import communication.managers.IDataReceivedHandler;
+import communication.managers.IAnswerHandler;
+import communication.managers.IClientManager;
 import models.Client;
-import models.ClientFactory;
+import network.receiver.INetworkReceiver;
+import network.receiver.LoggerNetworkReceiver;
+import network.sender.INetworkSender;
+import network.sender.LoggerNetworkSender;
 
 @Singleton
-public class NetworkServer implements Runnable {
+public class NetworkServer implements Runnable, IDataReceivedHandler, 
+IAnswerHandler, IClientManager {
 
 	// field which stores the clients
-	private IClientProvider clientProvider;
-	private CommunicationManager communicationManager;
-	private boolean isRunning = true;
+	private final CommunicationManager communicationManager;
+	private final INetworkSender sender;
+	private final INetworkReceiver receiver;
+	private final DatagramSocket serverSocket;
+	private final IClientProvider clientProvider;
 	
 	// server specific stuff
-	private final int port = 997;
-	private DatagramSocket serverSocket;
+	private boolean isRunning = true;
+	private final int roboPort = 997;
+	private final int receivePacketSize = 1024;
+
+	private DatagramPacket receivePacket;
 
 	// constructors
 	@Inject
-	public NetworkServer(IClientProvider clientProvider, CommunicationManager communicationManager) {
-		try {
-			this.clientProvider = clientProvider;
-			this.serverSocket = new DatagramSocket(port);
-			this.communicationManager = communicationManager;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public NetworkServer(CommunicationManager communicationManager, IClientProvider clientProvider)
+			throws SocketException {
+		this.serverSocket = new DatagramSocket(roboPort);
+		this.communicationManager = communicationManager;
+		this.clientProvider = clientProvider;
+		
+		// Added network sender and receiver which can log
+		this.sender = new LoggerNetworkSender(serverSocket);
+		this.receiver = new LoggerNetworkReceiver(serverSocket);
 	}
 
 	// methods
 	@Override
 	public void run() {
-		try {
-			byte[] receiveData = new byte[1024];
+		while (isRunning) {
+			byte[] receiveData = new byte[receivePacketSize];
+			receivePacket = new DatagramPacket(receiveData, receiveData.length);
+			receiver.receive(receivePacket);
+
+			if (serverSocket.isClosed()) { continue; }
 			
-			while(isRunning) {
-				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-				serverSocket.receive(receivePacket);
-				
-				// Check a client with the ip address does already exists
-				Client client = clientProvider.getClientByIp(receivePacket.getAddress().getHostName());
-				if (client == null) {
-					client = ClientFactory.createClient(
-							receivePacket.getAddress().getHostAddress(), 
-							receivePacket.getPort());
-					
-					clientProvider.addClient(client);	
-				}
-				
-				// Use CommunicationManager
-				communicationManager.addClient(client);
-				// Find correct type of the connected client
-				communicationManager.setClientType(client, ClientType.ROBO);
-				communicationManager.setIpAddress(client, InetAddress.getByName(client.getIpAddress()));
-				communicationManager.setPort(client, client.getPort());
-				
-				String sentence = new String(receivePacket.getData());
-				client.setReceiveData(sentence);
-				System.out.println("Message received: " + sentence);
-				client.setSendData(sentence);
-				
-				send(client);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+			communicationManager.readDatagramPacket(receivePacket, this, this);
 		}
 	}
-	
-	public void removeClient(Client client) {
-		communicationManager.removeClient(client);
+
+	@Override
+	public boolean handleDataReceived(DatagramPacket packet, byte[] data, IAnswerHandler sender) {
+		try {
+			String name = new String(data);
+			
+			Client client = (Client)communicationManager.getCurrentClientConfiguration();
+			client.setName(name);
+			client.setReceiveData(name);
+			
+			// TODO: handle other message
+
+			// Only for test purposes
+			client.setSendData(name);
+			send(client);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	public void send(Client client) throws IOException {
-		if (client == null) { return; }
-		
-		DatagramPacket sendPacket = communicationManager.createDatagramPacket(client, client.getSendData()); 
-		serverSocket.send(sendPacket);
-		
-		System.out.println("Message send: " + client.getSendData());
-	}
-	
+		if (client == null) {
+			return;
+		}
+
+		DatagramPacket sendPacket = communicationManager.createDatagramPacket(client, client.getSendData());
+		sender.send(sendPacket);
+	}	
+
 	public void shutdown() {
 		serverSocket.close();
 		isRunning = false;
+	}
+	
+	@Override
+	public void answer(IClientConfiguration configuration, byte[] data) {
+		InetAddress address;
+		try {
+			address = InetAddress.getByName(configuration.getIpAddress());
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+			address = InetAddress.getLoopbackAddress();
+		}
+		
+		int port = configuration.getPort();
+		DatagramPacket answerPacket = new DatagramPacket(data, data.length, address, port);
+		
+		sender.send(answerPacket);
+	}
+
+	
+	@Override
+	public IClientConfiguration createClientConfiguration() {
+		Client client = new Client();
+		clientProvider.addClient(client);
+		return client;
+	}
+	
+
+	@Override
+	public List<IClientConfiguration> getConfigurations() {
+		return clientProvider.getClients();
 	}
 }

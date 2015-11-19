@@ -1,11 +1,12 @@
 package models;
 
+import communication.IClientConfiguration;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Client implements Comparable<Client> {
+public class Client implements Comparable<Client>, IClientConfiguration {
 
 	// fields
 	private IntegerProperty id;
@@ -14,6 +15,7 @@ public class Client implements Comparable<Client> {
     private StringProperty receiveData;
     private StringProperty ipAddress;
     private IntegerProperty port;
+    private IntegerProperty sessionId;
     
     // constructor
     public Client() {
@@ -23,6 +25,7 @@ public class Client implements Comparable<Client> {
     	receiveData = new SimpleStringProperty();
     	ipAddress = new SimpleStringProperty();
     	port = new SimpleIntegerProperty();
+    	sessionId = new SimpleIntegerProperty();
     	
     	setName("Anonymous");
     }
@@ -51,6 +54,10 @@ public class Client implements Comparable<Client> {
     public final int getPort() {return port.get();}
     public final void setPort(int value){port.set(value);}
     public IntegerProperty PortProperty() {return port;}
+    
+    public final int getSessionId() {return sessionId.get();}
+    public final void setSessionId(int value){sessionId.set(value);}
+    public IntegerProperty sessionIdProperty() {return sessionId;}
     
 	@Override
 	public int compareTo(Client o) {
