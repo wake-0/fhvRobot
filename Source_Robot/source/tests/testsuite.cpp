@@ -12,14 +12,17 @@
 #include <assert.h>
 #include "../../include/ConnectionLayer.h"
 #include "../../include/mocks/TransportMock.h"
+#include "../../include/ConnectionAPI.h"
 
 //#define TEST_ROBOT_MOTOR
 //#define TEST_UDP_CONNECTION
 #define TEST_LAYERS
+#define TEST_CONNECTION_API
 
 bool test_class_Robot(void);
 bool test_class_UdpConnection(void);
 bool test_classes_layers(void);
+bool test_connection_api(void);
 
 using namespace std;
 using namespace FhvRobot;
@@ -53,6 +56,13 @@ int main(void)
 	tests++;
 #endif
 
+#ifdef TEST_CONNECTION_API
+	printf("Running Test: Connection API\n");
+
+	tests_ok += (test_connection_api()) ? 1 : 0;
+	tests++;
+#endif
+
 	printf("Testsuite done.\n");
 	printf("---------------\n");
 	printf("Tests OK: %d\n", tests_ok);
@@ -61,18 +71,57 @@ int main(void)
 	return 0;
 }
 
+bool test_connection_api() {
+	// Instantiate connection layer
+	ConnectionAPI connection(NULL);
+	UdpConnection udp;
+	SessionLayer sess(&udp);
+	PresentationLayer pres(&sess);
+	ApplicationLayer app(&pres);
+	udp.SetCallback(&sess);
+	sess.SetCallback(&pres);
+	pres.SetCallback(&app);
+	app.SetCallback(&connection);
+
+	// Fail tests
+	bool res;
+	res = connection.Connect("Nico", "125", 111);
+	if (res == true) {
+		return false;
+	}
+	res = connection.Connect("Nico", "127.0.0.1", 111);
+	if (res == true) {
+		return false;
+	}
+
+	// Succeed test
+	res = connection.Connect("Nico", "83.212.127.13", 997);
+	if (res == false) {
+		return false;
+	}
+
+	return true;
+}
+
 bool test_classes_layers() {
 	// Instantiate the protocol layers and a mock for transport
-	TransportMock mock(NULL, NULL);
+	TransportMock mock;
+	mock.Send("Test", 4);
 
-	char test[] = "Test";
-	mock.Send(test, 4);
+	SessionLayer session(&mock);
+	session.Send("Test", 4);
+
+	PresentationLayer presentation(&session);
+	presentation.Send("Test", 4);
+
+	ApplicationLayer application(&presentation);
+	application.Send("Test", 4);
 
 	return true;
 }
 
 bool test_class_UdpConnection() {
-	UdpConnection connection(NULL, NULL);
+	UdpConnection connection;
 
 	printf("Trying to connect to invalid hostname (1337)\n");
 	bool res = connection.Connect("127.0", 1337); // Call should fail

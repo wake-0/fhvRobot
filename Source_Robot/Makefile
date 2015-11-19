@@ -25,7 +25,8 @@ DEPS = \
  source/dmcc_lib/dmcc.h \
  include/Robot.h \
  include/ConnectionLayer.h \
- include/mocks/TransportMock.h
+ include/mocks/TransportMock.h \
+ include/ConnectionAPI.h
 
 # Compiler object files 
 COBJ = \
@@ -34,12 +35,14 @@ COBJ = \
 CPPOBJ = \
  $(OBJDIR)/impl/Robot.o \
  $(OBJDIR)/impl/ConnectionLayer.o \
- $(OBJDIR)/tests/TransportMock.o
+ $(OBJDIR)/tests/TransportMock.o \
+ $(OBJDIR)/impl/ConnectionAPI.o
  
 CPPSRC = \
  ./source/main.cpp \
  ./source/impl/Robot.cpp \
- ./source/impl/ConnectionLayer.cpp
+ ./source/impl/ConnectionLayer.cpp \
+ ./source/impl/ConnectionAPI.cpp
 
 # gcc binaries to use
 CC = "C:\Linaro-gcc\bin\arm-linux-gnueabihf-gcc.exe"
@@ -61,6 +64,7 @@ CFLAGS += -g
 CFLAGS += -I.
 CFLAGS += -I$(CINCLUDE)
 CFLAGS += $(CDEFINE)
+CFLAGS += -pthread
 
 # for a better output
 MSG_EMPTYLINE = ----------------------------------    
@@ -69,14 +73,14 @@ MSG_LINKING = ---LINK---
 MSG_SUCCESS = ---SUCCESS--- 
 
 # Main project
-all: $(PROJECT) $(CPPSRC) $(DEPS)
+all: $(PROJECT) $(CPPSRC) $(DEPS) ./source/impl/* ./source/tests/testsuite.cpp
 
 # Linker call
 $(PROJECT): $(COBJ)
 	$(CXX) -c ./source/main.cpp -o $(OBJDIR)/main.o -Wall
 	$(CXX) -c ./source/impl/Robot.cpp -o $(OBJDIR)/impl/Robot.o -Wall
 	$(CXX) -c ./source/impl/ConnectionLayer.cpp -o $(OBJDIR)/impl/ConnectionLayer.o -Wall
-
+	$(CXX) -c ./source/impl/ConnectionAPI.cpp -o $(OBJDIR)/impl/ConnectionAPI.o -Wall
 	$(CXX) -c ./source/impl/mocks/TransportMock.cpp -o $(OBJDIR)/tests/TransportMock.o -Wall
 	$(CXX) -c ./source/tests/testsuite.cpp -o $(OBJDIR)/tests/testsuite.o -Wall
 	

@@ -8,48 +8,65 @@
 #ifndef INCLUDE_CONNECTIONLAYER_H_
 #define INCLUDE_CONNECTIONLAYER_H_
 
-#include "stdlib.h"
+#include <stdlib.h>
+#include <typeinfo>
+#include <memory>
+#include <string.h>
+#include <pthread.h>
+#include "Debugger.h"
 
 using namespace std;
 
 namespace FhvRobotProtocolStack {
 
+/* Abstract definitions of Protocol Layers */
+
 class ProtocolLayerCallback {
 public:
 	ProtocolLayerCallback() { }
 	virtual ~ProtocolLayerCallback() { }
-	virtual void MessageReceived(char* msg, unsigned int len) = 0;
+	virtual void MessageReceived(const char* msg, unsigned int len) = 0;
 };
 
 class ProtocolLayer : public ProtocolLayerCallback {
-private:
+protected:
 	ProtocolLayerCallback* callback;
 	ProtocolLayer* lowerLayer;
 
-protected:
-	virtual void ComposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int* outLen) = 0;
+	virtual int GetMessageDecorationLength(const char* inMsg, unsigned int inLen) { return 0; }
+
+	virtual void ComposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int outLen) = 0;
 
 	/**
 	 *  \brief This function decomposes a received message and returns true if the message is a valid message acc.
 	 *  	   to the defined protocol, false otherwise. If the function returns false the outMsg and outLen must
 	 *  	   not be used by the caller.
 	 */
-	virtual bool DecomposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int* outLen) = 0;
+	virtual bool DecomposeMessage(const char* inMsg, unsigned int inLen, char** outMsg, unsigned int* outLen) = 0;
+
 public:
-	ProtocolLayer(ProtocolLayer* lower, ProtocolLayerCallback* cb) { lowerLayer = lower; callback = cb; }
+	ProtocolLayer(ProtocolLayer* lower) { lowerLayer = lower; callback = NULL; }
 	virtual ~ProtocolLayer() { lowerLayer = 0; callback = 0; }
+	void SetCallback(ProtocolLayerCallback* cb) { callback = cb; }
 
 	virtual bool Send(const char* msg, unsigned int len) {
-		char* outMsg = NULL;
-		unsigned int outLen = 0;
-		ComposeMessage(msg, len, outMsg, &outLen);
-		return lowerLayer->Send(outMsg, outLen);
+		Debugger(VERBOSE) << "Sending message in " << typeid(this).name() << "\n";
+		unsigned int outLen = GetMessageDecorationLength(msg, len) + len;
+		char* outMsg = (char*) malloc(sizeof(char) * (outLen));
+		Debugger(VERBOSE) << "Composing message\n";
+		ComposeMessage(msg, len, outMsg, outLen);
+		Debugger(VERBOSE) << "Message composed correctly\n";
+
+		bool result = lowerLayer->Send(outMsg, outLen);
+
+		free (outMsg);
+		return result;
 	}
 
-	virtual void MessageReceived(char* msg, unsigned int len) {
+	virtual void MessageReceived(const char* msg, unsigned int len) {
 		char* outMsg = NULL;
 		unsigned int outLen = 0;
-		bool result = DecomposeMessage(msg, len, outMsg, &outLen);
+		bool result = DecomposeMessage(msg, len, &outMsg, &outLen);
 		if (result) {
 			callback->MessageReceived(outMsg, outLen);
 		}
@@ -60,18 +77,18 @@ public:
 	}
 };
 
+/* Transport Layer (inc. concrete class definitions) */
 class TransportLayer : public ProtocolLayer {
 private:
 
 public:
-	TransportLayer(ProtocolLayer* lower, ProtocolLayerCallback* cb) : ProtocolLayer(lower, cb) { }
+	TransportLayer() : ProtocolLayer(0) { }
 	virtual ~TransportLayer() { }
-	void ComposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int* outLen) {
-		outMsg = (char*) inMsg;
-		*outLen = inLen;
+	void ComposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int outLen) {
+		memcpy(outMsg, inMsg, inLen);
 	}
-	bool DecomposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int* outLen) {
-		outMsg = (char*) inMsg;
+	bool DecomposeMessage(const char* inMsg, unsigned int inLen, char** outMsg, unsigned int* outLen) {
+		*outMsg = (char*) inMsg;
 		*outLen = inLen;
 		return true;
 	}
@@ -80,13 +97,69 @@ public:
 class UdpConnection : public TransportLayer {
 private:
 	int sock;
+	struct sockaddr_in* addr;
+    pthread_t receiveThread;
+
+    void* ReceiveLoop();
+    static void *ReceiveLoopHelper(void* context)
+    {
+        return ((UdpConnection*)context)->ReceiveLoop();
+    }
 public:
-	UdpConnection(ProtocolLayer* lower, ProtocolLayerCallback* cb) : TransportLayer(lower, cb) { sock = 0; }
+	UdpConnection() : TransportLayer() { sock = 0; addr = 0; receiveThread = 0; }
 	virtual ~UdpConnection();
 
 	bool Connect(const char* address, int port);
 	bool Send(const char* msg, unsigned int len);
 };
+
+
+/* Session Layer */
+
+class SessionLayer : public ProtocolLayer {
+private:
+	int sessId;
+    pthread_mutex_t mutex;
+    pthread_cond_t condition_var;
+public:
+	SessionLayer(ProtocolLayer* lower);
+	virtual ~SessionLayer() { }
+	int GetMessageDecorationLength(const char* inMsg, unsigned int inLen);
+	void ComposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int outLen);
+	bool DecomposeMessage(const char* inMsg, unsigned int inLen, char** outMsg, unsigned int* outLen);
+	bool Connect(const char* address, int port);
+	void MessageReceived(const char* msg, unsigned int len);
+};
+
+/* Presentation Layer */
+
+class PresentationLayer : public ProtocolLayer {
+private:
+
+public:
+	PresentationLayer(ProtocolLayer* lower) : ProtocolLayer(lower) {  }
+	virtual ~PresentationLayer() { }
+	int GetMessageDecorationLength(const char* inMsg, unsigned int inLen);
+	void ComposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int outLen);
+	bool DecomposeMessage(const char* inMsg, unsigned int inLen, char** outMsg, unsigned int* outLen);
+};
+
+/* Presentation Layer */
+
+/* Presentation Layer */
+
+class ApplicationLayer : public ProtocolLayer {
+private:
+
+public:
+	ApplicationLayer(ProtocolLayer* lower) : ProtocolLayer(lower) {  }
+	virtual ~ApplicationLayer() { }
+	int GetMessageDecorationLength(const char* inMsg, unsigned int inLen);
+	void ComposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int outLen);
+	bool DecomposeMessage(const char* inMsg, unsigned int inLen, char** outMsg, unsigned int* outLen);
+};
+
+/* Presentation Layer */
 
 } /* namespace ConnectionLayer */
 
