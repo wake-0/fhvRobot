@@ -31,3 +31,11 @@ bool TransportMock::Send(const char* msg, unsigned int len) {
 
 	return true;
 }
+
+bool TransportMock::TestMessageReceive(const char* testMsg, unsigned int len) {
+	if (callback != NULL) {
+		callback->MessageReceived(testMsg, len);
+		return true;
+	}
+	return false;
+}
