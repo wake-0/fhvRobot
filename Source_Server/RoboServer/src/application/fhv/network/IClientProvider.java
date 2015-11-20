@@ -6,8 +6,11 @@ import communication.IClientConfiguration;
 import models.Client;
 
 public interface IClientProvider {
-
-	public void addClient(Client client);
-	public void removeClient(Client client);
-	public List<IClientConfiguration> getClients();
+	public void addRoboClient(Client client);
+	public void removeRoboClient(Client client);
+	public List<IClientConfiguration> getRoboClients();
+	
+	public void addAppClient(Client client);
+	public void removeAppClient(Client client);
+	public List<IClientConfiguration> getAppClients();
 }

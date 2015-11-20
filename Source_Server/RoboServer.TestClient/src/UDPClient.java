@@ -5,8 +5,6 @@ import java.net.DatagramSocket;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.inject.Inject;
-
 import communication.IClientConfiguration;
 import communication.managers.CommunicationManager;
 import communication.managers.IDataReceivedHandler;
@@ -24,11 +22,10 @@ public class UDPClient implements Runnable, IDataReceivedHandler, IAnswerHandler
 	private CommunicationManager manager;
 	private IClientConfiguration configuration;
 	
-	@Inject
-	public UDPClient(CommunicationManager manager) {
+	public UDPClient() {
 		try {
+			manager = new CommunicationManager(this);
 			clientSocket = new DatagramSocket();
-			this.manager = manager;
 			
 			this.configuration = new ClientConfiguration();
 			configuration.setIpAddress(address);

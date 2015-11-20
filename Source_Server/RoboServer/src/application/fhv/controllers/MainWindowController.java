@@ -1,13 +1,12 @@
 package controllers;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 import communication.IClientConfiguration;
@@ -29,9 +28,12 @@ public class MainWindowController implements Initializable, IClientProvider {
 
 	// fields
 	private NetworkServer server;
-	private Client selectedClient;
-	private ObservableList<Client> observableClients;
-	private Thread serverThread;
+	
+	private Client selectedRoboClient;
+	private ObservableList<Client> observableRoboClients;
+	
+	private Client selectedAppClient;
+	private ObservableList<Client> observableAppClients;
 	
 	// FXML fields
 	@FXML
@@ -55,10 +57,8 @@ public class MainWindowController implements Initializable, IClientProvider {
 	@FXML
 	private void handleKillClick() {
 		System.out.println("button kill clicked.");
-		if (selectedClient != null) {
-			//tvClients.getItems().remove(tvClients.getSelectionModel().getSelectedItem());
-			removeClient(selectedClient);
-			
+		if (selectedRoboClient != null) {
+			removeRoboClient(selectedRoboClient);
 		}
 	}
 
@@ -70,9 +70,9 @@ public class MainWindowController implements Initializable, IClientProvider {
 	@FXML
 	private void handleSendClick() {
 		System.out.println("button send clicked.");
-		if (selectedClient != null) {
+		if (selectedRoboClient != null) {
 			try {
-				server.send(selectedClient);
+				server.sendToRobo(selectedRoboClient);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -86,14 +86,15 @@ public class MainWindowController implements Initializable, IClientProvider {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		observableClients = FXCollections.observableArrayList();
+		observableRoboClients = FXCollections.observableArrayList();
+		observableAppClients = FXCollections.observableArrayList();
 		
 		// Initialize the person table with the two columns.
 		tcId.setCellValueFactory(cellData -> cellData.getValue().IdProperty());
         tcName.setCellValueFactory(cellData -> cellData.getValue().NameProperty());
         tcIp.setCellValueFactory(cellData -> cellData.getValue().IpAddressProperty());
 		
-		tvClients.setItems(observableClients);
+		tvClients.setItems(observableRoboClients);
 		tvClients.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Client>() {
 		    @Override
 		    public void changed(ObservableValue<? extends Client> observable, Client oldValue, Client newValue) {
@@ -109,37 +110,46 @@ public class MainWindowController implements Initializable, IClientProvider {
 		    		tfReceive.textProperty().unbind();
 		    	}
 		    	
-		    	selectedClient = newValue;
+		    	selectedRoboClient = newValue;
 		    }
 		});
 		
-		Injector injector = Guice.createInjector(new AppInjector(this));
-		this.server = injector.getInstance(NetworkServer.class);
-		serverThread = new Thread(server);
-		serverThread.start();
-	}
-
-	public void addClient(Client client) {
-		observableClients.add(client);
-	}
-
-	public void removeClient(Client client) {
-		observableClients.remove(client);
-	}
-	
-	public void shutdown() {
 		try {
-			server.shutdown();
-			serverThread.join();
-		} catch (InterruptedException e) {
+			this.server = new NetworkServer(this);
+		} catch (SocketException e) {
 			e.printStackTrace();
 		}
 	}
+
+	public void shutdown() {
+		server.shutdown();
+	}
 	
+	public void addRoboClient(Client client) {
+		observableRoboClients.add(client);
+	}
+
+	public void removeRoboClient(Client client) {
+		observableRoboClients.remove(client);
+	}
 
 	@Override
-	public List<IClientConfiguration> getClients() {
-		// TODO Auto-generated method stub
-		return new ArrayList<>(observableClients);
+	public List<IClientConfiguration> getRoboClients() {
+		return new ArrayList<>(observableRoboClients);
+	}
+
+	@Override
+	public void addAppClient(Client client) {
+		observableAppClients.add(client);
+	}
+
+	@Override
+	public void removeAppClient(Client client) {
+		observableAppClients.remove(client);
+	}
+
+	@Override
+	public List<IClientConfiguration> getAppClients() {
+		return new ArrayList<>(observableAppClients);
 	}
 }

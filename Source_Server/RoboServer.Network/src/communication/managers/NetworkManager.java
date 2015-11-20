@@ -9,10 +9,8 @@ import com.google.inject.Singleton;
 
 import communication.IClientConfiguration;
 
-@Singleton
 public class NetworkManager extends LayerManager {
 
-	@Inject
 	public NetworkManager(IClientManager manager, CurrentConfigurationService currentClientService) {
 		super(manager, currentClientService);
 	}

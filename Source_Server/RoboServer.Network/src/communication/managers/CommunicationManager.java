@@ -4,9 +4,6 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
 import communication.IClientConfiguration;
 import communication.pdu.ApplicationPDUDecorator;
 import communication.pdu.NetworkPDUDecorator;
@@ -15,7 +12,6 @@ import communication.pdu.PresentationPDUDecorator;
 import communication.pdu.SessionPDUDecorator;
 import communication.pdu.TransportPDUDecorator;
 
-@Singleton
 public class CommunicationManager {
 
 	private final NetworkManager networkManager;
@@ -24,15 +20,14 @@ public class CommunicationManager {
 	private final PresentationManager presentationManager;
 	private final CurrentConfigurationService currentConfigurationService;
 	
-	@Inject
-	public CommunicationManager(NetworkManager networkManager, TransportManager transportManager,
-			SessionManager sessionManager, PresentationManager presentationManager,
-			CurrentConfigurationService currentConfigurationService) {
-		this.networkManager = networkManager;
-		this.transportManager = transportManager;
-		this.sessionManager = sessionManager;
-		this.presentationManager = presentationManager;
-		this.currentConfigurationService = currentConfigurationService;
+	public CommunicationManager(IClientManager clientManager) {
+		
+		this.currentConfigurationService = new CurrentConfigurationService();
+		
+		this.networkManager = new NetworkManager(clientManager, currentConfigurationService);
+		this.transportManager = new TransportManager(clientManager, currentConfigurationService);
+		this.sessionManager = new SessionManager(clientManager, currentConfigurationService);
+		this.presentationManager = new PresentationManager(clientManager, currentConfigurationService);
 	}
 
 	private PDU createPDU(IClientConfiguration configuration, String message) {
@@ -73,8 +68,7 @@ public class CommunicationManager {
 		PresentationPDUDecorator presentation = new PresentationPDUDecorator(session);
 		if (presentationManager.handleDataReceived(packet, presentation.getData(), answerHandler)) { return; }
 		
-		// Use handler so it is possible to decide if the message 
-		// should be handled by the application
+		// Use handler so it is possible to decide if the message should be handled by the application
 		applicationHandler.handleDataReceived(packet, presentation.getInnerData(), answerHandler);
 	}
 }

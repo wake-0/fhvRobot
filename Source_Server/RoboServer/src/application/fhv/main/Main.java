@@ -1,6 +1,5 @@
 package main;
 
-import java.io.IOException;
 import java.net.URL;
 
 import controllers.MainWindowController;
@@ -9,8 +8,6 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 
 public class Main extends Application {

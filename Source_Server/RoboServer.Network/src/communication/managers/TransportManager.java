@@ -7,10 +7,8 @@ import com.google.inject.Singleton;
 
 import communication.IClientConfiguration;
 
-@Singleton
 public class TransportManager extends LayerManager {
 
-	@Inject
 	public TransportManager(IClientManager manager, CurrentConfigurationService currentClientService) {
 		super(manager, currentClientService);
 	}
