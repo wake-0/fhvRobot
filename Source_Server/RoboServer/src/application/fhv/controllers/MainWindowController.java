@@ -71,11 +71,7 @@ public class MainWindowController implements Initializable, IClientProvider {
 	private void handleSendClick() {
 		System.out.println("button send clicked.");
 		if (selectedRoboClient != null) {
-			try {
-				server.sendToRobo(selectedRoboClient);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			server.sendToRobo(selectedRoboClient);
 		}
 	}
 	
