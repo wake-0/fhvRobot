@@ -16,10 +16,6 @@ public class TransportPDU extends PDUDecorator {
 		super(data);
 	}
 
-	public TransportPDU(byte[] data) {
-		super(data);
-	}
-
 	// Methods
 	@Override
 	protected byte[] getEnhanceDataCore(PDU pdu) {

@@ -23,23 +23,15 @@ public abstract class PDUDecorator extends PDU {
 		header = new byte[] {};
 	}
 
-	public PDUDecorator(byte[] data) {
-		super(data);
-
-		pdu = new PDU(data);
-		header = new byte[] {};
-	}
-
 	// Methods
 	@Override
-
 	public byte[] getEnhancedData() {
 		return getEnhanceDataCore(pdu);
 	}
 
 	@Override
 	public byte[] getInnerData() {
-		return getInnerDataCore(pdu);
+		return pdu.getInnerData();
 	}
 
 	public int getHeaderSize() {

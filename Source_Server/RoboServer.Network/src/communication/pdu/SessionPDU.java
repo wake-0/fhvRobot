@@ -27,11 +27,6 @@ public class SessionPDU extends PDUDecorator {
 		header = new byte[] { this.flags, this.sessionId };
 	}
 
-	public SessionPDU(byte[] data) {
-		super(data);
-		header = new byte[] { this.flags, this.sessionId };
-	}
-
 	public SessionPDU(int sessionId, PDU data) {
 		super(data);
 
@@ -51,7 +46,6 @@ public class SessionPDU extends PDUDecorator {
 	@Override
 	protected byte[] getEnhanceDataCore(PDU packet) {
 		try {
-
 			// Add flag and session bytes
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			outputStream.write(header);

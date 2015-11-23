@@ -11,7 +11,6 @@ package communication.pdu;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 
 import communication.utils.ByteParser;
 
@@ -27,13 +26,7 @@ public class PresentationPDU extends PDUDecorator {
 		header = new byte[] { flags };
 	}
 
-	public PresentationPDU(byte[] data) {
-		super(data);
-
-		header = new byte[] { flags };
-	}
-
-	public PresentationPDU(PDU data, int flags) {
+	public PresentationPDU(int flags, PDU data) {
 		super(data);
 
 		this.flags = ByteParser.intToByte(flags);
@@ -62,9 +55,7 @@ public class PresentationPDU extends PDUDecorator {
 
 	@Override
 	protected byte[] getInnerDataCore(PDU packet) {
-		// Remove the flag bytes
-		byte[] data = packet.getInnerData();
-		return Arrays.copyOfRange(data, header.length, data.length);
+		return packet.getInnerData();
 	}
 
 }

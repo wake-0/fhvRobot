@@ -38,8 +38,8 @@ public class SessionManager extends LayerManager<SessionPDU> {
 		boolean handled = false;
 
 		byte[] data = pdu.getData();
-		byte flags = data[0];
-		byte sessionId = data[1];
+		byte flags = pdu.getFlags();
+		int sessionId = pdu.getSessionId();
 
 		// TODO: e.g. add session checking for security
 
@@ -52,7 +52,7 @@ public class SessionManager extends LayerManager<SessionPDU> {
 			currentConfiguration.setSessionId(newIntSession);
 
 			// Create answer pdu
-			byte[] answer = data;
+			byte[] answer = pdu.getEnhancedData();
 			answer[0] = defaultConnectionFlags;
 			answer[1] = newByteSession;
 

@@ -16,10 +16,6 @@ public class NetworkPDU extends PDUDecorator {
 		super(data);
 	}
 
-	public NetworkPDU(byte[] data) {
-		super(data);
-	}
-
 	// Methods
 	@Override
 	protected byte[] getEnhanceDataCore(PDU pdu) {

@@ -11,7 +11,6 @@ package communication.pdu;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 
 import communication.utils.ByteParser;
 
@@ -29,18 +28,12 @@ public class ApplicationPDU extends PDUDecorator {
 		header = new byte[] { flags, commands, length };
 	}
 
-	public ApplicationPDU(byte[] data) {
-		super(data);
-
-		header = new byte[] { flags, commands, length };
-	}
-
-	public ApplicationPDU(byte[] payload, int command) {
-		super(payload);
+	public ApplicationPDU(int command, PDU pdu) {
+		super(pdu);
 
 		// TODO: check size is allowed
 		commands = ByteParser.intToByte(command);
-		length = ByteParser.intToByte(payload.length);
+		length = ByteParser.intToByte(pdu.data.length);
 
 		header = new byte[] { flags, commands, length };
 	}
@@ -59,7 +52,7 @@ public class ApplicationPDU extends PDUDecorator {
 	}
 
 	public byte[] getPayload() {
-		return Arrays.copyOfRange(data, header.length, data.length);
+		return data;
 	}
 
 	@Override
@@ -79,6 +72,6 @@ public class ApplicationPDU extends PDUDecorator {
 
 	@Override
 	protected byte[] getInnerDataCore(PDU packet) {
-		return Arrays.copyOfRange(packet.getInnerData(), header.length, data.length);
+		return packet.getInnerData();
 	}
 }
