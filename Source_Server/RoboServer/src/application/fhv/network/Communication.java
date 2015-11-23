@@ -17,6 +17,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import communication.IConfiguration;
+import communication.commands.Commands;
 import communication.managers.CommunicationManager;
 import communication.managers.IAnswerHandler;
 import communication.managers.IDataReceivedHandler;
@@ -64,18 +65,26 @@ public class Communication implements Runnable, IDataReceivedHandler<Application
 	public boolean handleDataReceived(DatagramPacket packet, ApplicationPDU pdu, IAnswerHandler sender) {
 		try {
 			// TODO: check length and real payload are equal
-			byte[] payload = pdu.getPayload();
-			String name = new String(payload);
 
 			Client client = (Client) manager.getCurrentConfiguration();
-			client.setName(name);
-			client.setReceiveData(name);
+			byte[] payload = pdu.getPayload();
+
+			// This means register name
+			if (pdu.getCommand() == Commands.CHANGE_NAME) {
+				String name = new String(payload);
+				client.setName(name);
+
+				// Create answer pdu
+				DatagramPacket datagram = manager.createDatagramPacket(client, 1, new byte[] { 1 });
+				sender.answer(client, datagram);
+			} else {
+				// Only for test purposes
+				client.setSendData(new String(payload));
+				sendToClient(client);
+			}
 
 			// TODO: handle other message
-
-			// Only for test purposes
-			client.setSendData(name);
-			sendToClient(client);
+			client.setReceiveData(new String(payload));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -110,5 +119,11 @@ public class Communication implements Runnable, IDataReceivedHandler<Application
 	public void stop() {
 		isRunning = false;
 		socket.close();
+	}
+
+	@Override
+	public void answer(IConfiguration configuration, DatagramPacket datagram) {
+		// TODO: compare configuration and datagram
+		sender.send(datagram);
 	}
 }

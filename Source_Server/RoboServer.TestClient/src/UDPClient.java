@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import communication.IConfiguration;
+import communication.commands.Commands;
 import communication.managers.CommunicationManager;
 import communication.managers.IAnswerHandler;
 import communication.managers.IConfigurationManager;
@@ -34,7 +35,7 @@ public class UDPClient
 	private CommunicationManager manager;
 	private IConfiguration configuration;
 
-	private boolean isConnectionOpened = false;
+	private int flow = 0;
 
 	public UDPClient() {
 		try {
@@ -62,10 +63,12 @@ public class UDPClient
 				System.out.println("Send message:" + sentence);
 				DatagramPacket sendPacket;
 
-				if (!isConnectionOpened) {
+				if (flow == 0) {
 					System.out.println("Open connection called.");
 					sendPacket = manager.createOpenConnectionDatagramPacket(configuration, sentence);
-					isConnectionOpened = true;
+				} else if (flow == 1) {
+					System.out.println("Change name called.");
+					sendPacket = manager.createDatagramPacket(configuration, Commands.CHANGE_NAME, sentence.getBytes());
 				} else {
 					sendPacket = manager.createDatagramPacket(configuration, sentence);
 				}
@@ -82,6 +85,8 @@ public class UDPClient
 
 				// use new configuration because session id is set correct
 				configuration = manager.getCurrentConfiguration();
+
+				flow++;
 			} catch (Exception ex) {
 
 			}
@@ -91,6 +96,11 @@ public class UDPClient
 
 	@Override
 	public void answer(IConfiguration configuration, byte[] data) {
+
+	}
+
+	@Override
+	public void answer(IConfiguration configuration, DatagramPacket datagram) {
 
 	}
 
@@ -113,4 +123,5 @@ public class UDPClient
 	public List<IConfiguration> getConfigurations() {
 		return new ArrayList<>();
 	}
+
 }

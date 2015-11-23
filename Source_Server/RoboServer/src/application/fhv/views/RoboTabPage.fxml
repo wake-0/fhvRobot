@@ -57,6 +57,8 @@
 
 			<Button fx:id="btnKill" onAction="#handleKillClick" text="Kill" GridPane.columnIndex="1" GridPane.rowIndex="0" maxWidth="Infinity" />
 			<Button fx:id="btnSend" onAction="#handleSendClick" text="Send" GridPane.columnIndex="1" GridPane.rowIndex="1" maxWidth="Infinity" />
+			
+			
 		</GridPane>
 	</items>
 </SplitPane>

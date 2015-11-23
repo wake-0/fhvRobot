@@ -13,6 +13,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
+import communication.utils.ByteParser;
+
 public class ApplicationPDU extends PDUDecorator {
 
 	// Fields
@@ -33,12 +35,22 @@ public class ApplicationPDU extends PDUDecorator {
 		header = new byte[] { flags, commands, length };
 	}
 
+	public ApplicationPDU(byte[] payload, int command) {
+		super(payload);
+
+		// TODO: check size is allowed
+		commands = ByteParser.intToByte(command);
+		length = ByteParser.intToByte(payload.length);
+
+		header = new byte[] { flags, commands, length };
+	}
+
 	// Methods
 	public byte getFlags() {
 		return flags;
 	}
 
-	public int getCommands() {
+	public int getCommand() {
 		return commands;
 	}
 

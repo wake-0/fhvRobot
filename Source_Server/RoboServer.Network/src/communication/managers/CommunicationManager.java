@@ -47,12 +47,7 @@ public class CommunicationManager {
 	}
 
 	public DatagramPacket createOpenConnectionDatagramPacket(IConfiguration configuration, String message) {
-		int sessionId = 0b00000000;
-		int flags = 0b10000000;
-
-		PDU pdu = new NetworkPDU(new TransportPDU(new SessionPDU(flags, sessionId,
-				new PresentationPDU(new ApplicationPDU(new PDU(message))))));
-
+		PDU pdu = createOpenConnectionPDU(message);
 		return createDatagramPacketFromPDU(configuration, pdu);
 	}
 
@@ -61,8 +56,13 @@ public class CommunicationManager {
 		return createDatagramPacketFromPDU(configuration, pdu);
 	}
 
-	public void readDatagramPacket(DatagramPacket packet,
-			IDataReceivedHandler<ApplicationPDU> applicationHandler, IAnswerHandler answerHandler) {
+	public DatagramPacket createDatagramPacket(IConfiguration configuration, int command, byte[] payload) {
+		PDU pdu = createApplicationPDU(configuration, command, payload);
+		return createDatagramPacketFromPDU(configuration, pdu);
+	}
+
+	public void readDatagramPacket(DatagramPacket packet, IDataReceivedHandler<ApplicationPDU> applicationHandler,
+			IAnswerHandler answerHandler) {
 
 		NetworkPDU network = new NetworkPDU(new PDU(packet.getData()));
 		if (networkManager.handleDataReceived(packet, network, answerHandler)) {
@@ -104,8 +104,21 @@ public class CommunicationManager {
 		return new DatagramPacket(data, length, ipAddress, configuration.getPort());
 	}
 
+	private PDU createOpenConnectionPDU(String message) {
+		int sessionId = 0b00000000;
+		int flags = 0b10000000;
+
+		return new NetworkPDU(new TransportPDU(
+				new SessionPDU(flags, sessionId, new PresentationPDU(new ApplicationPDU(new PDU(message))))));
+	}
+
 	private PDU createPDU(IConfiguration configuration, String message) {
 		return new NetworkPDU(new TransportPDU(new SessionPDU(configuration.getSessionId(),
 				new PresentationPDU(new ApplicationPDU(new PDU(message))))));
+	}
+
+	private PDU createApplicationPDU(IConfiguration configuration, int command, byte[] payload) {
+		return new NetworkPDU(new TransportPDU(new SessionPDU(configuration.getSessionId(),
+				new PresentationPDU(new ApplicationPDU(payload, command)))));
 	}
 }
