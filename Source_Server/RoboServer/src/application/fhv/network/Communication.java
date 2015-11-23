@@ -107,6 +107,15 @@ public class Communication implements Runnable, IDataReceivedHandler<Application
 		sender.send(answerPacket);
 	}
 
+	public void sendToClient(Client client, int command, byte[] payload) {
+		if (client == null) {
+			return;
+		}
+
+		DatagramPacket sendPacket = manager.createDatagramPacket(client, command, payload);
+		sender.send(sendPacket);
+	}
+
 	public void sendToClient(Client client) throws IOException {
 		if (client == null) {
 			return;

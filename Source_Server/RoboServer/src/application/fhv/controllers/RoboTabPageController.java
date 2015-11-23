@@ -30,8 +30,6 @@ public class RoboTabPageController implements Initializable {
 	private TableColumn<Client, String> tcRoboName;
 	@FXML
 	private TableColumn<Client, String> tcRoboIp;
-	@FXML
-	private Client selectedRoboClient;
 
 	// Robo details
 	@FXML
@@ -49,8 +47,10 @@ public class RoboTabPageController implements Initializable {
 	@FXML
 	private void handleKillClick() {
 		System.out.println("button kill clicked.");
-		if (selectedRoboClient != null) {
-			roboController.removeClient(selectedRoboClient);
+		Client selectedClient = roboController.getSelectedClient();
+
+		if (selectedClient != null) {
+			roboController.removeClient(selectedClient);
 			clearDetails();
 		}
 	}
@@ -63,8 +63,10 @@ public class RoboTabPageController implements Initializable {
 	@FXML
 	private void handleSendClick() {
 		System.out.println("button send clicked.");
-		if (selectedRoboClient != null) {
-			server.sendToRobo(selectedRoboClient);
+		Client selectedClient = roboController.getSelectedClient();
+
+		if (selectedClient != null) {
+			server.sendToRobo(selectedClient);
 		}
 	}
 
@@ -94,7 +96,7 @@ public class RoboTabPageController implements Initializable {
 					tfReceive.textProperty().unbind();
 				}
 
-				selectedRoboClient = newValue;
+				roboController.setSelectedClient(newValue);
 			}
 		});
 	}

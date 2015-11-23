@@ -16,6 +16,8 @@ public class ClientController<T extends IConfiguration> implements IClientProvid
 	private ObservableList<T> clients;
 	private IClientFactory<T> factory;
 
+	private T selectedClient;
+
 	// Constructor
 	public ClientController(IClientFactory<T> factory) {
 		clients = FXCollections.observableArrayList();
@@ -48,6 +50,14 @@ public class ClientController<T extends IConfiguration> implements IClientProvid
 	@Override
 	public List<IConfiguration> getConfigurations() {
 		return new ArrayList<>(clients);
+	}
+
+	public T getSelectedClient() {
+		return selectedClient;
+	}
+
+	public void setSelectedClient(T selectedClient) {
+		this.selectedClient = selectedClient;
 	}
 
 }

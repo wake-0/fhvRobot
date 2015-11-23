@@ -46,6 +46,10 @@ public class NetworkServer {
 		}
 	}
 
+	public void sendToRobo(Client client, int command, byte[] payload) {
+		roboCommunication.sendToClient(client, command, payload);
+	}
+
 	public void shutdown() {
 		roboCommunication.stop();
 		appCommunication.stop();
