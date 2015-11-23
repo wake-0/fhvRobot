@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.Button?>
 
 <SplitPane dividerPositions="0.5" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="controllers.RoboTabPageController">
 	<items>
@@ -49,6 +50,7 @@
 				<RowConstraints />
 				<RowConstraints />
 				<RowConstraints vgrow="ALWAYS" />
+				<RowConstraints />
 			</rowConstraints>
 
 			<TextField fx:id="tfName" GridPane.rowIndex="0" editable="false" />
@@ -57,8 +59,22 @@
 
 			<Button fx:id="btnKill" onAction="#handleKillClick" text="Kill" GridPane.columnIndex="1" GridPane.rowIndex="0" maxWidth="Infinity" />
 			<Button fx:id="btnSend" onAction="#handleSendClick" text="Send" GridPane.columnIndex="1" GridPane.rowIndex="1" maxWidth="Infinity" />
-			
-			
+
+			<GridPane GridPane.columnIndex="0" GridPane.rowIndex="3">
+				<columnConstraints>
+					<ColumnConstraints percentWidth="20" />
+					<ColumnConstraints percentWidth="20" />
+					<ColumnConstraints percentWidth="20" />
+					<ColumnConstraints percentWidth="40" />
+				</columnConstraints>
+				
+				<Button fx:id="btnDriveLeft" onAction="#handleDriveClick" text="Left" GridPane.columnIndex="0" maxWidth="Infinity" />
+				<Button fx:id="btnDriveRight" onAction="#handleDriveClick" text="Right" GridPane.columnIndex="1" maxWidth="Infinity" />
+				<Button fx:id="btnDriveBoth" onAction="#handleDriveClick" text="Both" GridPane.columnIndex="2" maxWidth="Infinity" />
+				
+				<TextField fx:id="tfDirectionValue" GridPane.columnIndex="3" text="100" />
+			</GridPane>
+
 		</GridPane>
 	</items>
 </SplitPane>

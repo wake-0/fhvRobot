@@ -13,7 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
-import communication.utils.ByteParser;
+import communication.utils.NumberParser;
 
 public class SessionPDU extends PDUDecorator {
 
@@ -30,15 +30,15 @@ public class SessionPDU extends PDUDecorator {
 	public SessionPDU(int sessionId, PDU data) {
 		super(data);
 
-		this.sessionId = ByteParser.intToByte(sessionId);
+		this.sessionId = NumberParser.intToByte(sessionId);
 		header = new byte[] { this.flags, this.sessionId };
 	}
 
 	public SessionPDU(int flags, int sessionId, PDU data) {
 		super(data);
 
-		this.flags = ByteParser.intToByte(flags);
-		this.sessionId = ByteParser.intToByte(sessionId);
+		this.flags = NumberParser.intToByte(flags);
+		this.sessionId = NumberParser.intToByte(sessionId);
 		header = new byte[] { this.flags, this.sessionId };
 	}
 

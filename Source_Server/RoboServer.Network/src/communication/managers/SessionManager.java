@@ -14,7 +14,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import communication.IConfiguration;
 import communication.pdu.SessionPDU;
-import communication.utils.ByteParser;
+import communication.utils.NumberParser;
 
 public class SessionManager extends LayerManager<SessionPDU> {
 
@@ -46,7 +46,7 @@ public class SessionManager extends LayerManager<SessionPDU> {
 		// Only create a new session id at the beginning --> this is not save
 		if (flags == initConnectionFlags && sessionId == initConnectionSession) {
 			int newIntSession = createNewSessionNumber(currentConfiguration.getSessionId());
-			byte newByteSession = ByteParser.intToByte(newIntSession);
+			byte newByteSession = NumberParser.intToByte(newIntSession);
 
 			// Set the session id for the configuration
 			currentConfiguration.setSessionId(newIntSession);

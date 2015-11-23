@@ -12,7 +12,7 @@ package communication.pdu;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import communication.utils.ByteParser;
+import communication.utils.NumberParser;
 
 public class PresentationPDU extends PDUDecorator {
 
@@ -29,7 +29,7 @@ public class PresentationPDU extends PDUDecorator {
 	public PresentationPDU(int flags, PDU data) {
 		super(data);
 
-		this.flags = ByteParser.intToByte(flags);
+		this.flags = NumberParser.intToByte(flags);
 		header = new byte[] { this.flags };
 	}
 

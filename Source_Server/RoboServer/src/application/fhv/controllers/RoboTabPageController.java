@@ -3,10 +3,13 @@ package controllers;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import communication.utils.NumberParser;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -19,6 +22,7 @@ public class RoboTabPageController implements Initializable {
 
 	// Fields
 	private final ClientController<Client> roboController;
+	private DriveController driveController;
 	private NetworkServer server;
 
 	// Robo table
@@ -38,6 +42,16 @@ public class RoboTabPageController implements Initializable {
 	private TextArea tfReceive;
 	@FXML
 	private TextField tfName;
+
+	@FXML
+	private Button btnDriveLeft;
+	@FXML
+	private Button btnDriveRight;
+	@FXML
+	private Button btnDriveBoth;
+
+	@FXML
+	private TextField tfDirectionValue;
 
 	// Constructor
 	public RoboTabPageController() {
@@ -75,6 +89,24 @@ public class RoboTabPageController implements Initializable {
 		System.out.println("button down clicked.");
 	}
 
+	@FXML
+	private void handleDriveClick(ActionEvent event) {
+		if (!NumberParser.tryParseInt(tfDirectionValue.getText())) {
+			return;
+		}
+
+		int value = Integer.parseInt(tfDirectionValue.getText());
+		Object source = event.getSource();
+
+		if (source == btnDriveLeft) {
+			driveController.driveLeft(value);
+		} else if (source == btnDriveRight) {
+			driveController.driveRight(value);
+		} else if (source == btnDriveBoth) {
+			driveController.driveBoth(value);
+		}
+	}
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// Initialize the person table with the two columns.
@@ -107,6 +139,7 @@ public class RoboTabPageController implements Initializable {
 
 	public void setServer(NetworkServer server) {
 		this.server = server;
+		this.driveController = new DriveController(server, roboController);
 	}
 
 	private void clearDetails() {

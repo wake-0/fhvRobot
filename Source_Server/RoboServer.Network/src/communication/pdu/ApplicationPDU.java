@@ -12,7 +12,7 @@ package communication.pdu;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import communication.utils.ByteParser;
+import communication.utils.NumberParser;
 
 public class ApplicationPDU extends PDUDecorator {
 
@@ -32,8 +32,8 @@ public class ApplicationPDU extends PDUDecorator {
 		super(pdu);
 
 		// TODO: check size is allowed
-		commands = ByteParser.intToByte(command);
-		length = ByteParser.intToByte(pdu.data.length);
+		commands = NumberParser.intToByte(command);
+		length = NumberParser.intToByte(pdu.data.length);
 
 		header = new byte[] { flags, commands, length };
 	}
