@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.Optional;
 
 import communication.IConfiguration;
-import communication.pdu.PDU;
+import communication.pdu.NetworkPDU;
 
-public class NetworkManager extends LayerManager {
+public class NetworkManager extends LayerManager<NetworkPDU> {
 
 	// Constructor
 	public NetworkManager(IConfigurationManager manager, CurrentConfigurationService currentClientService) {
@@ -25,7 +25,7 @@ public class NetworkManager extends LayerManager {
 
 	// Methods
 	@Override
-	public boolean handleDataReceived(DatagramPacket packet, PDU pdu, IAnswerHandler sender) {
+	public boolean handleDataReceived(DatagramPacket packet, NetworkPDU pdu, IAnswerHandler sender) {
 		String ipAddress = packet.getAddress().getHostName();
 
 		List<IConfiguration> configurations = manager.getConfigurations();

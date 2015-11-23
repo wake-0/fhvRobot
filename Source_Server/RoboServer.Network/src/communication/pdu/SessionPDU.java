@@ -2,7 +2,7 @@
  * Copyright (c) 2015 - 2015, Kevin Wallis, All rights reserved.
  * 
  * Projectname: RoboServer.Network
- * Filename: PresentationPDUDecorator.java
+ * Filename: SessionPDUDecorator.java
  * 
  * @author: Kevin Wallis
  * @version: 1
@@ -15,29 +15,36 @@ import java.util.Arrays;
 
 import communication.utils.ByteParser;
 
-public class PresentationPDUDecorator extends PDUDecorator {
+public class SessionPDU extends PDUDecorator {
 
 	// Fields
 	private byte flags = (byte) 0b00000000;
+	private byte sessionId = (byte) 0b00000000;
 
-	// Constructor
-	public PresentationPDUDecorator(PDU data) {
+	// Constructors
+	public SessionPDU(PDU data) {
 		super(data);
-
-		header = new byte[] { flags };
+		header = new byte[] { this.flags, this.sessionId };
 	}
 
-	public PresentationPDUDecorator(byte[] data) {
+	public SessionPDU(byte[] data) {
 		super(data);
-
-		header = new byte[] { flags };
+		header = new byte[] { this.flags, this.sessionId };
 	}
 
-	public PresentationPDUDecorator(PDU data, int flags) {
+	public SessionPDU(int sessionId, PDU data) {
+		super(data);
+
+		this.sessionId = ByteParser.intToByte(sessionId);
+		header = new byte[] { this.flags, this.sessionId };
+	}
+
+	public SessionPDU(int flags, int sessionId, PDU data) {
 		super(data);
 
 		this.flags = ByteParser.intToByte(flags);
-		header = new byte[] { this.flags };
+		this.sessionId = ByteParser.intToByte(sessionId);
+		header = new byte[] { this.flags, this.sessionId };
 	}
 
 	// Methods
@@ -45,10 +52,11 @@ public class PresentationPDUDecorator extends PDUDecorator {
 	protected byte[] getEnhanceDataCore(PDU packet) {
 		try {
 
-			// Add flag bytes
+			// Add flag and session bytes
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			outputStream.write(header);
 			outputStream.write(packet.getEnhancedData());
+			System.out.println(outputStream.toByteArray());
 			return outputStream.toByteArray();
 
 		} catch (IOException e) {
@@ -58,9 +66,16 @@ public class PresentationPDUDecorator extends PDUDecorator {
 
 	@Override
 	protected byte[] getInnerDataCore(PDU packet) {
-		// Remove the flag bytes
+		// Remove the flag and session bytes
 		byte[] data = packet.getInnerData();
 		return Arrays.copyOfRange(data, header.length, data.length);
 	}
 
+	public byte getFlags() {
+		return flags;
+	}
+
+	public int getSessionId() {
+		return sessionId;
+	}
 }

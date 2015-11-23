@@ -9,7 +9,9 @@
  */
 package communication.managers;
 
-public abstract class LayerManager implements IDataReceivedHandler {
+import communication.pdu.PDU;
+
+public abstract class LayerManager<T extends PDU> implements IDataReceivedHandler<T> {
 
 	// Fields
 	protected IConfigurationManager manager;

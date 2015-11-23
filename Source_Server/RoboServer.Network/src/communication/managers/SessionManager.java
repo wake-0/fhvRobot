@@ -13,10 +13,10 @@ import java.net.DatagramPacket;
 import java.util.concurrent.ThreadLocalRandom;
 
 import communication.IConfiguration;
-import communication.pdu.PDU;
+import communication.pdu.SessionPDU;
 import communication.utils.ByteParser;
 
-public class SessionManager extends LayerManager {
+public class SessionManager extends LayerManager<SessionPDU> {
 
 	// Fields
 	private final int minSessionNumber = 0;
@@ -33,7 +33,7 @@ public class SessionManager extends LayerManager {
 
 	// Methods
 	@Override
-	public boolean handleDataReceived(DatagramPacket packet, PDU pdu, IAnswerHandler sender) {
+	public boolean handleDataReceived(DatagramPacket packet, SessionPDU pdu, IAnswerHandler sender) {
 		IConfiguration currentConfiguration = currentConfigurationService.getConfiguration();
 		boolean handled = false;
 

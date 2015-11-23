@@ -13,7 +13,6 @@ import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import communication.IConfiguration;
@@ -21,9 +20,10 @@ import communication.managers.CommunicationManager;
 import communication.managers.IAnswerHandler;
 import communication.managers.IConfigurationManager;
 import communication.managers.IDataReceivedHandler;
-import communication.pdu.PDU;
+import communication.pdu.ApplicationPDU;
 
-public class UDPClient implements Runnable, IDataReceivedHandler, IAnswerHandler, IConfigurationManager {
+public class UDPClient
+		implements Runnable, IDataReceivedHandler<ApplicationPDU>, IAnswerHandler, IConfigurationManager {
 
 	private String address = "127.0.0.1";
 	// private String address = "83.212.127.13";
@@ -95,14 +95,9 @@ public class UDPClient implements Runnable, IDataReceivedHandler, IAnswerHandler
 	}
 
 	@Override
-	public boolean handleDataReceived(DatagramPacket packet, PDU pdu, IAnswerHandler sender) {
+	public boolean handleDataReceived(DatagramPacket packet, ApplicationPDU pdu, IAnswerHandler sender) {
 
-		byte[] data = pdu.getData();
-		byte flags = data[0];
-		byte command = data[1];
-		byte length = data[2];
-
-		byte[] payload = Arrays.copyOfRange(data, 3, data.length);
+		byte[] payload = pdu.getPayload();
 		String name = new String(payload);
 
 		System.out.println("Enhanced receive message:" + name);

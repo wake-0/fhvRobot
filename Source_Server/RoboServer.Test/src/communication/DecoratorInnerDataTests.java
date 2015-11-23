@@ -14,19 +14,19 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import communication.pdu.ApplicationPDUDecorator;
-import communication.pdu.NetworkPDUDecorator;
+import communication.pdu.ApplicationPDU;
+import communication.pdu.NetworkPDU;
 import communication.pdu.PDU;
-import communication.pdu.PresentationPDUDecorator;
-import communication.pdu.SessionPDUDecorator;
-import communication.pdu.TransportPDUDecorator;
+import communication.pdu.PresentationPDU;
+import communication.pdu.SessionPDU;
+import communication.pdu.TransportPDU;
 
 public class DecoratorInnerDataTests {
 
 	@Test
 	public void NetworkDecoratorInnerData() {
 		byte[] expectedData = new byte[] { 0b01010101 };
-		NetworkPDUDecorator decorator = new NetworkPDUDecorator(new PDU(expectedData));
+		NetworkPDU decorator = new NetworkPDU(new PDU(expectedData));
 
 		byte[] data = decorator.getInnerData();
 		assertArrayEquals(expectedData, data);
@@ -35,7 +35,7 @@ public class DecoratorInnerDataTests {
 	@Test
 	public void TransportDecoratorInnerData() {
 		byte[] expectedData = new byte[] { 0b01010101 };
-		TransportPDUDecorator decorator = new TransportPDUDecorator(new PDU(expectedData));
+		TransportPDU decorator = new TransportPDU(new PDU(expectedData));
 
 		byte[] data = decorator.getInnerData();
 		assertArrayEquals(expectedData, data);
@@ -48,11 +48,11 @@ public class DecoratorInnerDataTests {
 		byte[] expectedData = new byte[] { 0b01010101 };
 		byte[] data = new byte[] { expectedFlags, expectedId, expectedData[0] };
 
-		SessionPDUDecorator decorator = new SessionPDUDecorator(new PDU(data));
+		SessionPDU decorator = new SessionPDU(new PDU(data));
 
 		byte[] actualData = decorator.getInnerData();
 		assertArrayEquals(expectedData, actualData);
-		byte sessionId = decorator.getSessionId();
+		int sessionId = decorator.getSessionId();
 		assertEquals(expectedId, sessionId);
 		byte flags = decorator.getFlags();
 		assertEquals(expectedFlags, flags);
@@ -64,7 +64,7 @@ public class DecoratorInnerDataTests {
 		byte[] expectedData = new byte[] { 0b01010101 };
 		byte[] data = new byte[] { expectedFlags[0], expectedData[0] };
 
-		PresentationPDUDecorator decorator = new PresentationPDUDecorator(new PDU(data));
+		PresentationPDU decorator = new PresentationPDU(new PDU(data));
 
 		byte[] actualData = decorator.getInnerData();
 		assertArrayEquals(expectedData, actualData);
@@ -78,7 +78,7 @@ public class DecoratorInnerDataTests {
 		byte expectedLength = (byte) 0b00000000;
 		byte[] data = new byte[] { expectedFlags[0], expectedCommands, expectedLength, expectedData[0] };
 
-		ApplicationPDUDecorator decorator = new ApplicationPDUDecorator(new PDU(data));
+		ApplicationPDU decorator = new ApplicationPDU(new PDU(data));
 
 		byte[] actualData = decorator.getInnerData();
 		assertArrayEquals(expectedData, actualData);
@@ -97,8 +97,8 @@ public class DecoratorInnerDataTests {
 		byte[] data = new byte[] { sessionFlags, sessionId, presentationFlags, applicationFlags, applicationCommands,
 				applicationLength, expectedData[0] };
 
-		NetworkPDUDecorator combinedDecorator = new NetworkPDUDecorator(new TransportPDUDecorator(
-				new SessionPDUDecorator(new PresentationPDUDecorator(new ApplicationPDUDecorator(new PDU(data))))));
+		NetworkPDU combinedDecorator = new NetworkPDU(
+				new TransportPDU(new SessionPDU(new PresentationPDU(new ApplicationPDU(new PDU(data))))));
 
 		byte[] actualData = combinedDecorator.getInnerData();
 		assertArrayEquals(expectedData, actualData);

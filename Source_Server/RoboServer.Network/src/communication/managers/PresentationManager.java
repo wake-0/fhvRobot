@@ -11,9 +11,9 @@ package communication.managers;
 
 import java.net.DatagramPacket;
 
-import communication.pdu.PDU;
+import communication.pdu.PresentationPDU;
 
-public class PresentationManager extends LayerManager {
+public class PresentationManager extends LayerManager<PresentationPDU> {
 
 	// Constructor
 	public PresentationManager(IConfigurationManager manager, CurrentConfigurationService currentClientService) {
@@ -22,7 +22,7 @@ public class PresentationManager extends LayerManager {
 
 	// Methods
 	@Override
-	public boolean handleDataReceived(DatagramPacket packet, PDU pdu, IAnswerHandler sender) {
+	public boolean handleDataReceived(DatagramPacket packet, PresentationPDU pdu, IAnswerHandler sender) {
 		// TODO: e.g. add checksum
 		return false;
 	}

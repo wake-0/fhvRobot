@@ -14,20 +14,19 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Arrays;
 
 import communication.IConfiguration;
 import communication.managers.CommunicationManager;
 import communication.managers.IAnswerHandler;
 import communication.managers.IDataReceivedHandler;
-import communication.pdu.PDU;
+import communication.pdu.ApplicationPDU;
 import models.Client;
 import network.receiver.INetworkReceiver;
 import network.receiver.LoggerNetworkReceiver;
 import network.sender.INetworkSender;
 import network.sender.LoggerNetworkSender;
 
-public class Communication implements Runnable, IDataReceivedHandler, IAnswerHandler {
+public class Communication implements Runnable, IDataReceivedHandler<ApplicationPDU>, IAnswerHandler {
 
 	private boolean isRunning;
 	private int receivePacketSize = 1024;
@@ -61,16 +60,10 @@ public class Communication implements Runnable, IDataReceivedHandler, IAnswerHan
 	}
 
 	@Override
-	public boolean handleDataReceived(DatagramPacket packet, PDU pdu, IAnswerHandler sender) {
+	public boolean handleDataReceived(DatagramPacket packet, ApplicationPDU pdu, IAnswerHandler sender) {
 		try {
-
-			byte[] data = pdu.getData();
-			byte flags = data[0];
-			byte command = data[1];
-			byte length = data[2];
-
 			// TODO: check length and real payload are equal
-			byte[] payload = Arrays.copyOfRange(data, 3, data.length);
+			byte[] payload = pdu.getPayload();
 			String name = new String(payload);
 
 			Client client = (Client) manager.getCurrentConfiguration();

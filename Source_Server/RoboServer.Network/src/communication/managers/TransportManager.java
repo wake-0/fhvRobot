@@ -12,9 +12,9 @@ package communication.managers;
 import java.net.DatagramPacket;
 
 import communication.IConfiguration;
-import communication.pdu.PDU;
+import communication.pdu.TransportPDU;
 
-public class TransportManager extends LayerManager {
+public class TransportManager extends LayerManager<TransportPDU> {
 
 	// Constructor
 	public TransportManager(IConfigurationManager manager, CurrentConfigurationService currentClientService) {
@@ -23,7 +23,7 @@ public class TransportManager extends LayerManager {
 
 	// Methods
 	@Override
-	public boolean handleDataReceived(DatagramPacket packet, PDU pdu, IAnswerHandler sender) {
+	public boolean handleDataReceived(DatagramPacket packet, TransportPDU pdu, IAnswerHandler sender) {
 
 		IConfiguration client = currentConfigurationService.getConfiguration();
 		int port = packet.getPort();

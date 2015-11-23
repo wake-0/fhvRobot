@@ -2,21 +2,21 @@
  * Copyright (c) 2015 - 2015, Kevin Wallis, All rights reserved.
  * 
  * Projectname: RoboServer.Network
- * Filename: TransportPDUDecorator.java
+ * Filename: NetworkPDUDecorator.java
  * 
  * @author: Kevin Wallis
  * @version: 1
  */
 package communication.pdu;
 
-public class TransportPDUDecorator extends PDUDecorator {
+public class NetworkPDU extends PDUDecorator {
 
 	// Constructors
-	public TransportPDUDecorator(PDU data) {
+	public NetworkPDU(PDU data) {
 		super(data);
 	}
 
-	public TransportPDUDecorator(byte[] data) {
+	public NetworkPDU(byte[] data) {
 		super(data);
 	}
 

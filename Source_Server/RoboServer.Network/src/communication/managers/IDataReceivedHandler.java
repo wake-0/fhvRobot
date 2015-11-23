@@ -13,7 +13,7 @@ import java.net.DatagramPacket;
 
 import communication.pdu.PDU;
 
-public interface IDataReceivedHandler {
+public interface IDataReceivedHandler<T extends PDU> {
 
-	public boolean handleDataReceived(DatagramPacket packet, PDU pdu, IAnswerHandler sender);
+	public boolean handleDataReceived(DatagramPacket packet, T pdu, IAnswerHandler sender);
 }

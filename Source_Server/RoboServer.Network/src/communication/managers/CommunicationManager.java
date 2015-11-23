@@ -14,12 +14,12 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import communication.IConfiguration;
-import communication.pdu.ApplicationPDUDecorator;
-import communication.pdu.NetworkPDUDecorator;
+import communication.pdu.ApplicationPDU;
+import communication.pdu.NetworkPDU;
 import communication.pdu.PDU;
-import communication.pdu.PresentationPDUDecorator;
-import communication.pdu.SessionPDUDecorator;
-import communication.pdu.TransportPDUDecorator;
+import communication.pdu.PresentationPDU;
+import communication.pdu.SessionPDU;
+import communication.pdu.TransportPDU;
 
 public class CommunicationManager {
 
@@ -50,8 +50,8 @@ public class CommunicationManager {
 		int sessionId = 0b00000000;
 		int flags = 0b10000000;
 
-		PDU pdu = new NetworkPDUDecorator(new TransportPDUDecorator(new SessionPDUDecorator(flags, sessionId,
-				new PresentationPDUDecorator(new ApplicationPDUDecorator(new PDU(message))))));
+		PDU pdu = new NetworkPDU(new TransportPDU(new SessionPDU(flags, sessionId,
+				new PresentationPDU(new ApplicationPDU(new PDU(message))))));
 
 		return createDatagramPacketFromPDU(configuration, pdu);
 	}
@@ -61,32 +61,32 @@ public class CommunicationManager {
 		return createDatagramPacketFromPDU(configuration, pdu);
 	}
 
-	public void readDatagramPacket(DatagramPacket packet, IDataReceivedHandler applicationHandler,
-			IAnswerHandler answerHandler) {
+	public void readDatagramPacket(DatagramPacket packet,
+			IDataReceivedHandler<ApplicationPDU> applicationHandler, IAnswerHandler answerHandler) {
 
-		NetworkPDUDecorator network = new NetworkPDUDecorator(new PDU(packet.getData()));
+		NetworkPDU network = new NetworkPDU(new PDU(packet.getData()));
 		if (networkManager.handleDataReceived(packet, network, answerHandler)) {
 			return;
 		}
 
-		TransportPDUDecorator transport = new TransportPDUDecorator(network.getInnerData());
+		TransportPDU transport = new TransportPDU(network.getInnerData());
 		if (transportManager.handleDataReceived(packet, transport, answerHandler)) {
 			return;
 		}
 
-		SessionPDUDecorator session = new SessionPDUDecorator(transport.getInnerData());
+		SessionPDU session = new SessionPDU(transport.getInnerData());
 		if (sessionManager.handleDataReceived(packet, session, answerHandler)) {
 			return;
 		}
 
-		PresentationPDUDecorator presentation = new PresentationPDUDecorator(session.getInnerData());
+		PresentationPDU presentation = new PresentationPDU(session.getInnerData());
 		if (presentationManager.handleDataReceived(packet, presentation, answerHandler)) {
 			return;
 		}
 
 		// Use handler so it is possible to decide if the message should be
 		// handled by the application
-		ApplicationPDUDecorator application = new ApplicationPDUDecorator(presentation.getInnerData());
+		ApplicationPDU application = new ApplicationPDU(presentation.getInnerData());
 		applicationHandler.handleDataReceived(packet, application, answerHandler);
 	}
 
@@ -105,7 +105,7 @@ public class CommunicationManager {
 	}
 
 	private PDU createPDU(IConfiguration configuration, String message) {
-		return new NetworkPDUDecorator(new TransportPDUDecorator(new SessionPDUDecorator(configuration.getSessionId(),
-				new PresentationPDUDecorator(new ApplicationPDUDecorator(new PDU(message))))));
+		return new NetworkPDU(new TransportPDU(new SessionPDU(configuration.getSessionId(),
+				new PresentationPDU(new ApplicationPDU(new PDU(message))))));
 	}
 }
