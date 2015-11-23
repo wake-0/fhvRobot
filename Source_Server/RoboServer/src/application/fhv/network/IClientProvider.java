@@ -12,18 +12,12 @@ package network;
 import java.util.List;
 
 import communication.IConfiguration;
-import models.Client;
 
-public interface IClientProvider {
-	public void addRoboClient(Client client);
+public interface IClientProvider<T extends IConfiguration> {
 
-	public void removeRoboClient(Client client);
+	public void addClient(T client);
 
-	public List<IConfiguration> getRoboClients();
+	public void removeClient(T client);
 
-	public void addAppClient(Client client);
-
-	public void removeAppClient(Client client);
-
-	public List<IConfiguration> getAppClients();
+	public List<T> getClients();
 }

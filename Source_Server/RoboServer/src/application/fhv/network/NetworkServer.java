@@ -10,81 +10,34 @@
 package network;
 
 import java.io.IOException;
-import java.net.DatagramSocket;
 import java.net.SocketException;
-import java.util.List;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import communication.IConfiguration;
 import communication.managers.CommunicationManager;
-import communication.managers.IConfigurationManager;
+import controllers.ClientController;
 import models.Client;
 
-@Singleton
 public class NetworkServer {
 
-	// field which stores the clients
-	private final CommunicationManager communicationManagerRobo;
-	private final DatagramSocket roboSocket;
+	// Fields
 	private final Communication roboCommunication;
-	private final Thread roboThread;
-
-	private final CommunicationManager communicationManagerApp;
-	private final DatagramSocket appSocket;
 	private final Communication appCommunication;
-	private final Thread appThread;
 
-	// server specific stuff
+	// Ports
 	private final int roboPort = 997;
 	private final int appPort = 998;
 
-	// constructors
-	@Inject
-	public NetworkServer(IClientProvider clientProvider) throws SocketException {
-		this.roboSocket = new DatagramSocket(roboPort);
+	// Constructor
+	public NetworkServer(ClientController<Client> roboController, ClientController<Client> appController)
+			throws SocketException {
 		// Added network sender and receiver which can log
-		this.communicationManagerRobo = new CommunicationManager(new IConfigurationManager() {
+		this.roboCommunication = new Communication(new CommunicationManager(roboController), roboPort);
+		new Thread(roboCommunication).start();
 
-			@Override
-			public IConfiguration createConfiguration() {
-				Client client = new Client();
-				clientProvider.addRoboClient(client);
-				return client;
-			}
-
-			@Override
-			public List<IConfiguration> getConfigurations() {
-				return clientProvider.getRoboClients();
-			}
-		});
-
-		this.appSocket = new DatagramSocket(appPort);
-		this.communicationManagerApp = new CommunicationManager(new IConfigurationManager() {
-
-			@Override
-			public List<IConfiguration> getConfigurations() {
-				return clientProvider.getAppClients();
-			}
-
-			@Override
-			public IConfiguration createConfiguration() {
-				Client client = new Client();
-				clientProvider.addAppClient(client);
-				return client;
-			}
-		});
-
-		this.roboCommunication = new Communication(communicationManagerRobo, roboSocket);
-		this.roboThread = new Thread(roboCommunication);
-		this.roboThread.start();
-
-		this.appCommunication = new Communication(communicationManagerApp, appSocket);
-		this.appThread = new Thread(appCommunication);
-		this.appThread.start();
+		this.appCommunication = new Communication(new CommunicationManager(appController), appPort);
+		new Thread(appCommunication).start();
 	}
 
+	// Methods
 	public void sendToRobo(Client client) {
 		try {
 			roboCommunication.sendToClient(client);
@@ -94,7 +47,6 @@ public class NetworkServer {
 	}
 
 	public void shutdown() {
-		roboSocket.close();
 		roboCommunication.stop();
 		appCommunication.stop();
 	}

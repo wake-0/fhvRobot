@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import communication.IConfiguration;
@@ -35,9 +36,9 @@ public class Communication implements Runnable, IDataReceivedHandler<Application
 	private final DatagramSocket socket;
 	private final CommunicationManager manager;
 
-	public Communication(CommunicationManager manager, DatagramSocket socket) {
+	public Communication(CommunicationManager manager, int port) throws SocketException {
 		this.manager = manager;
-		this.socket = socket;
+		this.socket = new DatagramSocket(port);
 		this.receiver = new LoggerNetworkReceiver(socket);
 		this.sender = new LoggerNetworkSender(socket);
 	}
@@ -108,5 +109,6 @@ public class Communication implements Runnable, IDataReceivedHandler<Application
 
 	public void stop() {
 		isRunning = false;
+		socket.close();
 	}
 }

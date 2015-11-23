@@ -11,34 +11,29 @@ package controllers;
 
 import java.net.SocketException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
-import communication.IConfiguration;
+import controllers.factory.IClientFactory;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import models.Client;
-import network.IClientProvider;
+import models.ClientFactory;
 import network.NetworkServer;
 
-public class MainWindowController implements Initializable, IClientProvider {
+public class MainWindowController implements Initializable {
 
 	// fields
 	private NetworkServer server;
 
-	private Client selectedRoboClient;
-	private ObservableList<Client> observableRoboClients;
+	private ClientController<Client> robos;
+	private ClientController<Client> apps;
 
-	// private Client selectedAppClient;
-	private ObservableList<Client> observableAppClients;
+	private Client selectedRoboClient;
 
 	// FXML fields
 	@FXML
@@ -63,7 +58,7 @@ public class MainWindowController implements Initializable, IClientProvider {
 	private void handleKillClick() {
 		System.out.println("button kill clicked.");
 		if (selectedRoboClient != null) {
-			removeRoboClient(selectedRoboClient);
+			robos.removeClient(selectedRoboClient);
 		}
 	}
 
@@ -87,15 +82,16 @@ public class MainWindowController implements Initializable, IClientProvider {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		observableRoboClients = FXCollections.observableArrayList();
-		observableAppClients = FXCollections.observableArrayList();
+		IClientFactory<Client> factory = new ClientFactory();
+		robos = new ClientController<Client>(factory);
+		apps = new ClientController<Client>(factory);
 
 		// Initialize the person table with the two columns.
 		tcId.setCellValueFactory(cellData -> cellData.getValue().IdProperty());
 		tcName.setCellValueFactory(cellData -> cellData.getValue().NameProperty());
 		tcIp.setCellValueFactory(cellData -> cellData.getValue().IpAddressProperty());
 
-		tvClients.setItems(observableRoboClients);
+		tvClients.setItems(robos.getClients());
 		tvClients.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Client>() {
 			@Override
 			public void changed(ObservableValue<? extends Client> observable, Client oldValue, Client newValue) {
@@ -114,7 +110,7 @@ public class MainWindowController implements Initializable, IClientProvider {
 		});
 
 		try {
-			this.server = new NetworkServer(this);
+			this.server = new NetworkServer(robos, apps);
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
@@ -122,33 +118,5 @@ public class MainWindowController implements Initializable, IClientProvider {
 
 	public void shutdown() {
 		server.shutdown();
-	}
-
-	public void addRoboClient(Client client) {
-		observableRoboClients.add(client);
-	}
-
-	public void removeRoboClient(Client client) {
-		observableRoboClients.remove(client);
-	}
-
-	@Override
-	public List<IConfiguration> getRoboClients() {
-		return new ArrayList<>(observableRoboClients);
-	}
-
-	@Override
-	public void addAppClient(Client client) {
-		observableAppClients.add(client);
-	}
-
-	@Override
-	public void removeAppClient(Client client) {
-		observableAppClients.remove(client);
-	}
-
-	@Override
-	public List<IConfiguration> getAppClients() {
-		return new ArrayList<>(observableAppClients);
 	}
 }
