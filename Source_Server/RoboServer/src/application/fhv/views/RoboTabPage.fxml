@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.* ?>
+<?import javafx.scene.control.* ?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.TextArea?>
+
+<SplitPane dividerPositions="0.5" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="controllers.RoboTabPageController">
+	<items>
+		<GridPane minHeight="0.0" minWidth="0.0">
+			<columnConstraints>
+				<ColumnConstraints percentWidth="80" hgrow="ALWAYS" />
+				<ColumnConstraints percentWidth="20" hgrow="ALWAYS" />
+			</columnConstraints>
+			<rowConstraints>
+				<RowConstraints percentHeight="100" />
+			</rowConstraints>
+
+			<TableView fx:id="tvRoboClients" GridPane.columnIndex="0">
+				<columnResizePolicy>
+					<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+				</columnResizePolicy>
+
+				<columns>
+					<TableColumn fx:id="tcRoboId" minWidth="100" text="Id" />
+					<TableColumn fx:id="tcRoboName" minWidth="100" text="Name" />
+					<TableColumn fx:id="tcRoboIp" minWidth="150" text="IP Address" />
+				</columns>
+			</TableView>
+
+			<VBox GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
+				<children>
+					<Button fx:id="btnUp" onAction="#handleUpClick" text="Up" maxWidth="Infinity" />
+					<Button fx:id="btnDown" onAction="#handleDownClick" text="Down" maxWidth="Infinity" />
+				</children>
+			</VBox>
+		</GridPane>
+		<GridPane minHeight="0.0" minWidth="0.0">
+			<columnConstraints>
+				<ColumnConstraints percentWidth="80" />
+				<ColumnConstraints percentWidth="20" />
+			</columnConstraints>
+			<rowConstraints>
+				<RowConstraints />
+				<RowConstraints />
+				<RowConstraints vgrow="ALWAYS" />
+			</rowConstraints>
+
+			<TextField fx:id="tfName" GridPane.rowIndex="0" editable="false" />
+			<TextField fx:id="tfSend" GridPane.rowIndex="1" />
+			<TextArea fx:id="tfReceive" GridPane.rowIndex="2" editable="false" disable="true" />
+
+			<Button fx:id="btnKill" onAction="#handleKillClick" text="Kill" GridPane.columnIndex="1" GridPane.rowIndex="0" maxWidth="Infinity" />
+			<Button fx:id="btnSend" onAction="#handleSendClick" text="Send" GridPane.columnIndex="1" GridPane.rowIndex="1" maxWidth="Infinity" />
+		</GridPane>
+	</items>
+</SplitPane>

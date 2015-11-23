@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.text.Text?>
+
+<GridPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AppTabPageController">
+	<!-- TODO Add Nodes -->
+	<Text text="Hallo app" />
+</GridPane>
+
