@@ -2,16 +2,20 @@
  * Copyright (c) 2015 - 2015, Kevin Wallis, All rights reserved.
  * 
  * Projectname: RoboServer.Network
- * Filename: IAnswerHandler.java
+ * Filename: IConfigurationManager.java
  * 
  * @author: Kevin Wallis
  * @version: 1
  */
 package communication.managers;
 
+import java.util.List;
+
 import communication.IConfiguration;
 
-public interface IAnswerHandler {
+public interface IConfigurationManager {
 
-	public void answer(IConfiguration configuration, byte[] data);
+	public IConfiguration createConfiguration();
+
+	public List<IConfiguration> getConfigurations();
 }

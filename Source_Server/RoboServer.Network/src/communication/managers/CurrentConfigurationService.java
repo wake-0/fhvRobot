@@ -1,20 +1,29 @@
+/*
+ * Copyright (c) 2015 - 2015, Kevin Wallis, All rights reserved.
+ * 
+ * Projectname: RoboServer.Network
+ * Filename: CurrentConfigurationService.java
+ * 
+ * @author: Kevin Wallis
+ * @version: 1
+ */
 package communication.managers;
 
-import com.google.inject.Singleton;
+import communication.IConfiguration;
 
-import communication.IClientConfiguration;
-
-@Singleton
 public class CurrentConfigurationService {
-	
-	private IClientConfiguration client;
 
-	public IClientConfiguration getClient() {
-		return client;
+	// Fields
+	private IConfiguration configuration;
+
+	// Constructor
+	IConfiguration getConfiguration() {
+		return configuration;
 	}
 
-	public void setClient(IClientConfiguration client) {
-		this.client = client;
+	// Methods
+	void setConfiguration(IConfiguration configuration) {
+		this.configuration = configuration;
 	}
-	
+
 }

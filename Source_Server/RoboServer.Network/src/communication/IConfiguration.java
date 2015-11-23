@@ -1,13 +1,25 @@
+/*
+ * Copyright (c) 2015 - 2015, Kevin Wallis, All rights reserved.
+ * 
+ * Projectname: RoboServer.Network
+ * Filename: IConfiguration.java
+ * 
+ * @author: Kevin Wallis
+ * @version: 1
+ */
 package communication;
 
-public interface IClientConfiguration {
+public interface IConfiguration {
 
 	public void setSessionId(int sessionId);
+
 	public int getSessionId();
-	
+
 	public void setIpAddress(String ipAddress);
+
 	public String getIpAddress();
-	
+
 	public void setPort(int port);
+
 	public int getPort();
 }

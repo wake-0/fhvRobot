@@ -1,34 +1,33 @@
+/*
+ * Copyright (c) 2015 - 2015, Kevin Wallis, All rights reserved.
+ * 
+ * Projectname: RoboServer.Network
+ * Filename: NetworkPDUDecorator.java
+ * 
+ * @author: Kevin Wallis
+ * @version: 1
+ */
 package communication.pdu;
 
 public class NetworkPDUDecorator extends PDUDecorator {
 
-	// fields
-	private String ipAddress;
-	
-	// ctor
+	// Constructors
 	public NetworkPDUDecorator(PDU data) {
 		super(data);
 	}
-	
-	public NetworkPDUDecorator(String string, PDU data) {
+
+	public NetworkPDUDecorator(byte[] data) {
 		super(data);
-		
-		this.ipAddress = string;
 	}
 
-	// methods
-	public String getIpAddress() {
-		return ipAddress;
-	}
-	
+	// Methods
 	@Override
-	protected byte[] enhanceData(PDU packet) {
-		return packet.getEnhancedData();
+	protected byte[] getEnhanceDataCore(PDU pdu) {
+		return pdu.getEnhancedData();
 	}
 
 	@Override
-	protected byte[] innerData(PDU packet) {
-		return packet.getInnerData();
+	protected byte[] getInnerDataCore(PDU pdu) {
+		return pdu.getInnerData();
 	}
-
 }

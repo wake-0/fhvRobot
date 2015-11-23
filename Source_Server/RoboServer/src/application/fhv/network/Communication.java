@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2015 - 2015, Kevin Wallis, All rights reserved.
+ * 
+ * Projectname: RoboServer
+ * Filename: Communication.java
+ * 
+ * @author: Kevin Wallis
+ * @version: 1
+ */
 package network;
 
 import java.io.IOException;
@@ -5,11 +14,13 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 
-import communication.IClientConfiguration;
+import communication.IConfiguration;
 import communication.managers.CommunicationManager;
 import communication.managers.IAnswerHandler;
 import communication.managers.IDataReceivedHandler;
+import communication.pdu.PDU;
 import models.Client;
 import network.receiver.INetworkReceiver;
 import network.receiver.LoggerNetworkReceiver;
@@ -17,25 +28,25 @@ import network.sender.INetworkSender;
 import network.sender.LoggerNetworkSender;
 
 public class Communication implements Runnable, IDataReceivedHandler, IAnswerHandler {
-	
+
 	private boolean isRunning;
 	private int receivePacketSize = 1024;
 	private final INetworkReceiver receiver;
 	private final INetworkSender sender;
 	private final DatagramSocket socket;
 	private final CommunicationManager manager;
-	
+
 	public Communication(CommunicationManager manager, DatagramSocket socket) {
 		this.manager = manager;
 		this.socket = socket;
 		this.receiver = new LoggerNetworkReceiver(socket);
 		this.sender = new LoggerNetworkSender(socket);
 	}
-	
+
 	@Override
 	public void run() {
 		isRunning = true;
-		
+
 		while (isRunning) {
 			byte[] receiveData = new byte[receivePacketSize];
 			DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
@@ -50,11 +61,19 @@ public class Communication implements Runnable, IDataReceivedHandler, IAnswerHan
 	}
 
 	@Override
-	public boolean handleDataReceived(DatagramPacket packet, byte[] data, IAnswerHandler sender) {
+	public boolean handleDataReceived(DatagramPacket packet, PDU pdu, IAnswerHandler sender) {
 		try {
-			String name = new String(data);
 
-			Client client = (Client) manager.getCurrentClientConfiguration();
+			byte[] data = pdu.getData();
+			byte flags = data[0];
+			byte command = data[1];
+			byte length = data[2];
+
+			// TODO: check length and real payload are equal
+			byte[] payload = Arrays.copyOfRange(data, 3, data.length);
+			String name = new String(payload);
+
+			Client client = (Client) manager.getCurrentConfiguration();
 			client.setName(name);
 			client.setReceiveData(name);
 
@@ -71,7 +90,7 @@ public class Communication implements Runnable, IDataReceivedHandler, IAnswerHan
 	}
 
 	@Override
-	public void answer(IClientConfiguration configuration, byte[] data) {
+	public void answer(IConfiguration configuration, byte[] data) {
 		InetAddress address;
 		try {
 			address = InetAddress.getByName(configuration.getIpAddress());

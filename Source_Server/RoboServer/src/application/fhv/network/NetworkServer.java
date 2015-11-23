@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2015 - 2015, Kevin Wallis, All rights reserved.
+ * 
+ * Projectname: RoboServer
+ * Filename: NetworkServer.java
+ * 
+ * @author: Kevin Wallis
+ * @version: 1
+ */
 package network;
 
 import java.io.IOException;
@@ -8,9 +17,9 @@ import java.util.List;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import communication.IClientConfiguration;
+import communication.IConfiguration;
 import communication.managers.CommunicationManager;
-import communication.managers.IClientManager;
+import communication.managers.IConfigurationManager;
 import models.Client;
 
 @Singleton
@@ -36,31 +45,31 @@ public class NetworkServer {
 	public NetworkServer(IClientProvider clientProvider) throws SocketException {
 		this.roboSocket = new DatagramSocket(roboPort);
 		// Added network sender and receiver which can log
-		this.communicationManagerRobo = new CommunicationManager(new IClientManager() {
+		this.communicationManagerRobo = new CommunicationManager(new IConfigurationManager() {
 
 			@Override
-			public IClientConfiguration createClientConfiguration() {
+			public IConfiguration createConfiguration() {
 				Client client = new Client();
 				clientProvider.addRoboClient(client);
 				return client;
 			}
 
 			@Override
-			public List<IClientConfiguration> getConfigurations() {
+			public List<IConfiguration> getConfigurations() {
 				return clientProvider.getRoboClients();
 			}
 		});
 
 		this.appSocket = new DatagramSocket(appPort);
-		this.communicationManagerApp = new CommunicationManager(new IClientManager() {
+		this.communicationManagerApp = new CommunicationManager(new IConfigurationManager() {
 
 			@Override
-			public List<IClientConfiguration> getConfigurations() {
+			public List<IConfiguration> getConfigurations() {
 				return clientProvider.getAppClients();
 			}
 
 			@Override
-			public IClientConfiguration createClientConfiguration() {
+			public IConfiguration createConfiguration() {
 				Client client = new Client();
 				clientProvider.addAppClient(client);
 				return client;
@@ -78,12 +87,12 @@ public class NetworkServer {
 
 	public void sendToRobo(Client client) {
 		try {
-			appCommunication.sendToClient(client);
+			roboCommunication.sendToClient(client);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void shutdown() {
 		roboSocket.close();
 		roboCommunication.stop();

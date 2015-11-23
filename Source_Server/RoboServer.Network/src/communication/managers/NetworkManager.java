@@ -1,35 +1,48 @@
+/*
+ * Copyright (c) 2015 - 2015, Kevin Wallis, All rights reserved.
+ * 
+ * Projectname: RoboServer.Network
+ * Filename: NetworkManager.java
+ * 
+ * @author: Kevin Wallis
+ * @version: 1
+ */
 package communication.managers;
 
 import java.net.DatagramPacket;
 import java.util.List;
 import java.util.Optional;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import communication.IClientConfiguration;
+import communication.IConfiguration;
+import communication.pdu.PDU;
 
 public class NetworkManager extends LayerManager {
 
-	public NetworkManager(IClientManager manager, CurrentConfigurationService currentClientService) {
+	// Constructor
+	public NetworkManager(IConfigurationManager manager, CurrentConfigurationService currentClientService) {
 		super(manager, currentClientService);
 	}
 
+	// Methods
 	@Override
-	public boolean handleDataReceived(DatagramPacket packet, byte[] data, IAnswerHandler sender) {
+	public boolean handleDataReceived(DatagramPacket packet, PDU pdu, IAnswerHandler sender) {
 		String ipAddress = packet.getAddress().getHostName();
-		
-		List<IClientConfiguration> configurations = manager.getConfigurations();
-		Optional<IClientConfiguration> configuration = configurations.stream().filter(c -> c.getIpAddress().equals(ipAddress)).findFirst();
-		IClientConfiguration currentConfiguration = configuration.isPresent() ? configuration.get() : null;
-		
-		if (currentConfiguration == null) 
-		{
-			currentConfiguration = manager.createClientConfiguration();
+
+		List<IConfiguration> configurations = manager.getConfigurations();
+		IConfiguration currentConfiguration = getConfiguration(configurations, ipAddress);
+
+		if (currentConfiguration == null) {
+			currentConfiguration = manager.createConfiguration();
 			currentConfiguration.setIpAddress(ipAddress);
 		}
-		
-		currentClientService.setClient(currentConfiguration);
+
+		currentConfigurationService.setConfiguration(currentConfiguration);
 		return false;
+	}
+
+	private IConfiguration getConfiguration(List<IConfiguration> configurations, String ipAddress) {
+		Optional<IConfiguration> configuration = configurations.stream().filter(c -> c.getIpAddress().equals(ipAddress))
+				.findFirst();
+		return configuration.isPresent() ? configuration.get() : null;
 	}
 }

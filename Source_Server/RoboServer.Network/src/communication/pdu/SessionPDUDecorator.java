@@ -1,63 +1,89 @@
+/*
+ * Copyright (c) 2015 - 2015, Kevin Wallis, All rights reserved.
+ * 
+ * Projectname: RoboServer.Network
+ * Filename: SessionPDUDecorator.java
+ * 
+ * @author: Kevin Wallis
+ * @version: 1
+ */
 package communication.pdu;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.Arrays;
+
+import communication.utils.ByteParser;
 
 public class SessionPDUDecorator extends PDUDecorator {
 
-	private byte[] flags = new byte[] { 0b00000000 };
-	private byte[] sessionId = new byte[] { 0b00000000 };
-	
+	// Fields
+	private byte flags = (byte) 0b00000000;
+	private byte sessionId = (byte) 0b00000000;
+
+	// Constructors
 	public SessionPDUDecorator(PDU data) {
 		super(data);
-	}
-	
-	public SessionPDUDecorator(int flags, PDU data) {
-		super(data);
-		
-		// Integer to byte array
-		byte[] bytes = ByteBuffer.allocate(4).putInt(flags).array();
-		this.flags = new byte[] { bytes[3] };
+		header = new byte[] { this.flags, this.sessionId };
 	}
 
+	public SessionPDUDecorator(byte[] data) {
+		super(data);
+		header = new byte[] { this.flags, this.sessionId };
+	}
+
+	public SessionPDUDecorator(int sessionId, PDU data) {
+		super(data);
+
+		this.sessionId = ByteParser.intToByte(sessionId);
+		header = new byte[] { this.flags, this.sessionId };
+	}
+
+	public SessionPDUDecorator(int flags, int sessionId, PDU data) {
+		super(data);
+
+		this.flags = ByteParser.intToByte(flags);
+		this.sessionId = ByteParser.intToByte(sessionId);
+		header = new byte[] { this.flags, this.sessionId };
+	}
+
+	// Methods
 	@Override
-	protected byte[] enhanceData(PDU packet) {
+	protected byte[] getEnhanceDataCore(PDU packet) {
 		try {
-			
+
 			// Add flag and session bytes
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			outputStream.write(flags);
-			outputStream.write(sessionId);
+			outputStream.write(header);
 			outputStream.write(packet.getEnhancedData());
+			System.out.println(outputStream.toByteArray());
 			return outputStream.toByteArray();
-			
+
 		} catch (IOException e) {
 			return data;
 		}
 	}
-	
+
 	@Override
-	protected byte[] innerData(PDU packet) {
+	protected byte[] getInnerDataCore(PDU packet) {
 		// Remove the flag and session bytes
 		byte[] data = packet.getInnerData();
-		return Arrays.copyOfRange(data, flags.length + sessionId.length , data.length);
+		return Arrays.copyOfRange(data, header.length, data.length);
 	}
 
-	public void setFlags(byte[] flags) {
+	public void setFlags(byte flags) {
 		this.flags = flags;
 	}
-	
-	public void setSessionId(byte[] sessionId) {
+
+	public void setSessionId(byte sessionId) {
 		this.sessionId = sessionId;
 	}
-	
-	public byte[] getFlags() {
+
+	public byte getFlags() {
 		return flags;
 	}
-	
-	public byte[] getSessionId() {
+
+	public byte getSessionId() {
 		return sessionId;
 	}
 }

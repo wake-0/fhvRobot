@@ -1,13 +1,22 @@
+/*
+ * Copyright (c) 2015 - 2015, Kevin Wallis, All rights reserved.
+ * 
+ * Projectname: RoboServer.Test
+ * Filename: ConfigurationMock.java
+ * 
+ * @author: Kevin Wallis
+ * @version: 1
+ */
 package mocks;
 
-import communication.IClientConfiguration;
+import communication.IConfiguration;
 
-public class ConfigurationMock implements IClientConfiguration{
+public class ConfigurationMock implements IConfiguration {
 
 	private int sessionId;
 	private int port;
 	private String ipAddress;
-	
+
 	@Override
 	public void setSessionId(int sessionId) {
 		this.sessionId = sessionId;

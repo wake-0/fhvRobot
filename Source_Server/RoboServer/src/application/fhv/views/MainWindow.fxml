@@ -54,7 +54,7 @@
 			</children>
 		</AnchorPane>
 		<AnchorPane minHeight="0.0" minWidth="0.0">
-		<children>
+		<!-- <children>
 				<GridPane>
 					<columnConstraints>
 						<ColumnConstraints />
@@ -93,7 +93,7 @@
 					</children>
 				</GridPane>
 			</children>
-		</AnchorPane>
+ -->		</AnchorPane>
 		<!-- <AnchorPane> -->
 			<!-- <MediaView> -->
 			<!-- <MediaPlayer fx:id="mediaPlayer" autoPlay="true" /> -->

@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2015 - 2015, Kevin Wallis, All rights reserved.
+ * 
+ * Projectname: RoboServer.Network
+ * Filename: ApplicationPDUDecorator.java
+ * 
+ * @author: Kevin Wallis
+ * @version: 1
+ */
 package communication.pdu;
 
 import java.io.ByteArrayOutputStream;
@@ -6,21 +15,32 @@ import java.util.Arrays;
 
 public class ApplicationPDUDecorator extends PDUDecorator {
 
-	private byte[] flags;
-	
+	// Fields
+	private byte flags = (byte) 0b00000000;
+	private byte commands = (byte) 0b00000000;
+	private byte length = (byte) 0b00000000;
+
+	// Constructor
 	public ApplicationPDUDecorator(PDU data) {
 		super(data);
-		
-		flags = new byte[] { 0b00000000 };
+
+		header = new byte[] { flags, commands, length };
 	}
 
+	public ApplicationPDUDecorator(byte[] data) {
+		super(data);
+
+		header = new byte[] { flags, commands, length };
+	}
+
+	// Methods
 	@Override
-	protected byte[] enhanceData(PDU packet) {
+	protected byte[] getEnhanceDataCore(PDU packet) {
 		try {
 
 			// Add flag bytes
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			outputStream.write(flags);
+			outputStream.write(header);
 			outputStream.write(data);
 			return outputStream.toByteArray();
 
@@ -30,7 +50,7 @@ public class ApplicationPDUDecorator extends PDUDecorator {
 	}
 
 	@Override
-	protected byte[] innerData(PDU packet) {
-		return Arrays.copyOfRange(packet.getInnerData(), flags.length, data.length);
+	protected byte[] getInnerDataCore(PDU packet) {
+		return Arrays.copyOfRange(packet.getInnerData(), header.length, data.length);
 	}
 }
