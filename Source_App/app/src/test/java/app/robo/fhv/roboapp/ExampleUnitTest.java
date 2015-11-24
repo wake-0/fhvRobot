@@ -1,4 +1,4 @@
-package robo.fhv.roboapp;
+package app.robo.fhv.roboapp;
 
 import org.junit.Test;
 

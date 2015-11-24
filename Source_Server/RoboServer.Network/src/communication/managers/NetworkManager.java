@@ -11,7 +11,6 @@ package communication.managers;
 
 import java.net.DatagramPacket;
 import java.util.List;
-import java.util.Optional;
 
 import communication.IConfiguration;
 import communication.pdu.NetworkPDU;
@@ -41,8 +40,15 @@ public class NetworkManager extends LayerManager<NetworkPDU> {
 	}
 
 	private IConfiguration getConfiguration(List<IConfiguration> configurations, String ipAddress) {
-		Optional<IConfiguration> configuration = configurations.stream().filter(c -> c.getIpAddress().equals(ipAddress))
-				.findFirst();
-		return configuration.isPresent() ? configuration.get() : null;
+
+		IConfiguration configuration = null;
+		for (IConfiguration config : configurations) {
+			if (config.getIpAddress().equals(ipAddress)) {
+				configuration = config;
+				break;
+			}
+		}
+
+		return configuration;
 	}
 }

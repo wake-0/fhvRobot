@@ -53,13 +53,17 @@ public class SessionManager extends LayerManager<SessionPDU> {
 
 			// Create answer pdu
 			byte[] answer = pdu.getEnhancedData();
-			answer[0] = defaultConnectionFlags;
+			answer[0] = initConnectionFlags;
 			answer[1] = newByteSession;
 
 			// Send answer pdu
 			sender.answer(currentConfiguration, answer);
 
 			// Everything is handled so no need to go to the upper layers
+			handled = true;
+		} else if (flags == initConnectionFlags && sessionId != initConnectionSession) {
+			// Set session id
+			currentConfiguration.setSessionId(pdu.getSessionId());
 			handled = true;
 		}
 
