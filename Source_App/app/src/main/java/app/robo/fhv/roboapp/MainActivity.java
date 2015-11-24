@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
             new Thread(client).start();
         } catch (Exception e) {
             e.printStackTrace();
+
+            textView.setText("Error");
         }
 
         button.setOnClickListener(new View.OnClickListener() {

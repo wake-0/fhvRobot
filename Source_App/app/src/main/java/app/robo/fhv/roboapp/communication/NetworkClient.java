@@ -32,8 +32,9 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
 
     public NetworkClient(TextView textView) throws SocketException, UnknownHostException {
         int port = 998;
+        //String address = "83.212.127.13";
         String address = "10.0.2.2";
-        this.clientSocket = new DatagramSocket(port, InetAddress.getByName(address));
+        this.clientSocket = new DatagramSocket();
         this.textView = textView;
 
         this.configManager = new ConfigurationManager();
@@ -74,6 +75,8 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
 
                     DatagramPacket receiveSessionPacket = new DatagramPacket(receiveData, receiveData.length);
                     clientSocket.receive(receiveSessionPacket);
+
+                    comManager.readDatagramPacket(receiveSessionPacket, this, this);
 
                     isConnectionOpened = true;
                 } else {
