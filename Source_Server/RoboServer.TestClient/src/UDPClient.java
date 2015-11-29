@@ -28,7 +28,7 @@ public class UDPClient
 
 	private String address = "127.0.0.1";
 	// private String address = "83.212.127.13";
-	private int port = 997;
+	private int port = 998;
 	private DatagramSocket clientSocket;
 	private int sessionId = 0b00000000;
 

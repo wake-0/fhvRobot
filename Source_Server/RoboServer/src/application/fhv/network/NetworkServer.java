@@ -23,8 +23,8 @@ public class NetworkServer {
 	private final Communication appCommunication;
 
 	// Ports
-	private final int roboPort = 997;
-	private final int appPort = 998;
+	private final int roboPort = 998;
+	private final int appPort = 997;
 
 	// Constructor
 	public NetworkServer(ClientController<Client> roboController, ClientController<Client> appController)
@@ -53,5 +53,13 @@ public class NetworkServer {
 	public void shutdown() {
 		roboCommunication.stop();
 		appCommunication.stop();
+	}
+
+	public void sendToApp(Client client) {
+		try {
+			appCommunication.sendToClient(client);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
