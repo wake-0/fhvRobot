@@ -1,17 +1,12 @@
 package app.robo.fhv.roboapp;
 
 import android.app.Activity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.w3c.dom.Text;
-
-import java.net.SocketException;
 
 import app.robo.fhv.roboapp.communication.NetworkClient;
 
@@ -22,6 +17,12 @@ public class MainActivity extends Activity {
     private TextView textView;
     private EditText editText;
     private Button button;
+    private SeekBar sbLeft;
+    private SeekBar sbRight;
+    private TextView tvLeft;
+    private TextView tvRight;
+
+    private int stepSize = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,14 @@ public class MainActivity extends Activity {
 
         textView.setText("text view");
         editText.setText("edit text");
+
+        sbLeft = (SeekBar) findViewById(R.id.sbLeft);
+        sbRight = (SeekBar) findViewById(R.id.sbRight);
+        tvLeft = (TextView) findViewById(R.id.tvLeft);
+        tvRight = (TextView) findViewById(R.id.tvRight);
+
+        sbLeft.setProgress(30);
+        sbRight.setProgress(30);
 
         try {
             client = new NetworkClient(textView);
@@ -50,5 +59,47 @@ public class MainActivity extends Activity {
                 client.send(editText.getText().toString());
             }
         });
+
+
+        sbLeft.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                progress = (progress/stepSize)*stepSize;
+                seekBar.setProgress(progress);
+                tvLeft.setText(String.valueOf(progress));
+                client.driveLeft(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        sbRight.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                progress = (progress/stepSize)*stepSize;
+                seekBar.setProgress(progress);
+                tvRight.setText(String.valueOf(progress));
+                client.driveRight(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
+
+
 }

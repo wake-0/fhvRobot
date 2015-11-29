@@ -12,11 +12,14 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import app.robo.fhv.roboapp.utils.ProgressMapper;
 import communication.IConfiguration;
+import communication.commands.Commands;
 import communication.managers.CommunicationManager;
 import communication.managers.IAnswerHandler;
 import communication.managers.IDataReceivedHandler;
 import communication.pdu.ApplicationPDU;
+import communication.utils.NumberParser;
 
 /**
  * Created by Kevin on 05.11.2015.
@@ -53,8 +56,23 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
     }
 
     public void send(String message) {
-        SendTask task = new SendTask(clientSocket, comManager);
-        task.execute(message);
+        DatagramPacket sendPacket = comManager.createDatagramPacket(configuration, message);
+        new SendTask(clientSocket).execute(sendPacket);
+    }
+
+    public void driveLeft(int leftValue) {
+        sendCommand(Commands.DRIVE_LEFT, leftValue);
+    }
+
+    public void driveRight(int rightValue) {
+        sendCommand(Commands.DRIVE_RIGHT, rightValue);
+    }
+
+    private void sendCommand(int command, int value) {
+        int mappedValue = ProgressMapper.progressToDriveValue(value);
+        byte byteValue = NumberParser.intToByte(mappedValue);
+        DatagramPacket packet = comManager.createDatagramPacket(configuration, command, new byte[]{byteValue});
+        new SendTask(clientSocket).execute(packet);
     }
 
     @Override
@@ -114,22 +132,20 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
         return true;
     }
 
-    private class SendTask extends AsyncTask<String, Void, Void> {
+    private class SendTask extends AsyncTask<DatagramPacket, Void, Void> {
 
-        private final CommunicationManager comManager;
         private final DatagramSocket clientSocket;
 
-        protected SendTask(DatagramSocket clientSocket, CommunicationManager communicationManager) {
-            this.comManager = communicationManager;
+        protected SendTask(DatagramSocket clientSocket) {
             this.clientSocket = clientSocket;
         }
 
         @Override
-        protected Void doInBackground(String... message) {
-            // TODO: check message
-            DatagramPacket sendPacket = comManager.createDatagramPacket(configuration, message[0]);
+        protected Void doInBackground(DatagramPacket ... packet) {
+            if (packet == null) { return null; }
+
             try {
-                clientSocket.send(sendPacket);
+                clientSocket.send(packet[0]);
             } catch (IOException e) {
                 e.printStackTrace();
             }
