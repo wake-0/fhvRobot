@@ -1,5 +1,8 @@
 package app.robo.fhv.roboapp.communication;
 
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -31,7 +34,7 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
     private final IConfiguration configuration;
 
     public NetworkClient(TextView textView) throws SocketException, UnknownHostException {
-        int port = 998;
+        int port = 997;
         //String address = "83.212.127.13";
         String address = "10.0.2.2";
         this.clientSocket = new DatagramSocket();
@@ -50,12 +53,8 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
     }
 
     public void send(String message) {
-        DatagramPacket sendPacket = comManager.createDatagramPacket(configuration, message);
-        try {
-            clientSocket.send(sendPacket);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        SendTask task = new SendTask(clientSocket, comManager);
+        task.execute(message);
     }
 
     @Override
@@ -103,7 +102,38 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
 
     @Override
     public boolean handleDataReceived(DatagramPacket datagramPacket, ApplicationPDU applicationPDU, IAnswerHandler iAnswerHandler) {
-        textView.setText("payload[" + applicationPDU.getPayload() + "], command[" + applicationPDU.getCommand() + "]");
+        final String message = "payload[" + applicationPDU.getPayload() + "], command[" + applicationPDU.getCommand() + "]";
+        Handler updateView = new Handler(Looper.getMainLooper());
+        updateView.post(new Runnable() {
+            @Override
+            public void run() {
+                textView.setText(message);
+            }
+        });
+
         return true;
+    }
+
+    private class SendTask extends AsyncTask<String, Void, Void> {
+
+        private final CommunicationManager comManager;
+        private final DatagramSocket clientSocket;
+
+        protected SendTask(DatagramSocket clientSocket, CommunicationManager communicationManager) {
+            this.comManager = communicationManager;
+            this.clientSocket = clientSocket;
+        }
+
+        @Override
+        protected Void doInBackground(String... message) {
+            // TODO: check message
+            DatagramPacket sendPacket = comManager.createDatagramPacket(configuration, message[0]);
+            try {
+                clientSocket.send(sendPacket);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 }
