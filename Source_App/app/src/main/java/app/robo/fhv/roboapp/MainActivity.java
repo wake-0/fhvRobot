@@ -1,5 +1,6 @@
 package app.robo.fhv.roboapp;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,7 +15,7 @@ import java.net.SocketException;
 
 import app.robo.fhv.roboapp.communication.NetworkClient;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     private NetworkClient client;
 
