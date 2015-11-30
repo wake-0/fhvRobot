@@ -12,15 +12,16 @@ import communication.managers.IConfigurationManager;
 public class ConfigurationManager implements IConfigurationManager {
 
     private List<IConfiguration> configurations;
+    private Configuration configuration;
 
     public ConfigurationManager() {
+        configuration = new Configuration();
         configurations = new ArrayList<>();
+        configurations.add(configuration);
     }
 
     @Override
     public IConfiguration createConfiguration() {
-        Configuration configuration = new Configuration();
-        configurations.add(configuration);
         return configuration;
     }
 

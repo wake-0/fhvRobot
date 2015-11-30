@@ -19,7 +19,7 @@ import communication.utils.NumberParser;
 public class SessionManager extends LayerManager<SessionPDU> {
 
 	// Fields
-	private final int minSessionNumber = 0;
+	private final int minSessionNumber = 1;
 	private final int maxSessionNumber = 127;
 
 	private final byte initConnectionFlags = (byte) 0b00000001;
