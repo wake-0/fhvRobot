@@ -34,6 +34,7 @@ public class UDPClient
 
 	private CommunicationManager manager;
 	private IConfiguration configuration;
+	private List<IConfiguration> configurations;
 
 	private int flow = 0;
 
@@ -42,10 +43,14 @@ public class UDPClient
 			manager = new CommunicationManager(this);
 			clientSocket = new DatagramSocket();
 
+			this.configurations = new ArrayList<>();
+
 			this.configuration = new ClientConfiguration();
 			configuration.setIpAddress(address);
 			configuration.setPort(port);
 			configuration.setSessionId(sessionId);
+
+			configurations.add(configuration);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -121,7 +126,7 @@ public class UDPClient
 
 	@Override
 	public List<IConfiguration> getConfigurations() {
-		return new ArrayList<>();
+		return configurations;
 	}
 
 }
