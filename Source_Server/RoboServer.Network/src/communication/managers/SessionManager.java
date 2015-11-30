@@ -20,9 +20,9 @@ public class SessionManager extends LayerManager<SessionPDU> {
 
 	// Fields
 	private final int minSessionNumber = 0;
-	private final int maxSessionNumber = 255;
+	private final int maxSessionNumber = 127;
 
-	private final byte initConnectionFlags = (byte) 0b10000000;
+	private final byte initConnectionFlags = (byte) 0b00000001;
 	private final byte initConnectionSession = (byte) 0b00000000;
 	private final byte defaultConnectionFlags = (byte) 0b00000000;
 
@@ -45,6 +45,7 @@ public class SessionManager extends LayerManager<SessionPDU> {
 
 		// Only create a new session id at the beginning --> this is not save
 		if (flags == initConnectionFlags && sessionId == initConnectionSession) {
+
 			int newIntSession = createNewSessionNumber(currentConfiguration.getSessionId());
 			byte newByteSession = NumberParser.intToByte(newIntSession);
 

@@ -120,7 +120,7 @@ public class Client implements Comparable<Client>, IConfiguration {
 		sessionId.set(value);
 	}
 
-	public IntegerProperty sessionIdProperty() {
+	public IntegerProperty SessionIdProperty() {
 		return sessionId;
 	}
 

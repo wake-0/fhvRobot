@@ -78,6 +78,7 @@ public class RoboTabPageController implements Initializable {
 	private void handleSendClick() {
 		System.out.println("button send clicked.");
 		Client selectedClient = roboController.getSelectedClient();
+		selectedClient.setSendData(tfSend.getText());
 
 		if (selectedClient != null) {
 			server.sendToRobo(selectedClient);
@@ -110,7 +111,7 @@ public class RoboTabPageController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// Initialize the person table with the two columns.
-		tcRoboId.setCellValueFactory(cellData -> cellData.getValue().IdProperty());
+		tcRoboId.setCellValueFactory(cellData -> cellData.getValue().SessionIdProperty());
 		tcRoboName.setCellValueFactory(cellData -> cellData.getValue().NameProperty());
 		tcRoboIp.setCellValueFactory(cellData -> cellData.getValue().IpAddressProperty());
 
@@ -119,12 +120,10 @@ public class RoboTabPageController implements Initializable {
 			@Override
 			public void changed(ObservableValue<? extends Client> observable, Client oldValue, Client newValue) {
 				if (newValue != null) {
-					tfName.textProperty().bindBidirectional(newValue.NameProperty());
-					tfSend.textProperty().bindBidirectional(newValue.SendDataProperty());
+					tfName.textProperty().bind(newValue.NameProperty());
 					tfReceive.textProperty().bind(newValue.ReceiveDataProperty());
 				} else if (oldValue != null) {
-					tfSend.textProperty().unbindBidirectional(oldValue.SendDataProperty());
-					tfName.textProperty().unbindBidirectional(oldValue.NameProperty());
+					tfName.textProperty().unbind();
 					tfReceive.textProperty().unbind();
 				}
 

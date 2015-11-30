@@ -116,7 +116,7 @@ public class UDPClient
 
 	@Override
 	public IConfiguration createConfiguration() {
-		return new ClientConfiguration();
+		return configuration;
 	}
 
 	@Override

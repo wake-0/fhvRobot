@@ -64,6 +64,7 @@ public class AppTabPageController implements Initializable {
 	private void handleSendClick() {
 		System.out.println("button send clicked.");
 		Client selectedClient = appController.getSelectedClient();
+		selectedClient.setSendData(tfSend.getText());
 
 		if (selectedClient != null) {
 			server.sendToApp(selectedClient);
@@ -87,12 +88,10 @@ public class AppTabPageController implements Initializable {
 			@Override
 			public void changed(ObservableValue<? extends Client> observable, Client oldValue, Client newValue) {
 				if (newValue != null) {
-					tfName.textProperty().bindBidirectional(newValue.NameProperty());
-					tfSend.textProperty().bindBidirectional(newValue.SendDataProperty());
+					tfName.textProperty().bind(newValue.NameProperty());
 					tfReceive.textProperty().bind(newValue.ReceiveDataProperty());
 				} else if (oldValue != null) {
-					tfSend.textProperty().unbindBidirectional(oldValue.SendDataProperty());
-					tfName.textProperty().unbindBidirectional(oldValue.NameProperty());
+					tfName.textProperty().unbind();
 					tfReceive.textProperty().unbind();
 				}
 

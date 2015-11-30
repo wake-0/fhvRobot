@@ -107,7 +107,7 @@ public class CommunicationManager {
 
 	private PDU createOpenConnectionPDU(String message) {
 		int sessionId = 0b00000000;
-		int flags = 0b10000000;
+		int flags = 0b00000001;
 
 		return new NetworkPDU(new TransportPDU(
 				new SessionPDU(flags, sessionId, new PresentationPDU(new ApplicationPDU(new PDU(message))))));
