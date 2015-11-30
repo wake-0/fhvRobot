@@ -57,6 +57,8 @@ public class NetworkManager extends LayerManager<NetworkPDU> {
 		int sessionId = sessionPDU.getSessionId();
 		int flags = sessionPDU.getFlags();
 
+		// TODO: Add check for allowed session id
+
 		// It is necessary to create a new configuration
 		if (sessionId == 0 && flags == 1) {
 			return null;

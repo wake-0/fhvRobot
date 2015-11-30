@@ -29,5 +29,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.0'
     compile 'RoboServer.Network:RoboServer.Network:0.0.1-SNAPSHOT'
+    compile 'RoboServer.ApplicationProtocol:RoboServer.ApplicationProtocol:0.0.1-SNAPSHOT'
     compile 'com.h6ah4i.android.widget.verticalseekbar:verticalseekbar:0.5.2'
 }

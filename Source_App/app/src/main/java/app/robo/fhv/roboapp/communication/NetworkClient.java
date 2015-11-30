@@ -8,7 +8,6 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
@@ -49,15 +48,12 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
         this.configuration = this.configManager.createConfiguration();
 
         // Setup configuration
-        // TODO: Add server ip address
-        //this.configuration.setIpAddress("127.0.0.1");
         this.configuration.setIpAddress(address);
         this.configuration.setPort(port);
     }
 
     public void send(String message) {
-        DatagramPacket sendPacket = comManager.createDatagramPacket(configuration, message);
-        new SendTask(clientSocket).execute(sendPacket);
+        new SendTask(clientSocket, comManager, configuration, Commands.CHANGE_NAME).execute(message.getBytes());
     }
 
     public void driveLeft(int leftValue) {
@@ -71,8 +67,7 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
     private void sendCommand(int command, int value) {
         int mappedValue = ProgressMapper.progressToDriveValue(value);
         byte byteValue = NumberParser.intToByte(mappedValue);
-        DatagramPacket packet = comManager.createDatagramPacket(configuration, command, new byte[]{byteValue});
-        new SendTask(clientSocket).execute(packet);
+        new SendTask(clientSocket, comManager, configuration, command).execute(new byte[]{byteValue});
     }
 
     @Override
@@ -132,20 +127,26 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
         return true;
     }
 
-    private class SendTask extends AsyncTask<DatagramPacket, Void, Void> {
+    private class SendTask extends AsyncTask<byte[], Void, Void> {
 
         private final DatagramSocket clientSocket;
+        private final CommunicationManager communicationManager;
+        private final IConfiguration configuration;
+        private final int command;
 
-        protected SendTask(DatagramSocket clientSocket) {
+        protected SendTask(DatagramSocket clientSocket, CommunicationManager communicationManager, IConfiguration configuration, int command) {
             this.clientSocket = clientSocket;
+            this.communicationManager = communicationManager;
+            this.configuration = configuration;
+            this.command = command;
         }
 
         @Override
-        protected Void doInBackground(DatagramPacket ... packet) {
-            if (packet == null) { return null; }
+        protected Void doInBackground(byte[] ... message) {
+            DatagramPacket sendPacket = communicationManager.createDatagramPacket(configuration, command, message[0]);
 
             try {
-                clientSocket.send(packet[0]);
+                clientSocket.send(sendPacket);
             } catch (IOException e) {
                 e.printStackTrace();
             }

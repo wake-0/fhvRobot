@@ -79,7 +79,7 @@ public class AppTabPageController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// Initialize the person table with the two columns.
-		tcAppId.setCellValueFactory(cellData -> cellData.getValue().IdProperty());
+		tcAppId.setCellValueFactory(cellData -> cellData.getValue().SessionIdProperty());
 		tcAppName.setCellValueFactory(cellData -> cellData.getValue().NameProperty());
 		tcAppIp.setCellValueFactory(cellData -> cellData.getValue().IpAddressProperty());
 
