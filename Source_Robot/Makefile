@@ -73,10 +73,12 @@ MSG_LINKING = ---LINK---
 MSG_SUCCESS = ---SUCCESS--- 
 
 # Main project
-all: $(PROJECT) $(CPPSRC) $(DEPS) ./source/impl/* ./source/tests/testsuite.cpp
+all: $(PROJECT) $(CPPSRC) $(DEPS) $(SOURCES) $(CPPOBJ) ./source/impl/* ./source/tests/testsuite.cpp
+
+.PHONY: all test clean
 
 # Linker call
-$(PROJECT): $(COBJ)
+$(PROJECT): $(COBJ) $(SOURCES)
 	$(CXX) -c ./source/main.cpp -o $(OBJDIR)/main.o -Wall
 	$(CXX) -c ./source/impl/Robot.cpp -o $(OBJDIR)/impl/Robot.o -Wall
 	$(CXX) -c ./source/impl/ConnectionLayer.cpp -o $(OBJDIR)/impl/ConnectionLayer.o -Wall
