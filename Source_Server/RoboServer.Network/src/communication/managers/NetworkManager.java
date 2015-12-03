@@ -34,8 +34,9 @@ public class NetworkManager extends LayerManager<NetworkPDU> {
 		List<IConfiguration> configurations = manager.getConfigurations();
 
 		if (configurations.size() >= maxConfigurationCount) {
-			// TODO: answer no free space
-			// sender.answer(configuration, datagram);
+			// No free slot answer
+			DatagramPacket answerPacket = createNoFreeSlotPacket();
+			sender.answer(new Configuration(0, packet.getPort(), packet.getAddress().getHostName()), answerPacket);
 			return true;
 		}
 
@@ -48,6 +49,14 @@ public class NetworkManager extends LayerManager<NetworkPDU> {
 
 		currentConfigurationService.setConfiguration(currentConfiguration);
 		return false;
+	}
+
+	private DatagramPacket createNoFreeSlotPacket() {
+		byte answerFlags = 0;
+		byte answerSessionId = 0;
+		byte[] answer = new byte[] { answerFlags, answerSessionId };
+		DatagramPacket answerPacket = new DatagramPacket(answer, answer.length);
+		return answerPacket;
 	}
 
 	private IConfiguration getConfiguration(List<IConfiguration> configurations, String ipAddress, NetworkPDU pdu) {
@@ -71,5 +80,48 @@ public class NetworkManager extends LayerManager<NetworkPDU> {
 		}
 
 		return null;
+	}
+
+	private class Configuration implements IConfiguration {
+
+		private int sessionId;
+		private int port;
+		private String ipAddress;
+
+		public Configuration(int sessionId, int port, String ipAddress) {
+			this.sessionId = sessionId;
+			this.port = port;
+			this.ipAddress = ipAddress;
+		}
+
+		@Override
+		public void setSessionId(int sessionId) {
+			this.sessionId = sessionId;
+		}
+
+		@Override
+		public int getSessionId() {
+			return sessionId;
+		}
+
+		@Override
+		public void setIpAddress(String ipAddress) {
+			this.ipAddress = ipAddress;
+		}
+
+		@Override
+		public String getIpAddress() {
+			return ipAddress;
+		}
+
+		@Override
+		public void setPort(int port) {
+			this.port = port;
+		}
+
+		@Override
+		public int getPort() {
+			return port;
+		}
 	}
 }
