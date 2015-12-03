@@ -10,6 +10,8 @@
 package communication.managers;
 
 import java.net.DatagramPacket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import communication.IConfiguration;
@@ -46,9 +48,14 @@ public class SessionManager extends LayerManager<SessionPDU> {
 		// Only create a new session id at the beginning --> this is not save
 		if (flags == initConnectionFlags && sessionId == initConnectionSession) {
 
+			List<Integer> alreadyUsedSessions = new ArrayList<>();
+			for (IConfiguration configuration : manager.getConfigurations()) {
+				alreadyUsedSessions.add(configuration.getSessionId());
+			}
+
 			// TODO: create a new create SessionNumberAlgorithm
 			// because the old one is not checking the already used session ids
-			int newIntSession = createNewSessionNumber(currentConfiguration.getSessionId());
+			int newIntSession = createNewSessionNumber(currentConfiguration.getSessionId(), alreadyUsedSessions);
 			byte newByteSession = NumberParser.intToByte(newIntSession);
 
 			// Set the session id for the configuration
@@ -73,13 +80,13 @@ public class SessionManager extends LayerManager<SessionPDU> {
 		return handled;
 	}
 
-	private int createNewSessionNumber(int oldSessionNumber) {
+	private int createNewSessionNumber(int oldSessionNumber, List<Integer> notAllowedSessions) {
 		int newNumber = oldSessionNumber;
 		{
 			// Create new session number between min and max
 			newNumber = ThreadLocalRandom.current().nextInt(minSessionNumber, maxSessionNumber + 1);
 		}
-		while (newNumber == oldSessionNumber)
+		while (newNumber == oldSessionNumber || notAllowedSessions.contains(newNumber))
 			;
 
 		return newNumber;
