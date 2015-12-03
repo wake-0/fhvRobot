@@ -63,6 +63,8 @@ int main(void)
 	tests++;
 #endif
 
+	for (volatile int i = 0; i < 0x0FFFF; i++);
+
 	printf("Testsuite done.\n");
 	printf("---------------\n");
 	printf("Tests OK: %d\n", tests_ok);
@@ -83,19 +85,21 @@ bool test_connection_api() {
 	pres.SetCallback(&app);
 	app.SetCallback(&connection);
 
+	connection.SetConnection(&app);
 	// Fail tests
 	bool res;
 	res = connection.Connect("Nico", "125", 111);
 	if (res == true) {
 		return false;
 	}
+
 	res = connection.Connect("Nico", "127.0.0.1", 111);
 	if (res == true) {
 		return false;
 	}
 
 	// Succeed test
-	res = connection.Connect("Nico", "83.212.127.13", 997);
+	res = connection.Connect("Nico", "83.212.127.13", 998);
 	if (res == false) {
 		return false;
 	}
