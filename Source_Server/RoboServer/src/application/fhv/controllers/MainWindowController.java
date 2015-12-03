@@ -1,145 +1,54 @@
+/*
+ * Copyright (c) 2015 - 2015, Kevin Wallis, All rights reserved.
+ * 
+ * Projectname: RoboServer
+ * Filename: MainWindowController.java
+ * 
+ * @author: Kevin Wallis
+ * @version: 1
+ */
 package controllers;
 
-import java.io.IOException;
+import java.net.SocketException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
-
-import communication.IClientConfiguration;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import models.Client;
-import network.IClientProvider;
 import network.NetworkServer;
 
-@Singleton
-public class MainWindowController implements Initializable, IClientProvider {
+public class MainWindowController implements Initializable {
 
-	// fields
+	// Fields
 	private NetworkServer server;
-	private Client selectedClient;
-	private ObservableList<Client> observableClients;
-	private Thread serverThread;
-	
-	// FXML fields
-	@FXML
-	private TableView<Client> tvClients;
-	@FXML
-	private TableColumn<Client, Number> tcId;
-	@FXML
-    private TableColumn<Client, String> tcName;
-    @FXML
-    private TableColumn<Client, String> tcIp;
-	@FXML
-	private TextField tfSend;
-	@FXML
-	private TextField tfReceive;
-	@FXML
-	private TextField tfName;
-	//@FXML
-	//private MediaPlayer mediaPlayer;
-	
-	// methods
-	@FXML
-	private void handleKillClick() {
-		System.out.println("button kill clicked.");
-		if (selectedClient != null) {
-			//tvClients.getItems().remove(tvClients.getSelectionModel().getSelectedItem());
-			removeClient(selectedClient);
-			
-		}
-	}
+
+	private ClientController<Client> roboController;
+	private ClientController<Client> appController;
 
 	@FXML
-	private void handleUpClick() {
-		System.out.println("button up clicked.");
-	}
-
+	private AppTabPageController tab2Controller;
 	@FXML
-	private void handleSendClick() {
-		System.out.println("button send clicked.");
-		if (selectedClient != null) {
-			try {
-				server.send(selectedClient);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	@FXML
-	private void handleDownClick() {
-		System.out.println("button down clicked.");
-	}
+	private RoboTabPageController tab1Controller;
 
+	// Methods
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		observableClients = FXCollections.observableArrayList();
-		
-		// Initialize the person table with the two columns.
-		tcId.setCellValueFactory(cellData -> cellData.getValue().IdProperty());
-        tcName.setCellValueFactory(cellData -> cellData.getValue().NameProperty());
-        tcIp.setCellValueFactory(cellData -> cellData.getValue().IpAddressProperty());
-		
-		tvClients.setItems(observableClients);
-		tvClients.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Client>() {
-		    @Override
-		    public void changed(ObservableValue<? extends Client> observable, Client oldValue, Client newValue) {
-		    	if (newValue != null) {
-		    		tfName.textProperty().bindBidirectional(newValue.NameProperty());
-					tfSend.textProperty().bindBidirectional(newValue.SendDataProperty());
-					tfReceive.textProperty().bind(newValue.ReceiveDataProperty());
-		    	} 
-		    	else if (oldValue != null) 
-		    	{
-		    		tfSend.textProperty().unbindBidirectional(oldValue.SendDataProperty());
-		    		tfName.textProperty().unbindBidirectional(oldValue.NameProperty());
-		    		tfReceive.textProperty().unbind();
-		    	}
-		    	
-		    	selectedClient = newValue;
-		    }
-		});
-		
-		Injector injector = Guice.createInjector(new AppInjector(this));
-		this.server = injector.getInstance(NetworkServer.class);
-		serverThread = new Thread(server);
-		serverThread.start();
-	}
-
-	public void addClient(Client client) {
-		observableClients.add(client);
-	}
-
-	public void removeClient(Client client) {
-		observableClients.remove(client);
-	}
-	
-	public void shutdown() {
 		try {
-			server.shutdown();
-			serverThread.join();
-		} catch (InterruptedException e) {
+			roboController = tab1Controller.getRoboController();
+			appController = tab2Controller.getAppController();
+
+			this.server = new NetworkServer(roboController, appController);
+
+			tab1Controller.setServer(server);
+			tab2Controller.setServer(server);
+
+		} catch (SocketException e) {
 			e.printStackTrace();
 		}
 	}
-	
 
-	@Override
-	public List<IClientConfiguration> getClients() {
-		// TODO Auto-generated method stub
-		return new ArrayList<>(observableClients);
+	public void shutdown() {
+		server.shutdown();
 	}
 }

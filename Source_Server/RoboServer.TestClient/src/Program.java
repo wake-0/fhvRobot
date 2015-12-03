@@ -1,11 +1,7 @@
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-
 public class Program {
 
 	public static void main(String[] args) {
-		Injector injector = Guice.createInjector(new AppInjector());
-		UDPClient client = injector.getInstance(UDPClient.class);
+		UDPClient client = new UDPClient();
 		new Thread(client).start();
 	}
 	

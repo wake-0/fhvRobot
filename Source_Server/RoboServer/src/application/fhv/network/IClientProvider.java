@@ -1,13 +1,23 @@
+/*
+ * Copyright (c) 2015 - 2015, Kevin Wallis, All rights reserved.
+ * 
+ * Projectname: RoboServer
+ * Filename: IClientProvider.java
+ * 
+ * @author: Kevin Wallis
+ * @version: 1
+ */
 package network;
 
 import java.util.List;
 
-import communication.IClientConfiguration;
-import models.Client;
+import communication.IConfiguration;
 
-public interface IClientProvider {
+public interface IClientProvider<T extends IConfiguration> {
 
-	public void addClient(Client client);
-	public void removeClient(Client client);
-	public List<IClientConfiguration> getClients();
+	public void addClient(T client);
+
+	public void removeClient(T client);
+
+	public List<T> getClients();
 }

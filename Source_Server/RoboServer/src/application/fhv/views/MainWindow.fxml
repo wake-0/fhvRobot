@@ -8,55 +8,19 @@
 <?import javafx.scene.control.* ?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<SplitPane dividerPositions="0.5" prefHeight="500.0" prefWidth="900.0" maxHeight="Infinity" maxWidth="Infinity" xmlns="http://javafx.com/javafx/8"
-	xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainWindowController">
+<TabPane prefHeight="500.0" prefWidth="900.0" maxHeight="Infinity" maxWidth="Infinity" xmlns="http://javafx.com/javafx/8"
+	xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainWindowController" tabClosingPolicy="UNAVAILABLE">
 
-	<items>
-		<AnchorPane minHeight="0.0" minWidth="0.0">
-			<children>
-				<GridPane>
-					<columnConstraints>
-						<ColumnConstraints />
-						<ColumnConstraints />
-					</columnConstraints>
-					<rowConstraints>
-						<RowConstraints vgrow="ALWAYS" />
-						<RowConstraints vgrow="ALWAYS" />
-						<RowConstraints vgrow="ALWAYS" />
-						<RowConstraints vgrow="NEVER" maxHeight="300" />
-					</rowConstraints>
-
-					<children>
-						<TextField fx:id="tfName" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
-						<TextField fx:id="tfSend" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-						<TextField fx:id="tfReceive" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
-
-						<TableView fx:id="tvClients" GridPane.rowIndex="3" GridPane.columnIndex="0">
-							<columns>
-								<TableColumn fx:id="tcId" text="Id" prefWidth="100" />
-								<TableColumn fx:id="tcName" text="Name" prefWidth="100" />
-								<TableColumn fx:id="tcIp" text="IP Address" prefWidth="200" />
-							</columns>
-						</TableView>
-
-						<Button fx:id="btnKill" onAction="#handleKillClick" text="Kill" GridPane.rowIndex="0" GridPane.columnIndex="1" />
-
-						<Button fx:id="btnSend" onAction="#handleSendClick" text="Send" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-
-						<VBox GridPane.valignment="CENTER" GridPane.rowIndex="3" GridPane.columnIndex="1">
-							<children>
-								<Button fx:id="btnUp" onAction="#handleUpClick" text="Up" />
-								<Button fx:id="btnDown" onAction="#handleDownClick" text="Down" />
-							</children>
-						</VBox>
-					</children>
-				</GridPane>
-			</children>
-		</AnchorPane>
-		<AnchorPane>
-			<!-- <MediaView> -->
-			<!-- <MediaPlayer fx:id="mediaPlayer" autoPlay="true" /> -->
-			<!-- </MediaView> -->
-		</AnchorPane>
-	</items>
-</SplitPane>
+	<tabs>
+        <Tab text="Robos">
+            <content>
+                <fx:include fx:id="tab1" source="RoboTabPage.fxml"/>
+            </content>
+        </Tab>
+        <Tab text="Apps">
+            <content>
+                <fx:include fx:id="tab2" source="AppTabPage.fxml"/>
+            </content>
+        </Tab>
+    </tabs>
+</TabPane>

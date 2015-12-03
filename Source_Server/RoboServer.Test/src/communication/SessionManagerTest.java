@@ -1,6 +1,17 @@
+/*
+ * Copyright (c) 2015 - 2015, Kevin Wallis, All rights reserved.
+ * 
+ * Projectname: RoboServer.Test
+ * Filename: SessionManagerTest.java
+ * 
+ * @author: Kevin Wallis
+ * @version: 1
+ */
 package communication;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -10,7 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import communication.managers.CurrentConfigurationService;
-import communication.managers.IClientManager;
+import communication.managers.IConfigurationManager;
 import communication.managers.SessionManager;
 import mocks.ConfigurationMock;
 
@@ -20,14 +31,14 @@ public class SessionManagerTest {
 
 	@Before
 	public void setUp() {
-		sessionManager = new SessionManager(new IClientManager() {
+		sessionManager = new SessionManager(new IConfigurationManager() {
 			@Override
-			public List<IClientConfiguration> getConfigurations() {
+			public List<IConfiguration> getConfigurations() {
 				return new ArrayList<>();
 			}
 
 			@Override
-			public IClientConfiguration createClientConfiguration() {
+			public IConfiguration createConfiguration() {
 				return new ConfigurationMock();
 			}
 		}, new CurrentConfigurationService());

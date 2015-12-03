@@ -1,14 +1,25 @@
+/*
+ * Copyright (c) 2015 - 2015, Kevin Wallis, All rights reserved.
+ * 
+ * Projectname: RoboServer.Network
+ * Filename: LayerManager.java
+ * 
+ * @author: Kevin Wallis
+ * @version: 1
+ */
 package communication.managers;
 
-public abstract class LayerManager implements IDataReceivedHandler {
+import communication.pdu.PDU;
 
-	// fields
-	protected IClientManager manager;
-	protected CurrentConfigurationService currentClientService;
-	
+public abstract class LayerManager<T extends PDU> implements IDataReceivedHandler<T> {
+
+	// Fields
+	protected IConfigurationManager manager;
+	protected CurrentConfigurationService currentConfigurationService;
+
 	// Constructor
-	public LayerManager(IClientManager manager, CurrentConfigurationService currentClientService) {
+	public LayerManager(IConfigurationManager manager, CurrentConfigurationService currentConfigurationService) {
 		this.manager = manager;
-		this.currentClientService = currentClientService;
+		this.currentConfigurationService = currentConfigurationService;
 	}
 }

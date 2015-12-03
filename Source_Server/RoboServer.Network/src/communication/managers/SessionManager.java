@@ -1,70 +1,85 @@
+/*
+ * Copyright (c) 2015 - 2015, Kevin Wallis, All rights reserved.
+ * 
+ * Projectname: RoboServer.Network
+ * Filename: SessionManager.java
+ * 
+ * @author: Kevin Wallis
+ * @version: 1
+ */
 package communication.managers;
 
 import java.net.DatagramPacket;
-import java.nio.ByteBuffer;
 import java.util.concurrent.ThreadLocalRandom;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import communication.IConfiguration;
+import communication.pdu.SessionPDU;
+import communication.utils.NumberParser;
 
-import communication.IClientConfiguration;
+public class SessionManager extends LayerManager<SessionPDU> {
 
-@Singleton
-public class SessionManager extends LayerManager {
+	// Fields
+	private final int minSessionNumber = 1;
+	private final int maxSessionNumber = 127;
 
-	@Inject
-	public SessionManager(IClientManager manager, CurrentConfigurationService currentClientService) {
+	private final byte initConnectionFlags = (byte) 0b00000001;
+	private final byte initConnectionSession = (byte) 0b00000000;
+	private final byte defaultConnectionFlags = (byte) 0b00000000;
+
+	// Constructor
+	public SessionManager(IConfigurationManager manager, CurrentConfigurationService currentClientService) {
 		super(manager, currentClientService);
 	}
 
-	// Fields
-	private final int minSessionNumber = 0;
-	private final int maxSessionNumber = 255;
-	
-	private final byte initConnectionFlags = (byte)0b10000000;
-	private final byte initConnectionSession = (byte)0b00000000;
-	
 	// Methods
+	@Override
+	public boolean handleDataReceived(DatagramPacket packet, SessionPDU pdu, IAnswerHandler sender) {
+		IConfiguration currentConfiguration = currentConfigurationService.getConfiguration();
+		boolean handled = false;
+
+		byte[] data = pdu.getData();
+		byte flags = pdu.getFlags();
+		int sessionId = pdu.getSessionId();
+
+		// TODO: e.g. add session checking for security
+
+		// Only create a new session id at the beginning --> this is not save
+		if (flags == initConnectionFlags && sessionId == initConnectionSession) {
+
+			int newIntSession = createNewSessionNumber(currentConfiguration.getSessionId());
+			byte newByteSession = NumberParser.intToByte(newIntSession);
+
+			// Set the session id for the configuration
+			currentConfiguration.setSessionId(newIntSession);
+
+			// Create answer pdu
+			byte[] answer = pdu.getEnhancedData();
+			answer[0] = initConnectionFlags;
+			answer[1] = newByteSession;
+
+			// Send answer pdu
+			sender.answer(currentConfiguration, answer);
+
+			// Everything is handled so no need to go to the upper layers
+			handled = true;
+		} else if (flags == initConnectionFlags && sessionId != initConnectionSession) {
+			// Set session id
+			currentConfiguration.setSessionId(pdu.getSessionId());
+			handled = true;
+		}
+
+		return handled;
+	}
+
 	private int createNewSessionNumber(int oldSessionNumber) {
 		int newNumber = oldSessionNumber;
 		{
 			// Create new session number between min and max
 			newNumber = ThreadLocalRandom.current().nextInt(minSessionNumber, maxSessionNumber + 1);
-		} while(newNumber == oldSessionNumber);
-		
+		}
+		while (newNumber == oldSessionNumber)
+			;
+
 		return newNumber;
 	}
-
-	@Override
-	public boolean handleDataReceived(DatagramPacket packet, byte[] data, IAnswerHandler sender) {
-		byte flags = data[0];
-		byte sessionId = data[1];
-		boolean handled = false;
-		
-		IClientConfiguration currentClient = currentClientService.getClient();
-		
-		// TODO: add session checking for security
-		
-		if (flags == initConnectionFlags && sessionId == initConnectionSession) {
-			
-			int newSession = createNewSessionNumber(currentClient.getSessionId());
-			byte[] bytes = ByteBuffer.allocate(4).putInt(newSession).array();
-			byte newSessionByte = bytes[3];
-			
-			// TODO: update session stuff
-			byte[] answer = data;
-			answer[0] = (byte)0x00;
-			answer[1] = newSessionByte;
-			sender.answer(currentClient, answer);
-
-			// test purpose
-			currentClient.setSessionId(newSession);
-			
-			handled = true;
-		} 
-		
-		return handled;
-	}
-	
-	
 }

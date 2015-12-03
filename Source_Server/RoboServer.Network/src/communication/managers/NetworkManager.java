@@ -1,37 +1,75 @@
+/*
+ * Copyright (c) 2015 - 2015, Kevin Wallis, All rights reserved.
+ * 
+ * Projectname: RoboServer.Network
+ * Filename: NetworkManager.java
+ * 
+ * @author: Kevin Wallis
+ * @version: 1
+ */
 package communication.managers;
 
 import java.net.DatagramPacket;
 import java.util.List;
-import java.util.Optional;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import communication.IConfiguration;
+import communication.pdu.NetworkPDU;
+import communication.pdu.PDUFactory;
+import communication.pdu.SessionPDU;
 
-import communication.IClientConfiguration;
+public class NetworkManager extends LayerManager<NetworkPDU> {
 
-@Singleton
-public class NetworkManager extends LayerManager {
+	private final int maxConfigurationCount = 128;
 
-	@Inject
-	public NetworkManager(IClientManager manager, CurrentConfigurationService currentClientService) {
+	// Constructor
+	public NetworkManager(IConfigurationManager manager, CurrentConfigurationService currentClientService) {
 		super(manager, currentClientService);
 	}
 
+	// Methods
 	@Override
-	public boolean handleDataReceived(DatagramPacket packet, byte[] data, IAnswerHandler sender) {
+	public boolean handleDataReceived(DatagramPacket packet, NetworkPDU pdu, IAnswerHandler sender) {
 		String ipAddress = packet.getAddress().getHostName();
-		
-		List<IClientConfiguration> configurations = manager.getConfigurations();
-		Optional<IClientConfiguration> configuration = configurations.stream().filter(c -> c.getIpAddress().equals(ipAddress)).findFirst();
-		IClientConfiguration currentConfiguration = configuration.isPresent() ? configuration.get() : null;
-		
-		if (currentConfiguration == null) 
-		{
-			currentConfiguration = manager.createClientConfiguration();
+
+		List<IConfiguration> configurations = manager.getConfigurations();
+
+		if (configurations.size() >= maxConfigurationCount) {
+			// TODO: answer no free space
+			// sender.answer(configuration, datagram);
+			return true;
+		}
+
+		IConfiguration currentConfiguration = getConfiguration(configurations, ipAddress, pdu);
+
+		if (currentConfiguration == null) {
+			currentConfiguration = manager.createConfiguration();
 			currentConfiguration.setIpAddress(ipAddress);
 		}
-		
-		currentClientService.setClient(currentConfiguration);
+
+		currentConfigurationService.setConfiguration(currentConfiguration);
 		return false;
+	}
+
+	private IConfiguration getConfiguration(List<IConfiguration> configurations, String ipAddress, NetworkPDU pdu) {
+
+		// TODO: Remove this hack
+		SessionPDU sessionPDU = PDUFactory.createSessionPDU(PDUFactory.createTransportPDU(pdu.getData()).getData());
+		int sessionId = sessionPDU.getSessionId();
+		int flags = sessionPDU.getFlags();
+
+		// TODO: Add check for allowed session id
+
+		// It is necessary to create a new configuration
+		if (sessionId == 0 && flags == 1) {
+			return null;
+		}
+
+		for (IConfiguration config : configurations) {
+			if (config.getIpAddress().equals(ipAddress) && config.getSessionId() == sessionId) {
+				return config;
+			}
+		}
+
+		return null;
 	}
 }

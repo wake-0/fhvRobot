@@ -1,6 +1,14 @@
+/*
+ * Copyright (c) 2015 - 2015, Kevin Wallis, All rights reserved.
+ * 
+ * Projectname: RoboServer
+ * Filename: Main.java
+ * 
+ * @author: Kevin Wallis
+ * @version: 1
+ */
 package main;
 
-import java.io.IOException;
 import java.net.URL;
 
 import controllers.MainWindowController;
@@ -8,10 +16,8 @@ import javafx.application.Application;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 public class Main extends Application {
 
@@ -27,7 +33,7 @@ public class Main extends Application {
 
 			// Root window
 			FXMLLoader loader = new FXMLLoader(mainWindow);
-			
+
 			Scene scene = new Scene(loader.load());
 
 			scene.getStylesheets().add(stylesheet.toExternalForm());
@@ -35,8 +41,8 @@ public class Main extends Application {
 
 				@Override
 				public void handle(Event event) {
-						MainWindowController controller = loader.getController();
-						controller.shutdown();
+					MainWindowController controller = loader.getController();
+					controller.shutdown();
 				}
 			});
 
