@@ -37,8 +37,8 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
 
     public NetworkClient(TextView textView) throws SocketException, UnknownHostException {
         int port = 997;
-        //String address = "83.212.127.13";
-        String address = "10.0.2.2";
+        String address = "83.212.127.13";
+        //String address = "10.0.2.2";
         this.clientSocket = new DatagramSocket();
         this.textView = textView;
 

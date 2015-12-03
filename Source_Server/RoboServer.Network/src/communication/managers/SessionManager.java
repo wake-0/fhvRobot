@@ -46,6 +46,8 @@ public class SessionManager extends LayerManager<SessionPDU> {
 		// Only create a new session id at the beginning --> this is not save
 		if (flags == initConnectionFlags && sessionId == initConnectionSession) {
 
+			// TODO: create a new create SessionNumberAlgorithm
+			// because the old one is not checking the already used session ids
 			int newIntSession = createNewSessionNumber(currentConfiguration.getSessionId());
 			byte newByteSession = NumberParser.intToByte(newIntSession);
 
@@ -53,9 +55,9 @@ public class SessionManager extends LayerManager<SessionPDU> {
 			currentConfiguration.setSessionId(newIntSession);
 
 			// Create answer pdu
-			byte[] answer = pdu.getEnhancedData();
-			answer[0] = initConnectionFlags;
-			answer[1] = newByteSession;
+			byte answerFlags = initConnectionFlags;
+			byte answerSessionId = newByteSession;
+			byte[] answer = new byte[] { answerFlags, answerSessionId };
 
 			// Send answer pdu
 			sender.answer(currentConfiguration, answer);
