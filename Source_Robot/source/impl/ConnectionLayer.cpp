@@ -8,13 +8,10 @@
 #include "../../include/Debugger.h"
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include <sys/time.h>
+#include <stdlib.h>
+#include <errno.h>
 #include "../../include/ConnectionLayer.h"
 
 namespace FhvRobotProtocolStack {
@@ -27,12 +24,21 @@ UdpConnection::~UdpConnection() {
 bool UdpConnection::Connect(const char* address, int port) {
 	Debugger(INFO) << "Connecting to " << address << " at " << port << " (UDP)\n";
 
+	struct sockaddr_in temp;
+	if (inet_pton(AF_INET, address, &(temp.sin_addr)) == 0)
+	{
+		Debugger(ERROR) << "Given IP address: " << address << " is invalid\n";
+		return false;
+	}
 	memset(&addr, 0, sizeof(struct sockaddr_in));
+	addr.sin_family = AF_INET;
+	Debugger(VERBOSE) << "Zeroed addr struct\n";
 
-	addr->sin_family = AF_INET;
-	addr->sin_port = htons(port);
+	addr.sin_port = htons(port);
 	//addr.sin_addr.s_addr = inet_addr(address);
-	if (inet_aton(address, &addr->sin_addr)==0)
+
+	Debugger(VERBOSE) << "Trying to resolve hostname\n";
+	if (inet_aton(address, &addr.sin_addr)==0)
 	{
 		Debugger(ERROR) << "Invalid server address given\n";
 		return false;
@@ -45,15 +51,27 @@ bool UdpConnection::Connect(const char* address, int port) {
 		return false;
 	}
 
+	Debugger(VERBOSE) << "Setting in addr\n";
+	memset((char *) &in_addr, 0, sizeof(in_addr));
+	in_addr.sin_family = AF_INET;
+	in_addr.sin_port = htons(port);
+	in_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	if (bind(sock, (const sockaddr*) &in_addr, sizeof(struct sockaddr_in)) == -1)
+	{
+		Debugger(ERROR) << "Failed to set in addr\n";
+		return false;
+	}
+
 	// NOTE: This would be TCP/IP
 	//ret = connect(sock, (struct sockaddr *) &addr, sizeof(addr));
 
 	// Start receive thread
 	Debugger(VERBOSE) << "Starting receive thread for UDP connection\n";
-	int res = pthread_create(&receiveThread, NULL, &UdpConnection::ReceiveLoopHelper, this);
-	if (res == 0)
+	int res = pthread_create(&receiveThread, NULL, UdpConnection::ReceiveLoopHelper, this);
+
+	if (res < 0)
 	{
-		Debugger(ERROR) << "Error creating receive thread\n";
+		Debugger(ERROR) << "Error creating receive thread. Return value is " << res << "\n";
 		return false;
 	}
 	Debugger(VERBOSE) << "Receive thread started succesfully\n";
@@ -63,27 +81,32 @@ bool UdpConnection::Connect(const char* address, int port) {
 bool UdpConnection::Send(const char* msg, unsigned int len) {
 	Debugger(VERBOSE) << "Sending message with len=" << len << " (UDP)\n";
 
-	int ret = send(sock, msg, len, 0);
+	int ret = sendto(sock, msg, len, 0, (const sockaddr*)&addr, sizeof(struct sockaddr_in));
 
 	if (ret < 0) {
-		Debugger(ERROR) << "Message failed to send (UDP)\n";
+		Debugger(ERROR) << "Message failed to send (UDP): errno=" << errno << "\n";
 		return false;
 	}
+	Debugger(VERBOSE) << "Message sent correctly in Transport layer. ret=" << ret << "\n";
 	return true;
 }
 
 void* UdpConnection::ReceiveLoop()
 {
+	Debugger(INFO) << "Hello I'm the receive thread.\n";
 	int res = 0;
-	char buf[512];
-	struct sockaddr sender;
+	char buf[4096];
+	struct sockaddr_in sender;
 	socklen_t len = sizeof(sender);
 	while (1 /* endless */)
 	{
-		res = recvfrom(sock, buf, 512, 0, &sender, &len);
+		res = recvfrom(sock, buf, 512, 0, (struct sockaddr*)&sender, &len);
 		if (res == -1)
 		{
-			Debugger(ERROR) << "Udp Connection recvfrom(..) returned -1\n";
+			Debugger(ERROR) << "Udp Connection recvfrom(..) returned -1: errno=" << errno << "\n";
+			Debugger(ERROR) << "Closing connection and stopping receive thread\n";
+			shutdown(sock, 0);
+			break;
 		}
 		else
 		{
@@ -99,7 +122,7 @@ void* UdpConnection::ReceiveLoop()
 /* Implementation of Session Layer */
 
 #define SESSION_LAYER_EMPTY_MASK					(0b00000000)
-#define SESSION_LAYER_REQUEST_BIT_MASK				(0b10000000)
+#define SESSION_LAYER_REQUEST_BIT_MASK				(0b00000001)
 #define SESSION_LAYER_VERSION_MASK					(0b00000011)
 #define SESSION_REQUEST_TIMEOUT_S					(3)
 
@@ -153,17 +176,30 @@ bool SessionLayer::Connect(const char* address, int port)
 	{
 		// Try to get a session id from the connected device
 		Debugger(VERBOSE) << "Session layer connected with lower layer...\n";
-		Debugger(VERBOSE) << "No trying to get a session id";
+		Debugger(VERBOSE) << "Now trying to get a session id";
 
 		char msg[2] = { SESSION_LAYER_REQUEST_BIT_MASK , 0 };
-		result = Send(msg, 2);
+		result = lowerLayer->Send(msg, 2);
 		if (result == true)
 		{
 			if (sessId == 0)
 			{
+				struct timespec timeToWait;
+				struct timeval tv;
+
+				gettimeofday(&tv,NULL);
+
+				int timeInMs = 5000;
+				timeToWait.tv_sec = time(NULL) + timeInMs / 1000;
+				timeToWait.tv_nsec = tv.tv_usec * 1000 + 1000 * 1000 * (timeInMs % 1000);
+				timeToWait.tv_sec += timeToWait.tv_nsec / (1000 * 1000 * 1000);
+				timeToWait.tv_nsec %= (1000 * 1000 * 1000);
+
+				Debugger(VERBOSE) << "Session is blocked until response\n";
 				pthread_mutex_lock(&mutex);
-				pthread_cond_wait(&condition_var, &mutex);
+				pthread_cond_timedwait(&condition_var, &mutex, &timeToWait);
 				pthread_mutex_unlock(&mutex);
+				Debugger(VERBOSE) << "Session is unblocked\n";
 			}
 			if (sessId != 0)
 			{

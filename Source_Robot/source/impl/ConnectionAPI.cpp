@@ -42,7 +42,7 @@ bool ConnectionAPI::Connect(const char* robotName, const char* hostname, int por
 {
 	if (connection == NULL)
 	{
-		Debugger(ERROR) << "Cannot connect: No Connection set to API\n";
+		Debugger(ERROR) << "Cannot connect: No Connection set. Use SetConnection(..)\n";
 		return false;
 	}
 	size_t robotNameLen = strlen(robotName);

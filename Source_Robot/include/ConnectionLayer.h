@@ -13,6 +13,10 @@
 #include <memory>
 #include <string.h>
 #include <pthread.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include "Debugger.h"
 
 using namespace std;
@@ -97,16 +101,18 @@ public:
 class UdpConnection : public TransportLayer {
 private:
 	int sock;
-	struct sockaddr_in* addr;
+	struct sockaddr_in addr;
+	struct sockaddr_in in_addr;
     pthread_t receiveThread;
 
     void* ReceiveLoop();
     static void *ReceiveLoopHelper(void* context)
     {
+    	Debugger(VERBOSE) << "ReceiveLoopHelper calling private method\n";
         return ((UdpConnection*)context)->ReceiveLoop();
     }
 public:
-	UdpConnection() : TransportLayer() { sock = 0; addr = 0; receiveThread = 0; }
+	UdpConnection() : TransportLayer() { sock = 0; receiveThread = PTHREAD_ONCE_INIT; }
 	virtual ~UdpConnection();
 
 	bool Connect(const char* address, int port);
