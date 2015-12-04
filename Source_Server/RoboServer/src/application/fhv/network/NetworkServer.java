@@ -21,6 +21,7 @@ public class NetworkServer {
 	// Fields
 	private final Communication roboCommunication;
 	private final Communication appCommunication;
+	private final CommunicationDelegator delegator;
 
 	// Ports
 	private final int roboPort = 998;
@@ -29,11 +30,17 @@ public class NetworkServer {
 	// Constructor
 	public NetworkServer(ClientController<Client> roboController, ClientController<Client> appController)
 			throws SocketException {
-		// Added network sender and receiver which can log
-		this.roboCommunication = new Communication(new CommunicationManager(roboController), roboPort);
-		new Thread(roboCommunication).start();
 
-		this.appCommunication = new Communication(new CommunicationManager(appController), appPort);
+		this.delegator = new CommunicationDelegator(roboController, appController);
+
+		// Added network sender and receiver which can log
+		this.roboCommunication = new Communication(new CommunicationManager(roboController), null, roboPort);
+		delegator.setChannelA(roboCommunication);
+
+		this.appCommunication = new Communication(new CommunicationManager(appController), delegator, appPort);
+		delegator.setChannelB(appCommunication);
+
+		new Thread(roboCommunication).start();
 		new Thread(appCommunication).start();
 	}
 

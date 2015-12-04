@@ -36,9 +36,12 @@ public class Communication implements Runnable, IDataReceivedHandler<Application
 	private final INetworkSender sender;
 	private final DatagramSocket socket;
 	private final CommunicationManager manager;
+	private final CommunicationDelegator delegator;
 
-	public Communication(CommunicationManager manager, int port) throws SocketException {
+	public Communication(CommunicationManager manager, CommunicationDelegator delegator, int port)
+			throws SocketException {
 		this.manager = manager;
+		this.delegator = delegator;
 		this.socket = new DatagramSocket(port);
 		this.receiver = new LoggerNetworkReceiver(socket);
 		this.sender = new LoggerNetworkSender(socket);
@@ -81,6 +84,10 @@ public class Communication implements Runnable, IDataReceivedHandler<Application
 				// Only for test purposes
 				client.setSendData(new String(payload));
 				sendToClient(client);
+
+				if (delegator != null) {
+					delegator.DelegateMessage(this, pdu.getEnhancedData());
+				}
 			}
 
 			// TODO: handle other message
