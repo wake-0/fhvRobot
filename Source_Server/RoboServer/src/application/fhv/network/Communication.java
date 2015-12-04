@@ -78,6 +78,8 @@ public class Communication implements Runnable, IDataReceivedHandler<Application
 				client.setName(name);
 
 				// Create answer pdu
+				// byte[] nameBytes = Arrays.copyOfRange(payload, 0,
+				// pdu.getPayloadLength());
 				DatagramPacket datagram = manager.createDatagramPacket(client, 1, new byte[] { 1 });
 				sender.answer(client, datagram);
 			} else {
