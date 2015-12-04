@@ -21,12 +21,12 @@ public class CommunicationDelegator {
 	public void DelegateMessage(Communication channel, byte[] data) {
 		try {
 			if (channel == getChannelA()) {
-				for (Client c : channelAClients.getClients()) {
+				for (Client c : channelBClients.getClients()) {
 					c.setSendData(new String(data));
 					getChannelB().sendToClient(c);
 				}
 			} else if (channel == getChannelB()) {
-				for (Client c : channelBClients.getClients()) {
+				for (Client c : channelAClients.getClients()) {
 					c.setSendData(new String(data));
 					getChannelA().sendToClient(c);
 				}
