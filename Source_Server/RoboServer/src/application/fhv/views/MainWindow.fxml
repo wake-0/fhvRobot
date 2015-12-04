@@ -7,20 +7,39 @@
 <?import javafx.scene.layout.* ?>
 <?import javafx.scene.control.* ?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.text.TextFlow?>
 
-<TabPane prefHeight="500.0" prefWidth="900.0" maxHeight="Infinity" maxWidth="Infinity" xmlns="http://javafx.com/javafx/8"
-	xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainWindowController" tabClosingPolicy="UNAVAILABLE">
+<SplitPane dividerPositions="0.8" prefHeight="500.0" prefWidth="900.0" maxHeight="Infinity" maxWidth="Infinity" xmlns="http://javafx.com/javafx/8"
+	xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainWindowController">
+	<items>
+		<TabPane tabClosingPolicy="UNAVAILABLE">
+			<tabs>
+				<Tab text="Robos">
+					<content>
+						<fx:include fx:id="tab1" source="RoboTabPage.fxml" />
+					</content>
+				</Tab>
+				<Tab text="Apps">
+					<content>
+						<fx:include fx:id="tab2" source="AppTabPage.fxml" />
+					</content>
+				</Tab>
+			</tabs>
+		</TabPane>
+	
+		<GridPane>
+			<columnConstraints>
+				<ColumnConstraints percentWidth="100" hgrow="ALWAYS" />
+			</columnConstraints>
+			<rowConstraints>
+				<RowConstraints percentHeight="100" />
+			</rowConstraints>
+			
+			<children>
+				<TextFlow fx:id="taServerOutput" />
+			</children>
+		</GridPane>
+	</items>
 
-	<tabs>
-        <Tab text="Robos">
-            <content>
-                <fx:include fx:id="tab1" source="RoboTabPage.fxml"/>
-            </content>
-        </Tab>
-        <Tab text="Apps">
-            <content>
-                <fx:include fx:id="tab2" source="AppTabPage.fxml"/>
-            </content>
-        </Tab>
-    </tabs>
-</TabPane>
+</SplitPane>
