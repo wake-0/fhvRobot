@@ -1,7 +1,6 @@
 package network;
 
-import java.io.IOException;
-
+import communication.commands.Commands;
 import controllers.ClientController;
 import models.Client;
 
@@ -23,15 +22,17 @@ public class CommunicationDelegator {
 			if (channel == getChannelA()) {
 				for (Client c : channelBClients.getClients()) {
 					c.setSendData(new String(data));
-					getChannelB().sendToClient(c);
+					System.out.println("Send message [" + new String(data) + "]");
+					getChannelB().sendToClient(c, Commands.DRIVE_BOTH, data);
 				}
 			} else if (channel == getChannelB()) {
 				for (Client c : channelAClients.getClients()) {
 					c.setSendData(new String(data));
-					getChannelA().sendToClient(c);
+					System.out.println("Send message [" + new String(data) + "]");
+					getChannelA().sendToClient(c, Commands.DRIVE_BOTH, data);
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

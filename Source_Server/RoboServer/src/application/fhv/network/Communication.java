@@ -88,7 +88,7 @@ public class Communication implements Runnable, IDataReceivedHandler<Application
 				sendToClient(client);
 
 				if (delegator != null) {
-					delegator.DelegateMessage(this, pdu.getEnhancedData());
+					delegator.DelegateMessage(this, payload);
 				}
 			}
 
