@@ -9,19 +9,15 @@
  */
 package controllers;
 
-import java.io.PrintStream;
 import java.net.SocketException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.text.TextFlow;
 import models.Client;
 import network.NetworkServer;
-import utils.ErrorServerOutputPrinter;
-import utils.ServerOutputPrinter;
 
 public class MainWindowController implements Initializable {
 
@@ -51,13 +47,13 @@ public class MainWindowController implements Initializable {
 			tab1Controller.setServer(server);
 			tab2Controller.setServer(server);
 
-			Platform.setImplicitExit(false);
-
-			PrintStream outputStream = new PrintStream(new ServerOutputPrinter(taServerOutput));
-			PrintStream errorOutputStream = new PrintStream(new ErrorServerOutputPrinter(taServerOutput));
-
-			System.setOut(outputStream);
-			System.setErr(errorOutputStream);
+			// PrintStream outputStream = new PrintStream(new
+			// ServerOutputPrinter(taServerOutput));
+			// PrintStream errorOutputStream = new PrintStream(new
+			// ErrorServerOutputPrinter(taServerOutput));
+			//
+			// System.setOut(outputStream);
+			// System.setErr(errorOutputStream);
 
 			System.out.println("System output redirected ...");
 			System.err.println("System error redirected ...");
