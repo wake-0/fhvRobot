@@ -15,6 +15,10 @@ import java.net.SocketException;
 import communication.managers.CommunicationManager;
 import controllers.ClientController;
 import models.Client;
+import network.communication.AppCommunication;
+import network.communication.Communication;
+import network.communication.CommunicationDelegator;
+import network.communication.RoboCommunication;
 
 public class NetworkServer {
 
@@ -34,10 +38,10 @@ public class NetworkServer {
 		this.delegator = new CommunicationDelegator(roboController, appController);
 
 		// Added network sender and receiver which can log
-		this.roboCommunication = new Communication(new CommunicationManager(roboController), null, roboPort);
+		this.roboCommunication = new RoboCommunication(new CommunicationManager(roboController), roboPort);
 		delegator.setChannelA(roboCommunication);
 
-		this.appCommunication = new Communication(new CommunicationManager(appController), delegator, appPort);
+		this.appCommunication = new AppCommunication(new CommunicationManager(appController), delegator, appPort);
 		delegator.setChannelB(appCommunication);
 
 		new Thread(roboCommunication).start();

@@ -1,4 +1,4 @@
-package network;
+package network.communication;
 
 import controllers.ClientController;
 import models.Client;
