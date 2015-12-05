@@ -3,6 +3,7 @@ package utils;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import javafx.concurrent.Task;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
@@ -20,15 +21,14 @@ public class ServerOutputPrinter extends OutputStream {
 		Text outputText = new Text();
 		outputText.setStyle("-fx-fill: BLACK;-fx-font-weight:normal;");
 		outputText.setText(String.valueOf((char) i));
-		output.getChildren().addAll(outputText);
 
-		// new Task<Void>() {
-		// @Override
-		// protected Void call() throws Exception {
-		// output.getChildren().addAll(outputText);
-		// return null;
-		// }
-		// }.run();
+		new Task<Void>() {
+			@Override
+			protected Void call() throws Exception {
+				output.getChildren().addAll(outputText);
+				return null;
+			}
+		}.run();
 	}
 
 }

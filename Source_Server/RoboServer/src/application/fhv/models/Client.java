@@ -25,6 +25,7 @@ public class Client implements Comparable<Client>, IConfiguration {
 	private StringProperty ipAddress;
 	private IntegerProperty port;
 	private IntegerProperty sessionId;
+	private IntegerProperty heartBeatCount;
 
 	// constructor
 	public Client() {
@@ -35,6 +36,7 @@ public class Client implements Comparable<Client>, IConfiguration {
 		ipAddress = new SimpleStringProperty();
 		port = new SimpleIntegerProperty();
 		sessionId = new SimpleIntegerProperty();
+		heartBeatCount = new SimpleIntegerProperty();
 
 		setName("Anonymous");
 	}
@@ -131,5 +133,29 @@ public class Client implements Comparable<Client>, IConfiguration {
 		}
 
 		return getIpAddress().compareTo(o.getIpAddress());
+	}
+
+	@Override
+	public final int getHeartBeatCount() {
+		// TODO Auto-generated method stub
+		return heartBeatCount.get();
+	}
+
+	public final void setHeartBeatCount(int value) {
+		heartBeatCount.set(value);
+	}
+
+	public IntegerProperty HeartBeatProperty() {
+		return heartBeatCount;
+	}
+
+	@Override
+	public void increaseHeartBeatCount() {
+		heartBeatCount.add(1);
+	}
+
+	@Override
+	public void cleanHeartBeatCount() {
+		heartBeatCount.set(0);
 	}
 }

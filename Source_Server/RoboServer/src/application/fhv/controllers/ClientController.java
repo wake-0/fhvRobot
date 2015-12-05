@@ -1,7 +1,10 @@
 package controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import communication.IConfiguration;
 import communication.managers.IConfigurationManager;
@@ -13,26 +16,51 @@ import network.IClientProvider;
 public class ClientController<T extends IConfiguration> implements IClientProvider<T>, IConfigurationManager {
 
 	// Fields
-	private ObservableList<T> clients;
-	private IClientFactory<T> factory;
+	private final ObservableList<T> clients;
+	private final IClientFactory<T> factory;
+
+	private final HashMap<T, Timer> clientTimers;
 
 	private T selectedClient;
 
 	// Constructor
 	public ClientController(IClientFactory<T> factory) {
 		clients = FXCollections.observableArrayList();
-
+		clientTimers = new HashMap<>();
 		this.factory = factory;
 	}
 
 	@Override
 	public void addClient(T client) {
+		if (client == null) {
+			return;
+		}
+
 		clients.add(client);
+		Timer timer = new Timer();
+		clientTimers.put(client, timer);
+
+		// Each minute check heart beat
+		timer.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				if (client.getHeartBeatCount() == 0) {
+					removeClient(client);
+				} else {
+					client.cleanHeartBeatCount();
+				}
+			}
+		}, 1 * 60 * 1000, 1 * 60 * 1000);
 	}
 
 	@Override
 	public void removeClient(T client) {
+		if (client == null) {
+			return;
+		}
+
 		clients.remove(client);
+		clientTimers.remove(client);
 	}
 
 	@Override
@@ -43,7 +71,7 @@ public class ClientController<T extends IConfiguration> implements IClientProvid
 	@Override
 	public IConfiguration createConfiguration() {
 		T client = factory.create();
-		clients.add(client);
+		addClient(client);
 		return client;
 	}
 

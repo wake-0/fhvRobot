@@ -22,4 +22,10 @@ public interface IConfiguration {
 	public void setPort(int port);
 
 	public int getPort();
+
+	public int getHeartBeatCount();
+
+	public void increaseHeartBeatCount();
+
+	public void cleanHeartBeatCount();
 }

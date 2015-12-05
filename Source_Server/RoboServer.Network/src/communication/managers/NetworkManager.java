@@ -47,6 +47,7 @@ public class NetworkManager extends LayerManager<NetworkPDU> {
 			currentConfiguration.setIpAddress(ipAddress);
 		}
 
+		currentConfiguration.increaseHeartBeatCount();
 		currentConfigurationService.setConfiguration(currentConfiguration);
 		return false;
 	}
@@ -87,11 +88,13 @@ public class NetworkManager extends LayerManager<NetworkPDU> {
 		private int sessionId;
 		private int port;
 		private String ipAddress;
+		private int heartBeatCount;
 
 		public Configuration(int sessionId, int port, String ipAddress) {
 			this.sessionId = sessionId;
 			this.port = port;
 			this.ipAddress = ipAddress;
+			this.heartBeatCount = 0;
 		}
 
 		@Override
@@ -122,6 +125,21 @@ public class NetworkManager extends LayerManager<NetworkPDU> {
 		@Override
 		public int getPort() {
 			return port;
+		}
+
+		@Override
+		public int getHeartBeatCount() {
+			return heartBeatCount;
+		}
+
+		@Override
+		public void increaseHeartBeatCount() {
+			heartBeatCount++;
+		}
+
+		@Override
+		public void cleanHeartBeatCount() {
+			heartBeatCount = 0;
 		}
 	}
 }

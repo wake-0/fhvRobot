@@ -22,8 +22,6 @@ public class AppCommunication extends Communication {
 	@Override
 	public boolean handleDataReceived(DatagramPacket packet, ApplicationPDU pdu, IAnswerHandler sender) {
 		try {
-			// TODO: check length and real payload are equal
-
 			Client client = (Client) manager.getCurrentConfiguration();
 			byte[] payload = pdu.getPayload();
 			int command = pdu.getCommand();
