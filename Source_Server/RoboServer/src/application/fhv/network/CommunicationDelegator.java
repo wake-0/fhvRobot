@@ -1,6 +1,5 @@
 package network;
 
-import communication.commands.Commands;
 import controllers.ClientController;
 import models.Client;
 
@@ -17,19 +16,17 @@ public class CommunicationDelegator {
 		this.channelBClients = channelBClients;
 	}
 
-	public void DelegateMessage(Communication channel, byte[] data) {
+	public void DelegateMessage(Communication channel, int command, byte[] payload) {
 		try {
 			if (channel == getChannelA()) {
 				for (Client c : channelBClients.getClients()) {
-					c.setSendData(new String(data));
-					System.out.println("Send message [" + new String(data) + "]");
-					getChannelB().sendToClient(c, Commands.DRIVE_BOTH, data);
+					System.out.println("Send message [" + new String(payload) + "]");
+					getChannelB().sendToClient(c, command, payload);
 				}
 			} else if (channel == getChannelB()) {
 				for (Client c : channelAClients.getClients()) {
-					c.setSendData(new String(data));
-					System.out.println("Send message [" + new String(data) + "]");
-					getChannelA().sendToClient(c, Commands.DRIVE_BOTH, data);
+					System.out.println("Send message [" + new String(payload) + "]");
+					getChannelA().sendToClient(c, command, payload);
 				}
 			}
 		} catch (Exception e) {

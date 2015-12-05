@@ -71,6 +71,7 @@ public class Communication implements Runnable, IDataReceivedHandler<Application
 
 			Client client = (Client) manager.getCurrentConfiguration();
 			byte[] payload = pdu.getPayload();
+			int command = pdu.getCommand();
 
 			// This means register name
 			if (pdu.getCommand() == Commands.CHANGE_NAME) {
@@ -88,7 +89,7 @@ public class Communication implements Runnable, IDataReceivedHandler<Application
 				sendToClient(client);
 
 				if (delegator != null) {
-					delegator.DelegateMessage(this, payload);
+					delegator.DelegateMessage(this, command, payload);
 				}
 			}
 
