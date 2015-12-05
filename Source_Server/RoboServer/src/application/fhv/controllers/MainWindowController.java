@@ -14,6 +14,7 @@ import java.net.SocketException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.text.TextFlow;
@@ -49,6 +50,8 @@ public class MainWindowController implements Initializable {
 
 			tab1Controller.setServer(server);
 			tab2Controller.setServer(server);
+
+			Platform.setImplicitExit(false);
 
 			PrintStream outputStream = new PrintStream(new ServerOutputPrinter(taServerOutput));
 			PrintStream errorOutputStream = new PrintStream(new ErrorServerOutputPrinter(taServerOutput));
