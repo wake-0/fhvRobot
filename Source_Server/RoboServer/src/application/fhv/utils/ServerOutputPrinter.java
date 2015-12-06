@@ -3,32 +3,20 @@ package utils;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javafx.concurrent.Task;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
+import javafx.application.Platform;
+import javafx.scene.control.TextArea;
 
 public class ServerOutputPrinter extends OutputStream {
 
-	protected final TextFlow output;
+	protected final TextArea output;
 
-	public ServerOutputPrinter(TextFlow output) {
+	public ServerOutputPrinter(TextArea output) {
 		this.output = output;
 	}
 
 	@Override
 	public void write(int i) throws IOException {
+		Platform.runLater(() -> output.appendText(String.valueOf((char) i)));
 
-		Text outputText = new Text();
-		outputText.setStyle("-fx-fill: BLACK;-fx-font-weight:normal;");
-		outputText.setText(String.valueOf((char) i));
-
-		new Task<Void>() {
-			@Override
-			protected Void call() throws Exception {
-				output.getChildren().addAll(outputText);
-				return null;
-			}
-		}.run();
 	}
-
 }

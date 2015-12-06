@@ -9,15 +9,17 @@
  */
 package controllers;
 
+import java.io.PrintStream;
 import java.net.SocketException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.text.TextFlow;
+import javafx.scene.control.TextArea;
 import models.Client;
 import network.NetworkServer;
+import utils.ServerOutputPrinter;
 
 public class MainWindowController implements Initializable {
 
@@ -33,7 +35,7 @@ public class MainWindowController implements Initializable {
 	private RoboTabPageController tab1Controller;
 
 	@FXML
-	private TextFlow taServerOutput;
+	private TextArea taServerOutput;
 
 	// Methods
 	@Override
@@ -47,16 +49,9 @@ public class MainWindowController implements Initializable {
 			tab1Controller.setServer(server);
 			tab2Controller.setServer(server);
 
-			// PrintStream outputStream = new PrintStream(new
-			// ServerOutputPrinter(taServerOutput));
-			// PrintStream errorOutputStream = new PrintStream(new
-			// ErrorServerOutputPrinter(taServerOutput));
-			//
-			// System.setOut(outputStream);
-			// System.setErr(errorOutputStream);
-
+			PrintStream outputStream = new PrintStream(new ServerOutputPrinter(taServerOutput));
+			System.setOut(outputStream);
 			System.out.println("System output redirected ...");
-			System.err.println("System error redirected ...");
 
 		} catch (SocketException e) {
 			e.printStackTrace();
