@@ -27,7 +27,6 @@ public class AppCommunication extends Communication {
 
 			// Only for test purposes
 			client.setSendData(new String(payload));
-			sendToClient(client);
 
 			if (delegator != null) {
 				delegator.DelegateMessage(this, command, payload);
