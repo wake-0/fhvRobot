@@ -29,18 +29,20 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
     private boolean isConnectionOpened;
 
     private final DatagramSocket clientSocket;
-    private TextView textView;
+    private TextView inputTextView;
+    private TextView outputTextView;
 
     private final ConfigurationManager configManager;
     private final CommunicationManager comManager;
     private final IConfiguration configuration;
 
-    public NetworkClient(TextView textView) throws SocketException, UnknownHostException {
+    public NetworkClient(TextView inputTextView, TextView outputTextView) throws SocketException, UnknownHostException {
         int port = 997;
         String address = "83.212.127.13";
         //String address = "10.0.2.2";
         this.clientSocket = new DatagramSocket();
-        this.textView = textView;
+        this.inputTextView = inputTextView;
+        this.outputTextView = outputTextView;
 
         this.configManager = new ConfigurationManager();
         this.comManager = new CommunicationManager(configManager);
@@ -115,12 +117,12 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
 
     @Override
     public boolean handleDataReceived(DatagramPacket datagramPacket, ApplicationPDU applicationPDU, IAnswerHandler iAnswerHandler) {
-        final String message = "payload[" + applicationPDU.getPayload() + "], command[" + applicationPDU.getCommand() + "]";
+        final String message = " received: payload[" + applicationPDU.getPayload() + "], command[" + applicationPDU.getCommand() + "]";
         Handler updateView = new Handler(Looper.getMainLooper());
         updateView.post(new Runnable() {
             @Override
             public void run() {
-                textView.setText(message);
+                inputTextView.setText(message);
             }
         });
 
@@ -142,8 +144,16 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
         }
 
         @Override
-        protected Void doInBackground(byte[] ... message) {
-            DatagramPacket sendPacket = communicationManager.createDatagramPacket(configuration, command, message[0]);
+        protected Void doInBackground(final byte[] ... message) {
+            final DatagramPacket sendPacket = communicationManager.createDatagramPacket(configuration, command, message[0]);
+            Handler updateView = new Handler(Looper.getMainLooper());
+            updateView.post(new Runnable() {
+                @Override
+                public void run() {
+                    outputTextView.setText("output: payload[" + message[0] + "], command[" + command + "]");
+                }
+            });
+
 
             try {
                 clientSocket.send(sendPacket);

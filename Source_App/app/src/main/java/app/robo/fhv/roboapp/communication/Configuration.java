@@ -11,6 +11,7 @@ public class Configuration implements IConfiguration {
     private int sessionId;
     private String ipAddress;
     private int port;
+    private int heartBeatCount;
 
     // Methods
     @Override
@@ -41,5 +42,20 @@ public class Configuration implements IConfiguration {
     @Override
     public int getPort() {
         return port;
+    }
+
+    @Override
+    public int getHeartBeatCount() {
+        return heartBeatCount;
+    }
+
+    @Override
+    public void increaseHeartBeatCount() {
+        heartBeatCount++;
+    }
+
+    @Override
+    public void cleanHeartBeatCount() {
+        heartBeatCount = 0;
     }
 }

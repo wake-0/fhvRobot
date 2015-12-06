@@ -14,7 +14,9 @@ public class MainActivity extends Activity {
 
     private NetworkClient client;
 
-    private TextView textView;
+    private TextView inputTextView;
+    private TextView outputTextView;
+
     private EditText editText;
     private Button button;
     private SeekBar sbLeft;
@@ -29,11 +31,12 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_layout);
 
-        textView = (TextView) findViewById(R.id.textView);
+        inputTextView = (TextView) findViewById(R.id.inputTextView);
+        outputTextView = (TextView) findViewById(R.id.outputTextView);
         editText = (EditText) findViewById(R.id.editText);
         button = (Button) findViewById(R.id.button);
 
-        textView.setText("text view");
+        inputTextView.setText("text view");
         editText.setText("edit text");
 
         sbLeft = (SeekBar) findViewById(R.id.sbLeft);
@@ -45,12 +48,12 @@ public class MainActivity extends Activity {
         sbRight.setProgress(30);
 
         try {
-            client = new NetworkClient(textView);
+            client = new NetworkClient(inputTextView, outputTextView);
             new Thread(client).start();
         } catch (Exception e) {
             e.printStackTrace();
 
-            textView.setText("Error");
+            inputTextView.setText("Error");
         }
 
         button.setOnClickListener(new View.OnClickListener() {
