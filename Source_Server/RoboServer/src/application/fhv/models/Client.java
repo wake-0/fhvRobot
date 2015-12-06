@@ -151,7 +151,7 @@ public class Client implements Comparable<Client>, IConfiguration {
 
 	@Override
 	public void increaseHeartBeatCount() {
-		heartBeatCount.add(1);
+		heartBeatCount.set(getHeartBeatCount() + 1);
 	}
 
 	@Override

@@ -45,6 +45,7 @@ public class ClientController<T extends IConfiguration> implements IClientProvid
 			@Override
 			public void run() {
 				if (client.getHeartBeatCount() == 0) {
+					timer.cancel();
 					removeClient(client);
 				} else {
 					client.cleanHeartBeatCount();
