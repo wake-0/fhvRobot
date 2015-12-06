@@ -16,10 +16,12 @@ import java.net.InetAddress;
 import java.net.SocketException;
 
 import communication.IConfiguration;
+import communication.commands.Commands;
 import communication.managers.CommunicationManager;
 import communication.managers.IAnswerHandler;
 import communication.managers.IDataReceivedHandler;
 import communication.pdu.ApplicationPDU;
+import controllers.ClientController;
 import models.Client;
 import network.receiver.INetworkReceiver;
 import network.receiver.LoggerNetworkReceiver;
@@ -35,9 +37,11 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 	protected final INetworkSender sender;
 	protected final DatagramSocket socket;
 	protected final CommunicationManager manager;
+	protected final ClientController<Client> clientController;
 
-	public Communication(CommunicationManager manager, int port) throws SocketException {
-		this.manager = manager;
+	public Communication(ClientController<Client> clientController, int port) throws SocketException {
+		this.clientController = clientController;
+		this.manager = new CommunicationManager(clientController);
 		this.socket = new DatagramSocket(port);
 		this.receiver = new LoggerNetworkReceiver(socket);
 		this.sender = new LoggerNetworkSender(socket);
@@ -59,6 +63,43 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 			manager.readDatagramPacket(receivePacket, this, this);
 		}
 	}
+
+	@Override
+	public boolean handleDataReceived(DatagramPacket packet, ApplicationPDU pdu, IAnswerHandler sender) {
+		Client client = (Client) manager.getCurrentConfiguration();
+		byte[] payload = pdu.getPayload();
+		int command = pdu.getCommand();
+		boolean handled = false;
+
+		// This means register name
+		if (command == Commands.CHANGE_NAME) {
+			String name = new String(payload);
+			client.setName(name);
+
+			// Create answer pdu
+			// byte[] nameBytes = Arrays.copyOfRange(payload, 0,
+			// pdu.getPayloadLength());
+
+			DatagramPacket datagram = manager.createDatagramPacket(client, 1, new byte[] { 1 });
+			sender.answer(client, datagram);
+			handled = true;
+		} else if (command == Commands.REQUEST_DISCONNECT) {
+			clientController.removeClient(client);
+			handled = true;
+		}
+
+		if (!handled) {
+			handled = handleDataReceivedCore(packet, pdu, sender, client);
+		}
+
+		// Set the received data
+		client.setReceiveData(new String(payload));
+
+		return handled;
+	}
+
+	protected abstract boolean handleDataReceivedCore(DatagramPacket packet, ApplicationPDU pdu, IAnswerHandler sender,
+			Client client);
 
 	@Override
 	public void answer(IConfiguration configuration, byte[] data) {

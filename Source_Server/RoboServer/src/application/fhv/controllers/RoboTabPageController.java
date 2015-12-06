@@ -64,6 +64,7 @@ public class RoboTabPageController implements Initializable {
 		Client selectedClient = roboController.getSelectedClient();
 
 		if (selectedClient != null) {
+			server.DisconnectedRoboClient(selectedClient);
 			roboController.removeClient(selectedClient);
 			clearDetails();
 		}

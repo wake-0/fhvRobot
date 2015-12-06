@@ -12,7 +12,7 @@ package network;
 import java.io.IOException;
 import java.net.SocketException;
 
-import communication.managers.CommunicationManager;
+import communication.commands.Commands;
 import controllers.ClientController;
 import models.Client;
 import network.communication.AppCommunication;
@@ -38,10 +38,10 @@ public class NetworkServer {
 		this.delegator = new CommunicationDelegator(roboController, appController);
 
 		// Added network sender and receiver which can log
-		this.roboCommunication = new RoboCommunication(new CommunicationManager(roboController), roboPort);
+		this.roboCommunication = new RoboCommunication(roboController, roboPort);
 		delegator.setChannelA(roboCommunication);
 
-		this.appCommunication = new AppCommunication(new CommunicationManager(appController), delegator, appPort);
+		this.appCommunication = new AppCommunication(appController, delegator, appPort);
 		delegator.setChannelB(appCommunication);
 
 		new Thread(roboCommunication).start();
@@ -72,5 +72,17 @@ public class NetworkServer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void sendToApp(Client client, int command, byte[] payload) {
+		appCommunication.sendToClient(client, command, payload);
+	}
+
+	public void DisconnectedAppClient(Client client) {
+		sendToApp(client, Commands.DISCONNECTED, new byte[] { 0 });
+	}
+
+	public void DisconnectedRoboClient(Client client) {
+		sendToRobo(client, Commands.DISCONNECTED, new byte[] { 0 });
 	}
 }

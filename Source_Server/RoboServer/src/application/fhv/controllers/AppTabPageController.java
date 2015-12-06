@@ -50,6 +50,7 @@ public class AppTabPageController implements Initializable {
 		Client selectedClient = appController.getSelectedClient();
 
 		if (selectedClient != null) {
+			server.DisconnectedAppClient(selectedClient);
 			appController.removeClient(selectedClient);
 			clearDetails();
 		}
