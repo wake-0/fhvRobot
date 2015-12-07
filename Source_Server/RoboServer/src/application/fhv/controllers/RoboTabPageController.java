@@ -58,9 +58,9 @@ public class RoboTabPageController implements Initializable {
 		roboController = new ClientController<>(new ClientFactory());
 	}
 
+	// Methods
 	@FXML
 	private void handleKillClick() {
-		System.out.println("button kill clicked.");
 		Client selectedClient = roboController.getSelectedClient();
 
 		if (selectedClient != null) {
@@ -76,19 +76,18 @@ public class RoboTabPageController implements Initializable {
 	}
 
 	@FXML
+	private void handleDownClick() {
+		System.out.println("button down clicked.");
+	}
+
+	@FXML
 	private void handleSendClick() {
-		System.out.println("button send clicked.");
 		Client selectedClient = roboController.getSelectedClient();
 		selectedClient.setSendData(tfSend.getText());
 
 		if (selectedClient != null) {
 			server.sendToRobo(selectedClient);
 		}
-	}
-
-	@FXML
-	private void handleDownClick() {
-		System.out.println("button down clicked.");
 	}
 
 	@FXML

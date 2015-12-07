@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import communication.commands.Commands;
+import communication.configurations.Configuration;
+import communication.configurations.ConfigurationSettings;
 import communication.configurations.IConfiguration;
 import communication.managers.CommunicationManager;
 import communication.managers.IAnswerHandler;
@@ -26,11 +28,10 @@ import communication.pdu.ApplicationPDU;
 public class UDPClient
 		implements Runnable, IDataReceivedHandler<ApplicationPDU>, IAnswerHandler, IConfigurationManager {
 
-	private String address = "127.0.0.1";
-	// private String address = "83.212.127.13";
-	private int port = 998;
 	private DatagramSocket clientSocket;
-	private int sessionId = 0b00000000;
+	private int sessionId = ConfigurationSettings.DEFAULT_SESSION_ID;
+	private int port = UDPClientSettings.SOCKET_PORT;
+	private String address = UDPClientSettings.SERVER_ADDRESS;
 
 	private CommunicationManager manager;
 	private IConfiguration configuration;
@@ -43,13 +44,8 @@ public class UDPClient
 			manager = new CommunicationManager(this);
 			clientSocket = new DatagramSocket();
 
+			this.configuration = new Configuration(sessionId, port, address);
 			this.configurations = new ArrayList<>();
-
-			this.configuration = new ClientConfiguration();
-			configuration.setIpAddress(address);
-			configuration.setPort(port);
-			configuration.setSessionId(sessionId);
-
 			configurations.add(configuration);
 
 		} catch (Exception e) {
@@ -82,7 +78,7 @@ public class UDPClient
 
 				clientSocket.send(sendPacket);
 
-				byte[] receiveData = new byte[1024];
+				byte[] receiveData = new byte[256];
 				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 				clientSocket.receive(receivePacket);
 

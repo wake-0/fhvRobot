@@ -10,10 +10,12 @@ import models.Client;
 
 public class RoboCommunication extends Communication {
 
+	// Constructor
 	public RoboCommunication(ClientController<Client> clientController, int port) throws SocketException {
 		super(clientController, port);
 	}
 
+	// Methods
 	@Override
 	public boolean handleDataReceivedCore(DatagramPacket packet, ApplicationPDU pdu, IAnswerHandler sender,
 			Client client) {

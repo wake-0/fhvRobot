@@ -40,13 +40,14 @@ public class AppTabPageController implements Initializable {
 
 	private NetworkServer server;
 
+	// Constructor
 	public AppTabPageController() {
 		appController = new ClientController<>(new ClientFactory());
 	}
 
+	// Methods
 	@FXML
 	private void handleKillClick() {
-		System.out.println("button kill clicked.");
 		Client selectedClient = appController.getSelectedClient();
 
 		if (selectedClient != null) {
@@ -62,19 +63,18 @@ public class AppTabPageController implements Initializable {
 	}
 
 	@FXML
+	private void handleDownClick() {
+		System.out.println("button down clicked.");
+	}
+
+	@FXML
 	private void handleSendClick() {
-		System.out.println("button send clicked.");
 		Client selectedClient = appController.getSelectedClient();
 		selectedClient.setSendData(tfSend.getText());
 
 		if (selectedClient != null) {
 			server.sendToApp(selectedClient);
 		}
-	}
-
-	@FXML
-	private void handleDownClick() {
-		System.out.println("button down clicked.");
 	}
 
 	@Override

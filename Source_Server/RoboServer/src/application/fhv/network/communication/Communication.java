@@ -28,28 +28,32 @@ import network.sender.LoggerNetworkSender;
 
 public abstract class Communication implements Runnable, IDataReceivedHandler<ApplicationPDU>, IAnswerHandler {
 
+	// Field
 	private boolean isRunning;
-	private int receivePacketSize = 256;
+
 	protected final INetworkReceiver receiver;
 	protected final INetworkSender sender;
 	protected final DatagramSocket socket;
 	protected final CommunicationManager manager;
 	protected final ClientController<Client> clientController;
 
+	// Constructors
 	public Communication(ClientController<Client> clientController, int port) throws SocketException {
 		this.clientController = clientController;
 		this.manager = new CommunicationManager(clientController);
 		this.socket = new DatagramSocket(port);
+
 		this.receiver = new LoggerNetworkReceiver(socket);
 		this.sender = new LoggerNetworkSender(socket);
 	}
 
+	// Methods
 	@Override
 	public void run() {
 		isRunning = true;
 
 		while (isRunning) {
-			byte[] receiveData = new byte[receivePacketSize];
+			byte[] receiveData = new byte[CommunicationSettings.RECEIVE_PACKET_SIZE];
 			DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 			receiver.receive(receivePacket);
 
@@ -63,6 +67,7 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 
 	@Override
 	public boolean handleDataReceived(DatagramPacket packet, ApplicationPDU pdu, IAnswerHandler sender) {
+
 		Client client = (Client) manager.getCurrentConfiguration();
 		byte[] payload = pdu.getPayload();
 		int command = pdu.getCommand();
@@ -70,19 +75,19 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 
 		// This means register name
 		if (command == Commands.CHANGE_NAME) {
+
 			String name = new String(payload);
 			client.setName(name);
 
-			// Create answer pdu
-			// byte[] nameBytes = Arrays.copyOfRange(payload, 0,
-			// pdu.getPayloadLength());
-
-			DatagramPacket datagram = manager.createDatagramPacket(client, 1, new byte[] { 1 });
+			DatagramPacket datagram = manager.createDatagramPacket(client, Commands.CHANGE_NAME, new byte[] { 1 });
 			sender.answer(datagram);
 			handled = true;
+
 		} else if (command == Commands.REQUEST_DISCONNECT) {
+
 			clientController.removeClient(client);
 			handled = true;
+
 		}
 
 		if (!handled) {
@@ -108,22 +113,18 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 	}
 
 	public void sendToClient(Client client) throws IOException {
-		if (client == null) {
-			return;
-		}
-
-		DatagramPacket sendPacket = manager.createDatagramPacket(client, Commands.GENERAL_MESSAGE,
-				client.getSendData().getBytes());
-		sender.send(sendPacket);
-	}
-
-	public void stop() {
-		isRunning = false;
-		socket.close();
+		int command = Commands.GENERAL_MESSAGE;
+		byte[] data = client.getSendData().getBytes();
+		sendToClient(client, command, data);
 	}
 
 	@Override
 	public void answer(DatagramPacket datagram) {
 		sender.send(datagram);
+	}
+
+	public void stop() {
+		isRunning = false;
+		socket.close();
 	}
 }

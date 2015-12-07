@@ -5,32 +5,39 @@ import models.Client;
 
 public class CommunicationDelegator {
 
+	// Fields
 	private Communication channelA;
 	private final ClientController<Client> channelAClients;
 
 	private Communication channelB;
 	private final ClientController<Client> channelBClients;
 
+	// Constructor
 	public CommunicationDelegator(ClientController<Client> channelAClients, ClientController<Client> channelBClients) {
 		this.channelAClients = channelAClients;
 		this.channelBClients = channelBClients;
 	}
 
+	// Methods
 	public void DelegateMessage(Communication channel, int command, byte[] payload) {
+		// TODO: Add a condition controller, which checks if a specific
+		// operation is allowed
 		try {
 			if (channel == getChannelA()) {
-				for (Client c : channelBClients.getClients()) {
-					System.out.println("Send message [" + new String(payload) + "]");
-					getChannelB().sendToClient(c, command, payload);
-				}
+				sendToChannelClients(channelB, channelBClients, command, payload);
 			} else if (channel == getChannelB()) {
-				for (Client c : channelAClients.getClients()) {
-					System.out.println("Send message [" + new String(payload) + "]");
-					getChannelA().sendToClient(c, command, payload);
-				}
+				sendToChannelClients(channelA, channelAClients, command, payload);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	private void sendToChannelClients(Communication channel, ClientController<Client> clientController, int command,
+			byte[] payload) {
+		for (Client c : clientController.getClients()) {
+			System.out.println("Send message [" + new String(payload) + "]");
+			channel.sendToClient(c, command, payload);
 		}
 	}
 

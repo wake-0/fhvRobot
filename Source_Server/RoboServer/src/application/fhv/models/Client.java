@@ -17,7 +17,7 @@ import javafx.beans.property.StringProperty;
 
 public class Client implements Comparable<Client>, IConfiguration {
 
-	// fields
+	// Fields
 	private IntegerProperty id;
 	private StringProperty name;
 	private StringProperty sendData;
@@ -27,7 +27,7 @@ public class Client implements Comparable<Client>, IConfiguration {
 	private IntegerProperty sessionId;
 	private IntegerProperty heartBeatCount;
 
-	// constructor
+	// Constructor
 	public Client() {
 		id = new SimpleIntegerProperty();
 		name = new SimpleStringProperty();
@@ -41,7 +41,7 @@ public class Client implements Comparable<Client>, IConfiguration {
 		setName("Anonymous");
 	}
 
-	// getter and setter for the properties
+	// Methods
 	public final int getId() {
 		return id.get();
 	}
@@ -127,17 +127,7 @@ public class Client implements Comparable<Client>, IConfiguration {
 	}
 
 	@Override
-	public int compareTo(Client o) {
-		if (o == null) {
-			return -1;
-		}
-
-		return getIpAddress().compareTo(o.getIpAddress());
-	}
-
-	@Override
 	public final int getHeartBeatCount() {
-		// TODO Auto-generated method stub
 		return heartBeatCount.get();
 	}
 
@@ -157,5 +147,14 @@ public class Client implements Comparable<Client>, IConfiguration {
 	@Override
 	public void cleanHeartBeatCount() {
 		heartBeatCount.set(0);
+	}
+
+	@Override
+	public int compareTo(Client o) {
+		if (o == null) {
+			return -1;
+		}
+
+		return getIpAddress().compareTo(o.getIpAddress());
 	}
 }
