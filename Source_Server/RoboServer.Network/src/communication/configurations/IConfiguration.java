@@ -7,7 +7,7 @@
  * @author: Kevin Wallis
  * @version: 1
  */
-package communication;
+package communication.configurations;
 
 public interface IConfiguration {
 

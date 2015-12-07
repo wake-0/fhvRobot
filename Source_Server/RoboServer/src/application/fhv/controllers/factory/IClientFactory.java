@@ -1,6 +1,6 @@
 package controllers.factory;
 
-import communication.IConfiguration;
+import communication.configurations.IConfiguration;
 
 public interface IClientFactory<T extends IConfiguration> {
 

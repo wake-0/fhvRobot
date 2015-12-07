@@ -11,7 +11,7 @@ package communication.managers;
 
 import java.net.DatagramPacket;
 
-import communication.IConfiguration;
+import communication.configurations.IConfiguration;
 import communication.pdu.TransportPDU;
 
 public class TransportManager extends LayerManager<TransportPDU> {

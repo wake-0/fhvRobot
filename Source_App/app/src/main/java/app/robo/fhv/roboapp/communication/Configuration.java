@@ -1,6 +1,7 @@
 package app.robo.fhv.roboapp.communication;
 
-import communication.IConfiguration;
+
+import communication.configurations.IConfiguration;
 
 /**
  * Created by Kevin on 24.11.2015.

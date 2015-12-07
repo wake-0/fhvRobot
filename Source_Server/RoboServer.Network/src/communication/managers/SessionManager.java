@@ -14,21 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import communication.IConfiguration;
+import communication.configurations.ConfigurationSettings;
+import communication.configurations.IConfiguration;
 import communication.pdu.SessionPDU;
-import communication.utils.NumberParser;
 
 public class SessionManager extends LayerManager<SessionPDU> {
 
 	// Fields
-	private final int minSessionNumber = 1;
-	private final int maxSessionNumber = 127;
-
-	private final byte initConnectionFlags = (byte) 0b00000001;
-	private final byte initConnectionSession = (byte) 0b00000000;
-	private final byte defaultConnectionFlags = (byte) 0b00000000;
-
-	private final int maxNumberOfIterations = 200;
+	private final int maxIterations = 200;
 
 	// Constructor
 	public SessionManager(IConfigurationManager manager, CurrentConfigurationService currentClientService) {
@@ -38,51 +31,49 @@ public class SessionManager extends LayerManager<SessionPDU> {
 	// Methods
 	@Override
 	public boolean handleDataReceived(DatagramPacket packet, SessionPDU pdu, IAnswerHandler sender) {
-		IConfiguration currentConfiguration = currentConfigurationService.getConfiguration();
+		IConfiguration configuration = currentConfigurationService.getConfiguration();
+
 		boolean handled = false;
 
-		byte[] data = pdu.getData();
+		// Data from the packet
+		// byte[] data = pdu.getData();
 		byte flags = pdu.getFlags();
 		int sessionId = pdu.getSessionId();
 
-		// TODO: e.g. add session checking for security
+		int requestSessionIdFlags = ConfigurationSettings.REQUEST_SESSION_FLAGS;
+		int defaultSession = ConfigurationSettings.DEFAULT_SESSION_ID;
 
-		// Only create a new session id at the beginning --> this is not save
-		if (flags == initConnectionFlags && sessionId == initConnectionSession) {
+		// Only create a new session id at the beginning, a better solution
+		// would be always creating a new session
+		if (flags == requestSessionIdFlags && sessionId == defaultSession) {
 
-			List<Integer> alreadyUsedSessions = new ArrayList<>();
-			for (IConfiguration configuration : manager.getConfigurations()) {
-				alreadyUsedSessions.add(configuration.getSessionId());
-			}
+			int oldSession = configuration.getSessionId();
+			int newSession = createNewSessionNumber(oldSession, getAlreadyUsedSessionIds());
 
-			// TODO: create a new create SessionNumberAlgorithm
-			// because the old one is not checking the already used session ids
-			int newIntSession = createNewSessionNumber(currentConfiguration.getSessionId(), alreadyUsedSessions);
-			if (newIntSession == -1) {
+			if (newSession == ConfigurationSettings.NOT_ALLOWED_SESSION_ID) {
+
 				// Send rejected as answer
-				DatagramPacket answerPacket = createNoFreeSlotPacket();
-				sender.answer(currentConfiguration, answerPacket);
+				DatagramPacket answerPacket = DatagramFactory.createNoFreeSlotPacket(configuration);
+				sender.answer(answerPacket);
+
 			} else {
-				byte newByteSession = NumberParser.intToByte(newIntSession);
 
 				// Set the session id for the configuration
-				currentConfiguration.setSessionId(newIntSession);
-
-				// Create answer pdu
-				byte answerFlags = initConnectionFlags;
-				byte answerSessionId = newByteSession;
-				byte[] answer = new byte[] { answerFlags, answerSessionId };
+				configuration.setSessionId(newSession);
 
 				// Send answer pdu
-				sender.answer(currentConfiguration, answer);
+				DatagramPacket answerPacket = DatagramFactory.createSessionPacket(configuration, newSession);
+				sender.answer(answerPacket);
 			}
 
 			// Everything is handled so no need to go to the upper layers
 			handled = true;
 
-		} else if (flags == initConnectionFlags && sessionId != initConnectionSession) {
+		} else if (flags == ConfigurationSettings.REQUEST_SESSION_FLAGS
+				&& sessionId != ConfigurationSettings.DEFAULT_SESSION_ID) {
+
 			// Set session id
-			currentConfiguration.setSessionId(pdu.getSessionId());
+			configuration.setSessionId(sessionId);
 			handled = true;
 		}
 
@@ -90,25 +81,31 @@ public class SessionManager extends LayerManager<SessionPDU> {
 	}
 
 	private int createNewSessionNumber(int oldSessionNumber, List<Integer> notAllowedSessions) {
-		int numberOfIterations = 0;
-		int newNumber = oldSessionNumber;
-		{
-			// Create new session number between min and max
-			newNumber = ThreadLocalRandom.current().nextInt(minSessionNumber, maxSessionNumber + 1);
-			numberOfIterations++;
-		}
-		while ((newNumber == oldSessionNumber || notAllowedSessions.contains(newNumber))
-				&& numberOfIterations < maxNumberOfIterations)
-			;
+		int newSession = oldSessionNumber;
+		int minSession = ConfigurationSettings.MIN_SESSION_NUMBER;
+		int maxSession = ConfigurationSettings.MAX_SESSION_NUMBER + 1;
+		int notAllowedSession = ConfigurationSettings.NOT_ALLOWED_SESSION_ID;
 
-		return numberOfIterations >= maxNumberOfIterations ? -1 : newNumber;
+		int numberOfIterations = 0;
+		do {
+			// Create new session number between min and max
+			newSession = ThreadLocalRandom.current().nextInt(minSession, maxSession);
+
+			// Break condition
+			numberOfIterations++;
+		} while ((newSession == oldSessionNumber || notAllowedSessions.contains(newSession))
+				&& numberOfIterations < maxIterations);
+
+		return numberOfIterations >= maxIterations ? notAllowedSession : newSession;
 	}
 
-	private DatagramPacket createNoFreeSlotPacket() {
-		byte answerFlags = 0;
-		byte answerSessionId = 0;
-		byte[] answer = new byte[] { answerFlags, answerSessionId };
-		DatagramPacket answerPacket = new DatagramPacket(answer, answer.length);
-		return answerPacket;
+	private List<Integer> getAlreadyUsedSessionIds() {
+		List<Integer> alreadyUsedSessions = new ArrayList<>();
+
+		for (IConfiguration configuration : manager.getConfigurations()) {
+			alreadyUsedSessions.add(configuration.getSessionId());
+		}
+
+		return alreadyUsedSessions;
 	}
 }

@@ -33,10 +33,9 @@ public class PDUFactory {
 	public static ApplicationPDU createApplicationPDU(byte[] data) {
 		int flags = NumberParser.intToByte(data[0]);
 		int command = NumberParser.intToByte(data[1]);
-		int length = NumberParser.intToByte(data[2]);
+		// int length = NumberParser.intToByte(data[2]);
 
-		// TODO: compare length and newData length
 		byte[] newData = Arrays.copyOfRange(data, 3, data.length);
-		return new ApplicationPDU(command, new PDU(newData));
+		return new ApplicationPDU(flags, command, new PDU(newData));
 	}
 }

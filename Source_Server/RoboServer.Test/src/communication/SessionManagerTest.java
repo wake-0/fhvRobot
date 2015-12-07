@@ -20,6 +20,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import communication.configurations.IConfiguration;
 import communication.managers.CurrentConfigurationService;
 import communication.managers.IConfigurationManager;
 import communication.managers.SessionManager;
@@ -47,29 +48,31 @@ public class SessionManagerTest {
 	@Test
 	public void createNewSessionNumber() {
 		int oldSession = 0;
-		Object newSession = createNewSessionNumber(oldSession);
+		List<Integer> notAllowedSessions = new ArrayList<>();
+		Object newSession = createNewSessionNumber(oldSession, notAllowedSessions);
 
 		assertNotNull(newSession);
 		assertTrue(newSession instanceof Integer);
-		assertTrue((int) newSession >= 0);
+		assertTrue((int) newSession > 0);
 		assertTrue((int) newSession <= 255);
 		assertNotEquals(oldSession, (int) newSession);
 
 		oldSession = 77;
-		newSession = createNewSessionNumber(oldSession);
+		newSession = createNewSessionNumber(oldSession, notAllowedSessions);
 
 		assertNotNull(newSession);
 		assertTrue(newSession instanceof Integer);
-		assertTrue((int) newSession >= 0);
+		assertTrue((int) newSession > 0);
 		assertTrue((int) newSession <= 255);
 		assertNotEquals(oldSession, (int) newSession);
 	}
 
-	private Object createNewSessionNumber(int oldSession) {
+	private Object createNewSessionNumber(int oldSession, List<Integer> notAllowedSessions) {
 		try {
-			Method method = SessionManager.class.getDeclaredMethod("createNewSessionNumber", new Class[] { int.class });
+			Method method = SessionManager.class.getDeclaredMethod("createNewSessionNumber",
+					new Class[] { int.class, List.class });
 			method.setAccessible(true);
-			return method.invoke(sessionManager, oldSession);
+			return method.invoke(sessionManager, oldSession, notAllowedSessions);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

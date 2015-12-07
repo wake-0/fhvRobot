@@ -3,7 +3,7 @@ package app.robo.fhv.roboapp.communication;
 import java.util.ArrayList;
 import java.util.List;
 
-import communication.IConfiguration;
+import communication.configurations.IConfiguration;
 import communication.managers.IConfigurationManager;
 
 /**

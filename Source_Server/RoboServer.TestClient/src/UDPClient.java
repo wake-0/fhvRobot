@@ -15,8 +15,8 @@ import java.net.DatagramSocket;
 import java.util.ArrayList;
 import java.util.List;
 
-import communication.IConfiguration;
 import communication.commands.Commands;
+import communication.configurations.IConfiguration;
 import communication.managers.CommunicationManager;
 import communication.managers.IAnswerHandler;
 import communication.managers.IConfigurationManager;
@@ -70,12 +70,13 @@ public class UDPClient
 
 				if (flow == 0) {
 					System.out.println("Open connection called.");
-					sendPacket = manager.createOpenConnectionDatagramPacket(configuration, sentence);
+					sendPacket = manager.createOpenConnectionDatagramPacket(configuration);
 				} else if (flow == 1) {
 					System.out.println("Change name called.");
 					sendPacket = manager.createDatagramPacket(configuration, Commands.CHANGE_NAME, sentence.getBytes());
 				} else {
-					sendPacket = manager.createDatagramPacket(configuration, sentence);
+					sendPacket = manager.createDatagramPacket(configuration, Commands.GENERAL_MESSAGE,
+							sentence.getBytes());
 				}
 				System.out.println("Enhanced send message:" + new String(sendPacket.getData()));
 
@@ -100,12 +101,7 @@ public class UDPClient
 	}
 
 	@Override
-	public void answer(IConfiguration configuration, byte[] data) {
-
-	}
-
-	@Override
-	public void answer(IConfiguration configuration, DatagramPacket datagram) {
+	public void answer(DatagramPacket packet) {
 
 	}
 

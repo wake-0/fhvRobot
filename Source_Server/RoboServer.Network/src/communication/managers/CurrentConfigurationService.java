@@ -9,7 +9,7 @@
  */
 package communication.managers;
 
-import communication.IConfiguration;
+import communication.configurations.IConfiguration;
 
 public class CurrentConfigurationService {
 
@@ -25,5 +25,4 @@ public class CurrentConfigurationService {
 	void setConfiguration(IConfiguration configuration) {
 		this.configuration = configuration;
 	}
-
 }

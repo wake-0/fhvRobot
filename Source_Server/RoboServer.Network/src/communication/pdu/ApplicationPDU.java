@@ -12,30 +12,33 @@ package communication.pdu;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import communication.configurations.ConfigurationSettings;
 import communication.utils.NumberParser;
 
 public class ApplicationPDU extends PDUDecorator {
 
 	// Fields
-	private byte flags = (byte) 0b00000000;
-	private byte commands = (byte) 0b00000000;
-	private byte length = (byte) 0b00000000;
+	private byte flags;
+	private byte command;
+	private byte length;
 
-	// Constructor
+	// Constructors
 	public ApplicationPDU(PDU data) {
-		super(data);
-
-		header = new byte[] { flags, commands, length };
+		this(ConfigurationSettings.DEFAULT_APPLICATION_COMMAND, data);
 	}
 
 	public ApplicationPDU(int command, PDU pdu) {
+		this(ConfigurationSettings.DEFAULT_SESSION_FLAGS, command, pdu);
+	}
+
+	public ApplicationPDU(int flags, int command, PDU pdu) {
 		super(pdu);
 
-		// TODO: check size is allowed
-		commands = NumberParser.intToByte(command);
-		length = NumberParser.intToByte(pdu.data.length);
+		this.flags = NumberParser.intToByte(flags);
+		this.command = NumberParser.intToByte(command);
+		this.length = NumberParser.intToByte(pdu.data.length);
 
-		header = new byte[] { flags, commands, length };
+		header = new byte[] { this.flags, this.command, this.length };
 	}
 
 	// Methods
@@ -44,7 +47,7 @@ public class ApplicationPDU extends PDUDecorator {
 	}
 
 	public int getCommand() {
-		return commands;
+		return command;
 	}
 
 	public int getPayloadLength() {

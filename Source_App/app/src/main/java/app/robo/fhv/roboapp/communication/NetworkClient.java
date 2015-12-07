@@ -12,8 +12,8 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import app.robo.fhv.roboapp.utils.ProgressMapper;
-import communication.IConfiguration;
 import communication.commands.Commands;
+import communication.configurations.IConfiguration;
 import communication.managers.CommunicationManager;
 import communication.managers.IAnswerHandler;
 import communication.managers.IDataReceivedHandler;
@@ -86,7 +86,7 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
 
                 // Open connection
                 if (!isConnectionOpened) {
-                    DatagramPacket openPacket = comManager.createOpenConnectionDatagramPacket(configuration, "open");
+                    DatagramPacket openPacket = comManager.createOpenConnectionDatagramPacket(configuration);
                     clientSocket.send(openPacket);
 
                     DatagramPacket receiveSessionPacket = new DatagramPacket(receiveData, receiveData.length);
@@ -108,12 +108,7 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
     }
 
     @Override
-    public void answer(IConfiguration iConfiguration, byte[] bytes) {
-
-    }
-
-    @Override
-    public void answer(IConfiguration iConfiguration, DatagramPacket datagramPacket) {
+    public void answer(DatagramPacket packet) {
 
     }
 

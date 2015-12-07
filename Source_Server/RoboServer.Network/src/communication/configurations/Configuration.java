@@ -1,23 +1,22 @@
+package communication.configurations;
 
-/*
- * Copyright (c) 2015 - 2015, Kevin Wallis, All rights reserved.
- * 
- * Projectname: RoboServer.TestClient
- * Filename: ClientConfiguration.java
- * 
- * @author: Kevin Wallis
- * @version: 1
- */
+public class Configuration implements IConfiguration {
 
-import communication.configurations.IConfiguration;
-
-public class ClientConfiguration implements IConfiguration {
-
+	// Fields
 	private int sessionId;
 	private int port;
-	private int heartBeatCount;
 	private String ipAddress;
+	private int heartBeatCount;
 
+	// Constructor
+	public Configuration(int sessionId, int port, String ipAddress) {
+		this.sessionId = sessionId;
+		this.port = port;
+		this.ipAddress = ipAddress;
+		this.heartBeatCount = 0;
+	}
+
+	// Methods
 	@Override
 	public void setSessionId(int sessionId) {
 		this.sessionId = sessionId;
@@ -62,5 +61,4 @@ public class ClientConfiguration implements IConfiguration {
 	public void cleanHeartBeatCount() {
 		heartBeatCount = 0;
 	}
-
 }

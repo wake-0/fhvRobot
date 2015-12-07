@@ -10,10 +10,9 @@
 package communication.managers;
 
 import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
-import communication.IConfiguration;
+import communication.configurations.ConfigurationSettings;
+import communication.configurations.IConfiguration;
 import communication.pdu.ApplicationPDU;
 import communication.pdu.NetworkPDU;
 import communication.pdu.PDU;
@@ -47,19 +46,14 @@ public class CommunicationManager {
 		return currentConfigurationService.getConfiguration();
 	}
 
-	public DatagramPacket createOpenConnectionDatagramPacket(IConfiguration configuration, String message) {
-		PDU pdu = createOpenConnectionPDU(message);
-		return createDatagramPacketFromPDU(configuration, pdu);
-	}
-
-	public DatagramPacket createDatagramPacket(IConfiguration configuration, String message) {
-		PDU pdu = createPDU(configuration, message);
-		return createDatagramPacketFromPDU(configuration, pdu);
+	public DatagramPacket createOpenConnectionDatagramPacket(IConfiguration configuration) {
+		PDU pdu = createOpenConnectionPDU();
+		return DatagramFactory.createPacketFromPDU(configuration, pdu);
 	}
 
 	public DatagramPacket createDatagramPacket(IConfiguration configuration, int command, byte[] payload) {
 		PDU pdu = createApplicationPDU(configuration, command, payload);
-		return createDatagramPacketFromPDU(configuration, pdu);
+		return DatagramFactory.createPacketFromPDU(configuration, pdu);
 	}
 
 	public void readDatagramPacket(DatagramPacket packet, IDataReceivedHandler<ApplicationPDU> applicationHandler,
@@ -91,31 +85,13 @@ public class CommunicationManager {
 		applicationHandler.handleDataReceived(packet, application, answerHandler);
 	}
 
-	private DatagramPacket createDatagramPacketFromPDU(IConfiguration configuration, PDU pdu) {
-		byte[] data = pdu.getEnhancedData();
-		int length = data.length;
-		InetAddress ipAddress;
-
-		try {
-			ipAddress = InetAddress.getByName(configuration.getIpAddress());
-		} catch (UnknownHostException e) {
-			ipAddress = InetAddress.getLoopbackAddress();
-		}
-
-		return new DatagramPacket(data, length, ipAddress, configuration.getPort());
-	}
-
-	private PDU createOpenConnectionPDU(String message) {
-		int sessionId = 0b00000000;
-		int flags = 0b00000001;
+	private PDU createOpenConnectionPDU() {
+		int sessionId = ConfigurationSettings.DEFAULT_SESSION_ID;
+		int flags = ConfigurationSettings.REQUEST_SESSION_FLAGS;
+		String openMessage = ConfigurationSettings.OPEN_MESSAGE;
 
 		return new NetworkPDU(new TransportPDU(
-				new SessionPDU(flags, sessionId, new PresentationPDU(new ApplicationPDU(new PDU(message))))));
-	}
-
-	private PDU createPDU(IConfiguration configuration, String message) {
-		return new NetworkPDU(new TransportPDU(new SessionPDU(configuration.getSessionId(),
-				new PresentationPDU(new ApplicationPDU(new PDU(message))))));
+				new SessionPDU(flags, sessionId, new PresentationPDU(new ApplicationPDU(new PDU(openMessage))))));
 	}
 
 	private PDU createApplicationPDU(IConfiguration configuration, int command, byte[] payload) {

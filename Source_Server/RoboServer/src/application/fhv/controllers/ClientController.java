@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import communication.IConfiguration;
+import communication.configurations.IConfiguration;
 import communication.managers.IConfigurationManager;
 import controllers.factory.IClientFactory;
 import javafx.collections.FXCollections;

@@ -9,7 +9,7 @@
  */
 package mocks;
 
-import communication.IConfiguration;
+import communication.configurations.IConfiguration;
 
 public class ConfigurationMock implements IConfiguration {
 

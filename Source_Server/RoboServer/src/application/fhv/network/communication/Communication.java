@@ -12,10 +12,8 @@ package network.communication;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.SocketException;
 
-import communication.IConfiguration;
 import communication.commands.Commands;
 import communication.managers.CommunicationManager;
 import communication.managers.IAnswerHandler;
@@ -27,7 +25,6 @@ import network.receiver.INetworkReceiver;
 import network.receiver.LoggerNetworkReceiver;
 import network.sender.INetworkSender;
 import network.sender.LoggerNetworkSender;
-import utils.InetParser;
 
 public abstract class Communication implements Runnable, IDataReceivedHandler<ApplicationPDU>, IAnswerHandler {
 
@@ -81,7 +78,7 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 			// pdu.getPayloadLength());
 
 			DatagramPacket datagram = manager.createDatagramPacket(client, 1, new byte[] { 1 });
-			sender.answer(client, datagram);
+			sender.answer(datagram);
 			handled = true;
 		} else if (command == Commands.REQUEST_DISCONNECT) {
 			clientController.removeClient(client);
@@ -101,14 +98,6 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 	protected abstract boolean handleDataReceivedCore(DatagramPacket packet, ApplicationPDU pdu, IAnswerHandler sender,
 			Client client);
 
-	@Override
-	public void answer(IConfiguration configuration, byte[] data) {
-		InetAddress address = InetParser.parseStringToInetAddress(configuration.getIpAddress());
-		int port = configuration.getPort();
-		DatagramPacket answerPacket = new DatagramPacket(data, data.length, address, port);
-		sender.send(answerPacket);
-	}
-
 	public void sendToClient(Client client, int command, byte[] payload) {
 		if (client == null) {
 			return;
@@ -123,7 +112,8 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 			return;
 		}
 
-		DatagramPacket sendPacket = manager.createDatagramPacket(client, client.getSendData());
+		DatagramPacket sendPacket = manager.createDatagramPacket(client, Commands.GENERAL_MESSAGE,
+				client.getSendData().getBytes());
 		sender.send(sendPacket);
 	}
 
@@ -133,8 +123,7 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 	}
 
 	@Override
-	public void answer(IConfiguration configuration, DatagramPacket datagram) {
-		// TODO: compare configuration and datagram
+	public void answer(DatagramPacket datagram) {
 		sender.send(datagram);
 	}
 }

@@ -78,7 +78,7 @@ public class DecoratorEnhanceDataTests {
 		byte[] data = new byte[] { 0b01010101 };
 		byte[] expectedFlags = new byte[] { 0b00000000 };
 		byte expectedCommands = (byte) 0b00000000;
-		byte expectedLength = (byte) 0b00000000;
+		byte expectedLength = (byte) 0b00000001;
 
 		ApplicationPDU decorator = new ApplicationPDU(new PDU(data));
 
@@ -96,7 +96,7 @@ public class DecoratorEnhanceDataTests {
 		byte presentationFlags = (byte) 0b00000000;
 		byte applicationFlags = (byte) 0b00000000;
 		byte applicationCommands = (byte) 0b00000000;
-		byte applicationLength = (byte) 0b00000000;
+		byte applicationLength = (byte) 0b00000001;
 		byte[] expectedData = new byte[] { sessionFlags, sessionId, presentationFlags, applicationFlags,
 				applicationCommands, applicationLength, data[0] };
 
