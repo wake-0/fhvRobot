@@ -25,6 +25,7 @@ import communication.utils.NumberParser;
  */
 public class NetworkClient implements Runnable, IDataReceivedHandler<ApplicationPDU>, IAnswerHandler {
 
+    // Fields
     private boolean isRunning;
     private boolean isConnectionOpened;
 
@@ -36,10 +37,10 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
     private final CommunicationManager comManager;
     private final IConfiguration configuration;
 
+    // Constructor
     public NetworkClient(TextView inputTextView, TextView outputTextView) throws SocketException, UnknownHostException {
-        int port = 997;
-        //String address = "83.212.127.13";
-        String address = "10.0.2.2";
+        int port = GlobalSettings.SERVER_PORT;
+        String address = GlobalSettings.SERVER_ADDRESS;
         this.clientSocket = new DatagramSocket();
         this.inputTextView = inputTextView;
         this.outputTextView = outputTextView;
@@ -54,6 +55,7 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
         this.configuration.setPort(port);
     }
 
+    // Methods
     public void send(String message) {
         new SendTask(clientSocket, comManager, configuration, Commands.CHANGE_NAME).execute(message.getBytes());
     }
@@ -80,7 +82,7 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
         try {
 
             while (isRunning) {
-                byte[] receiveData = new byte[256];
+                byte[] receiveData = new byte[GlobalSettings.RECEIVE_PACKET_SIZE];
 
                 // Open connection
                 if (!isConnectionOpened) {
