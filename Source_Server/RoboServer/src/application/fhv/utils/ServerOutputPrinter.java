@@ -17,6 +17,5 @@ public class ServerOutputPrinter extends OutputStream {
 	@Override
 	public void write(int i) throws IOException {
 		Platform.runLater(() -> output.appendText(String.valueOf((char) i)));
-
 	}
 }
