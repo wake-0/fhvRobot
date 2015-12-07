@@ -39,8 +39,6 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
 
     // Constructor
     public NetworkClient(TextView inputTextView, TextView outputTextView) throws SocketException, UnknownHostException {
-        int port = GlobalSettings.SERVER_PORT;
-        String address = GlobalSettings.SERVER_ADDRESS;
         this.clientSocket = new DatagramSocket();
         this.inputTextView = inputTextView;
         this.outputTextView = outputTextView;
@@ -48,11 +46,8 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
         this.configManager = new ConfigurationManager();
         this.comManager = new CommunicationManager(configManager);
 
+        // Configuration is setup by default
         this.configuration = this.configManager.createConfiguration();
-
-        // Setup configuration
-        this.configuration.setIpAddress(address);
-        this.configuration.setPort(port);
     }
 
     // Methods
