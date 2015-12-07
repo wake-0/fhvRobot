@@ -80,7 +80,7 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
         try {
 
             while (isRunning) {
-                byte[] receiveData = new byte[1024];
+                byte[] receiveData = new byte[256];
 
                 // Open connection
                 if (!isConnectionOpened) {

@@ -32,7 +32,7 @@ import utils.InetParser;
 public abstract class Communication implements Runnable, IDataReceivedHandler<ApplicationPDU>, IAnswerHandler {
 
 	private boolean isRunning;
-	private int receivePacketSize = 1024;
+	private int receivePacketSize = 256;
 	protected final INetworkReceiver receiver;
 	protected final INetworkSender sender;
 	protected final DatagramSocket socket;
