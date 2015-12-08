@@ -43,6 +43,11 @@ public class NetworkManager extends LayerManager<NetworkPDU> {
 		String ipAddress = packet.getAddress().getHostName();
 		IConfiguration currentConfiguration = getConfiguration(configurations, ipAddress, pdu);
 
+		// When no configuration was found the session id needs to be 0
+		if (isSessionHijacking(currentConfiguration, pdu)) {
+			return true;
+		}
+
 		// No configuration exists, then create a new one
 		if (currentConfiguration == null) {
 			currentConfiguration = manager.createConfiguration();
@@ -53,6 +58,21 @@ public class NetworkManager extends LayerManager<NetworkPDU> {
 		currentConfiguration.increaseHeartBeatCount();
 		currentConfigurationService.setConfiguration(currentConfiguration);
 		return false;
+	}
+
+	private boolean isSessionHijacking(IConfiguration configuration, NetworkPDU pdu) {
+
+		// Checking session id is 0 otherwise it is session hijacking
+		TransportPDU transportPDU = PDUFactory.createTransportPDU(pdu.getData());
+		SessionPDU sessionPDU = PDUFactory.createSessionPDU(transportPDU.getData());
+
+		int sessionId = sessionPDU.getSessionId();
+		int flags = sessionPDU.getFlags();
+
+		// This is a big security issue, beccause an attacker can change the
+		// session id
+		return sessionId != ConfigurationSettings.DEFAULT_SESSION_ID
+				&& flags != ConfigurationSettings.REQUEST_SESSION_FLAGS && configuration == null;
 	}
 
 	private boolean freeSlotExists(List<IConfiguration> configurations, IAnswerHandler sender, DatagramPacket packet) {

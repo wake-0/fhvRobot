@@ -31,7 +31,7 @@ public class UDPClient
 	private DatagramSocket clientSocket;
 	private int sessionId = ConfigurationSettings.DEFAULT_SESSION_ID;
 	private int port = UDPClientSettings.SOCKET_PORT;
-	private String address = UDPClientSettings.SERVER_ADDRESS;
+	private String address = UDPClientSettings.DEFAULT_ADDRESS;
 
 	private CommunicationManager manager;
 	private IConfiguration configuration;
