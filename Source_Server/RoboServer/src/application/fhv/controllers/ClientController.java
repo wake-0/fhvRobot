@@ -47,7 +47,7 @@ public class ClientController<T extends IConfiguration> implements IClientProvid
 				if (client.getHeartBeatCount() == 0) {
 					timer.cancel();
 					removeClient(client);
-					System.out.println("Missing heart beat, client was disconnected.");
+					System.out.println("Missing heart beat, client disconnected: [" + client.getSessionId() + "]");
 				} else {
 					client.cleanHeartBeatCount();
 				}

@@ -7,7 +7,10 @@ import communication.utils.NumberParser;
 public class PDUFactory {
 
 	public static NetworkPDU createNetworkPDU(byte[] data) {
-		return new NetworkPDU(new PDU(data));
+		int length = NumberParser.byteToUnsignedInt(data[0]);
+		// Remove unused data
+		byte[] newData = Arrays.copyOfRange(data, 1, 1 + length);
+		return new NetworkPDU(new PDU(newData));
 	}
 
 	public static TransportPDU createTransportPDU(byte[] data) {

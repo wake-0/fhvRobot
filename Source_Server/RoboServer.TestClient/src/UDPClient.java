@@ -90,7 +90,7 @@ public class UDPClient
 
 				flow++;
 			} catch (Exception ex) {
-
+				ex.printStackTrace();
 			}
 		}
 		// clientSocket.close();

@@ -63,8 +63,8 @@ public class NetworkManager extends LayerManager<NetworkPDU> {
 	private boolean isSessionHijacking(IConfiguration configuration, NetworkPDU pdu) {
 
 		// Checking session id is 0 otherwise it is session hijacking
-		TransportPDU transportPDU = PDUFactory.createTransportPDU(pdu.getData());
-		SessionPDU sessionPDU = PDUFactory.createSessionPDU(transportPDU.getData());
+		TransportPDU transportPDU = PDUFactory.createTransportPDU(pdu.getInnerData());
+		SessionPDU sessionPDU = PDUFactory.createSessionPDU(transportPDU.getInnerData());
 
 		int sessionId = sessionPDU.getSessionId();
 		int flags = sessionPDU.getFlags();
@@ -93,8 +93,8 @@ public class NetworkManager extends LayerManager<NetworkPDU> {
 	private IConfiguration getConfiguration(List<IConfiguration> configurations, String ipAddress, NetworkPDU pdu) {
 
 		// This is a hack for checking session id is already used
-		TransportPDU transportPDU = PDUFactory.createTransportPDU(pdu.getData());
-		SessionPDU sessionPDU = PDUFactory.createSessionPDU(transportPDU.getData());
+		TransportPDU transportPDU = PDUFactory.createTransportPDU(pdu.getInnerData());
+		SessionPDU sessionPDU = PDUFactory.createSessionPDU(transportPDU.getInnerData());
 
 		int sessionId = sessionPDU.getSessionId();
 		int flags = sessionPDU.getFlags();

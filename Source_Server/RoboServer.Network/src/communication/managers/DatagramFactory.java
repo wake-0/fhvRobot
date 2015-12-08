@@ -14,23 +14,16 @@ public class DatagramFactory {
 	public static DatagramPacket createNoFreeSlotPacket(IConfiguration configuration) {
 		byte answerFlags = NumberParser.intToByte(ConfigurationSettings.NO_FREE_SESSION_FLAGS);
 		byte answerSessionId = NumberParser.intToByte(ConfigurationSettings.DEFAULT_SESSION_ID);
-		byte[] answer = new byte[] { answerFlags, answerSessionId };
-		DatagramPacket answerPacket = new DatagramPacket(answer, answer.length);
-		answerPacket.setPort(configuration.getPort());
-		answerPacket.setAddress(parseStringToInetAddress(configuration.getIpAddress()));
-		return answerPacket;
-	}
-
-	public static DatagramPacket createPacket(IConfiguration configuration, byte[] data) {
-		InetAddress address = parseStringToInetAddress(configuration.getIpAddress());
-		int port = configuration.getPort();
-		return new DatagramPacket(data, data.length, address, port);
+		byte length = 2;
+		byte[] answer = new byte[] { length, answerFlags, answerSessionId };
+		return createPacket(configuration, answer);
 	}
 
 	public static DatagramPacket createSessionPacket(IConfiguration configuration, int sessionId) {
 		byte answerFlags = NumberParser.intToByte(ConfigurationSettings.REQUEST_SESSION_FLAGS);
 		byte answerSessionId = NumberParser.intToByte(sessionId);
-		byte[] answer = new byte[] { answerFlags, answerSessionId };
+		byte length = 2;
+		byte[] answer = new byte[] { length, answerFlags, answerSessionId };
 		return DatagramFactory.createPacket(configuration, answer);
 	}
 
@@ -46,6 +39,12 @@ public class DatagramFactory {
 		}
 
 		return new DatagramPacket(data, length, ipAddress, configuration.getPort());
+	}
+
+	private static DatagramPacket createPacket(IConfiguration configuration, byte[] data) {
+		InetAddress address = parseStringToInetAddress(configuration.getIpAddress());
+		int port = configuration.getPort();
+		return new DatagramPacket(data, data.length, address, port);
 	}
 
 	public static InetAddress parseStringToInetAddress(String address) {

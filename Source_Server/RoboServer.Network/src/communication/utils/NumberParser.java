@@ -18,4 +18,7 @@ public class NumberParser {
 		}
 	}
 
+	public static int byteToUnsignedInt(byte value) {
+		return value & 0xFF;
+	}
 }

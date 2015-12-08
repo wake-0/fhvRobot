@@ -36,7 +36,7 @@ public class ApplicationPDU extends PDUDecorator {
 
 		this.flags = NumberParser.intToByte(flags);
 		this.command = NumberParser.intToByte(command);
-		this.length = NumberParser.intToByte(pdu.data.length);
+		this.length = NumberParser.intToByte(pdu.getData().length);
 
 		header = new byte[] { this.flags, this.command, this.length };
 	}
