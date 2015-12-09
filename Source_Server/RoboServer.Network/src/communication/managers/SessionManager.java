@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import communication.configurations.Configuration;
+import communication.configurations.ConfigurationFactory;
 import communication.configurations.ConfigurationSettings;
 import communication.configurations.IConfiguration;
 import communication.pdu.SessionPDU;
@@ -53,7 +55,8 @@ public class SessionManager extends LayerManager<SessionPDU> {
 			if (newSession == ConfigurationSettings.NOT_ALLOWED_SESSION_ID) {
 
 				// Send rejected as answer
-				DatagramPacket answerPacket = DatagramFactory.createNoFreeSlotPacket(configuration);
+				Configuration answerConfiguration = ConfigurationFactory.createConfiguration(packet);
+				DatagramPacket answerPacket = DatagramFactory.createNoFreeSlotPacket(answerConfiguration);
 				sender.answer(answerPacket);
 
 			} else {

@@ -10,6 +10,7 @@ public class ConfigurationSettings {
 	public static int DEFAULT_SESSION_ID = 0;
 
 	// Flags
+	public static int DISCONNECTED = 0;
 	public static int NO_FREE_SESSION_FLAGS = 0;
 	public static int DEFAULT_SESSION_FLAGS = 0;
 	public static int REQUEST_SESSION_FLAGS = 1;

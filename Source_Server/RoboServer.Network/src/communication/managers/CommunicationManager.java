@@ -11,7 +11,6 @@ package communication.managers;
 
 import java.net.DatagramPacket;
 
-import communication.configurations.ConfigurationSettings;
 import communication.configurations.IConfiguration;
 import communication.pdu.ApplicationPDU;
 import communication.pdu.NetworkPDU;
@@ -47,12 +46,12 @@ public class CommunicationManager {
 	}
 
 	public DatagramPacket createOpenConnectionDatagramPacket(IConfiguration configuration) {
-		PDU pdu = createOpenConnectionPDU();
+		PDU pdu = PDUFactory.createOpenConnectionPDU();
 		return DatagramFactory.createPacketFromPDU(configuration, pdu);
 	}
 
 	public DatagramPacket createDatagramPacket(IConfiguration configuration, int command, byte[] payload) {
-		PDU pdu = createApplicationPDU(configuration, command, payload);
+		PDU pdu = PDUFactory.createApplicationPDU(configuration, command, payload);
 		return DatagramFactory.createPacketFromPDU(configuration, pdu);
 	}
 
@@ -86,19 +85,5 @@ public class CommunicationManager {
 			return;
 		}
 		applicationHandler.handleDataReceived(packet, application, answerHandler);
-	}
-
-	private PDU createOpenConnectionPDU() {
-		int sessionId = ConfigurationSettings.DEFAULT_SESSION_ID;
-		int flags = ConfigurationSettings.REQUEST_SESSION_FLAGS;
-		String openMessage = ConfigurationSettings.OPEN_MESSAGE;
-
-		return new NetworkPDU(new TransportPDU(
-				new SessionPDU(flags, sessionId, new PresentationPDU(new ApplicationPDU(new PDU(openMessage))))));
-	}
-
-	private PDU createApplicationPDU(IConfiguration configuration, int command, byte[] payload) {
-		return new NetworkPDU(new TransportPDU(new SessionPDU(configuration.getSessionId(),
-				new PresentationPDU(new ApplicationPDU(command, new PDU(payload))))));
 	}
 }

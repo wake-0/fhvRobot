@@ -36,6 +36,9 @@ public class NetworkManager extends LayerManager<NetworkPDU> {
 
 		// No free slot exists
 		if (!freeSlotExists(configurations, sender, packet)) {
+			Configuration answerConfiguration = ConfigurationFactory.createConfiguration(packet);
+			DatagramPacket answerPacket = DatagramFactory.createNoFreeSlotPacket(answerConfiguration);
+			sender.answer(answerPacket);
 			return true;
 		}
 
@@ -45,8 +48,9 @@ public class NetworkManager extends LayerManager<NetworkPDU> {
 
 		// When no configuration was found the session id needs to be 0
 		if (isSessionHijacking(currentConfiguration, pdu)) {
-			// TODO: Add answer open connection
-			// sender.answer(datagram);
+			Configuration answerConfiguration = ConfigurationFactory.createConfiguration(packet);
+			DatagramPacket answerPacket = DatagramFactory.createDisconnectedPacket(answerConfiguration);
+			sender.answer(answerPacket);
 			return true;
 		}
 
@@ -94,9 +98,6 @@ public class NetworkManager extends LayerManager<NetworkPDU> {
 
 		// Check free slot exists
 		if (configurations.size() >= ConfigurationSettings.MAX_CONFIGURATION_COUNT) {
-			Configuration answerConfiguration = ConfigurationFactory.createConfiguration(packet);
-			DatagramPacket answerPacket = DatagramFactory.createNoFreeSlotPacket(answerConfiguration);
-			sender.answer(answerPacket);
 			freeSlotExists = false;
 		}
 

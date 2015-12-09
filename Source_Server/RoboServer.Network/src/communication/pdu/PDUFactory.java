@@ -2,9 +2,25 @@ package communication.pdu;
 
 import java.util.Arrays;
 
+import communication.configurations.ConfigurationSettings;
+import communication.configurations.IConfiguration;
 import communication.utils.NumberParser;
 
 public class PDUFactory {
+
+	public static PDU createOpenConnectionPDU() {
+		int sessionId = ConfigurationSettings.DEFAULT_SESSION_ID;
+		int flags = ConfigurationSettings.REQUEST_SESSION_FLAGS;
+		String openMessage = ConfigurationSettings.OPEN_MESSAGE;
+
+		return new NetworkPDU(new TransportPDU(
+				new SessionPDU(flags, sessionId, new PresentationPDU(new ApplicationPDU(new PDU(openMessage))))));
+	}
+
+	public static PDU createApplicationPDU(IConfiguration configuration, int command, byte[] payload) {
+		return new NetworkPDU(new TransportPDU(new SessionPDU(configuration.getSessionId(),
+				new PresentationPDU(new ApplicationPDU(command, new PDU(payload))))));
+	}
 
 	public static NetworkPDU createNetworkPDU(byte[] data) {
 		if (data == null || data.length < 1) {
