@@ -1,10 +1,12 @@
 package controllers;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -43,6 +45,21 @@ public class AppTabPageController implements Initializable {
 	// Constructor
 	public AppTabPageController() {
 		appController = new ClientController<>(new ClientFactory());
+		appController.getClients().addListener(new ListChangeListener<Client>() {
+
+			@Override
+			public void onChanged(ListChangeListener.Change<? extends Client> change) {
+				while (change.next()) {
+					if (change.wasRemoved()) {
+						List<? extends Client> removedClients = change.getRemoved();
+						for (Client c : removedClients) {
+							server.DisconnectedAppClient(c);
+						}
+					}
+				}
+			}
+		});
+		;
 	}
 
 	// Methods
