@@ -45,6 +45,8 @@ public class NetworkManager extends LayerManager<NetworkPDU> {
 
 		// When no configuration was found the session id needs to be 0
 		if (isSessionHijacking(currentConfiguration, pdu)) {
+			// TODO: Add answer open connection
+			// sender.answer(datagram);
 			return true;
 		}
 
@@ -62,9 +64,20 @@ public class NetworkManager extends LayerManager<NetworkPDU> {
 
 	private boolean isSessionHijacking(IConfiguration configuration, NetworkPDU pdu) {
 
+		if (pdu == null) {
+			return true;
+		}
+
 		// Checking session id is 0 otherwise it is session hijacking
 		TransportPDU transportPDU = PDUFactory.createTransportPDU(pdu.getInnerData());
+		if (transportPDU == null) {
+			return true;
+		}
+
 		SessionPDU sessionPDU = PDUFactory.createSessionPDU(transportPDU.getInnerData());
+		if (sessionPDU == null) {
+			return true;
+		}
 
 		int sessionId = sessionPDU.getSessionId();
 		int flags = sessionPDU.getFlags();
@@ -94,7 +107,14 @@ public class NetworkManager extends LayerManager<NetworkPDU> {
 
 		// This is a hack for checking session id is already used
 		TransportPDU transportPDU = PDUFactory.createTransportPDU(pdu.getInnerData());
+		if (transportPDU == null) {
+			return null;
+		}
+
 		SessionPDU sessionPDU = PDUFactory.createSessionPDU(transportPDU.getInnerData());
+		if (sessionPDU == null) {
+			return null;
+		}
 
 		int sessionId = sessionPDU.getSessionId();
 		int flags = sessionPDU.getFlags();

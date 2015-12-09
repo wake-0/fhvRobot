@@ -7,6 +7,10 @@ import communication.utils.NumberParser;
 public class PDUFactory {
 
 	public static NetworkPDU createNetworkPDU(byte[] data) {
+		if (data == null || data.length < 1) {
+			return null;
+		}
+
 		int length = NumberParser.byteToUnsignedInt(data[0]);
 		// Remove unused data
 		byte[] newData = Arrays.copyOfRange(data, 1, 1 + length);
@@ -14,10 +18,17 @@ public class PDUFactory {
 	}
 
 	public static TransportPDU createTransportPDU(byte[] data) {
+		if (data == null) {
+			return null;
+		}
 		return new TransportPDU(new PDU(data));
 	}
 
 	public static SessionPDU createSessionPDU(byte[] data) {
+		if (data == null || data.length < 2) {
+			return null;
+		}
+
 		// TODO: check data length
 		int flags = NumberParser.intToByte(data[0]);
 		int sessionId = NumberParser.intToByte(data[1]);
@@ -27,6 +38,10 @@ public class PDUFactory {
 	}
 
 	public static PresentationPDU createPresentationPDU(byte[] data) {
+		if (data == null || data.length < 1) {
+			return null;
+		}
+
 		int flags = NumberParser.intToByte(data[0]);
 		byte[] newData = Arrays.copyOfRange(data, 1, data.length);
 
@@ -34,6 +49,10 @@ public class PDUFactory {
 	}
 
 	public static ApplicationPDU createApplicationPDU(byte[] data) {
+		if (data == null || data.length < 3) {
+			return null;
+		}
+
 		int flags = NumberParser.intToByte(data[0]);
 		int command = NumberParser.intToByte(data[1]);
 		// int length = NumberParser.intToByte(data[2]);

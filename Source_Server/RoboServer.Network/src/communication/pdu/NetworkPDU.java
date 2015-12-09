@@ -50,4 +50,8 @@ public class NetworkPDU extends PDUDecorator {
 		byte[] data = packet.getInnerData();
 		return Arrays.copyOfRange(data, header.length, data.length);
 	}
+
+	public int getLength() {
+		return length;
+	}
 }

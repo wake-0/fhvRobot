@@ -60,28 +60,31 @@ public class CommunicationManager {
 			IAnswerHandler answerHandler) {
 
 		NetworkPDU network = PDUFactory.createNetworkPDU(packet.getData());
-		if (networkManager.handleDataReceived(packet, network, answerHandler)) {
+		if (network == null || networkManager.handleDataReceived(packet, network, answerHandler)) {
 			return;
 		}
 
 		TransportPDU transport = PDUFactory.createTransportPDU(network.getInnerData());
-		if (transportManager.handleDataReceived(packet, transport, answerHandler)) {
+		if (transport == null || transportManager.handleDataReceived(packet, transport, answerHandler)) {
 			return;
 		}
 
 		SessionPDU session = PDUFactory.createSessionPDU(transport.getInnerData());
-		if (sessionManager.handleDataReceived(packet, session, answerHandler)) {
+		if (session == null || sessionManager.handleDataReceived(packet, session, answerHandler)) {
 			return;
 		}
 
 		PresentationPDU presentation = PDUFactory.createPresentationPDU(session.getInnerData());
-		if (presentationManager.handleDataReceived(packet, presentation, answerHandler)) {
+		if (presentation == null || presentationManager.handleDataReceived(packet, presentation, answerHandler)) {
 			return;
 		}
 
 		// Use handler so it is possible to decide if the message should be
 		// handled by the application
 		ApplicationPDU application = PDUFactory.createApplicationPDU(presentation.getInnerData());
+		if (application == null) {
+			return;
+		}
 		applicationHandler.handleDataReceived(packet, application, answerHandler);
 	}
 
