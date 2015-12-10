@@ -23,14 +23,7 @@ public class PDUFactory {
 	}
 
 	public static NetworkPDU createNetworkPDU(byte[] data) {
-		if (data == null || data.length < 1) {
-			return null;
-		}
-
-		int length = NumberParser.byteToUnsignedInt(data[0]);
-		// Remove unused data
-		byte[] newData = Arrays.copyOfRange(data, 1, 1 + length);
-		return new NetworkPDU(new PDU(newData));
+		return new NetworkPDU(new PDU(data));
 	}
 
 	public static TransportPDU createTransportPDU(byte[] data) {

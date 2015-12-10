@@ -10,6 +10,7 @@
 package communication.managers;
 
 import java.net.DatagramPacket;
+import java.util.Arrays;
 
 import communication.configurations.IConfiguration;
 import communication.pdu.ApplicationPDU;
@@ -58,7 +59,9 @@ public class CommunicationManager {
 	public void readDatagramPacket(DatagramPacket packet, IDataReceivedHandler<ApplicationPDU> applicationHandler,
 			IAnswerHandler answerHandler) {
 
-		NetworkPDU network = PDUFactory.createNetworkPDU(packet.getData());
+		byte[] data = Arrays.copyOfRange(packet.getData(), 0, packet.getLength());
+
+		NetworkPDU network = PDUFactory.createNetworkPDU(data);
 		if (network == null || networkManager.handleDataReceived(packet, network, answerHandler)) {
 			return;
 		}

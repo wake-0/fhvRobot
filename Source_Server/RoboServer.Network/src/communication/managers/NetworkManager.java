@@ -36,9 +36,6 @@ public class NetworkManager extends LayerManager<NetworkPDU> {
 
 		// No free slot exists
 		if (!freeSlotExists(configurations, sender, packet)) {
-			Configuration answerConfiguration = ConfigurationFactory.createConfiguration(packet);
-			DatagramPacket answerPacket = DatagramFactory.createNoFreeSlotPacket(answerConfiguration);
-			sender.answer(answerPacket);
 			return true;
 		}
 
@@ -98,6 +95,9 @@ public class NetworkManager extends LayerManager<NetworkPDU> {
 
 		// Check free slot exists
 		if (configurations.size() >= ConfigurationSettings.MAX_CONFIGURATION_COUNT) {
+			Configuration answerConfiguration = ConfigurationFactory.createConfiguration(packet);
+			DatagramPacket answerPacket = DatagramFactory.createNoFreeSlotPacket(answerConfiguration);
+			sender.answer(answerPacket);
 			freeSlotExists = false;
 		}
 
