@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,11 +59,23 @@ public class UDPClient
 		while (true) {
 
 			try {
+
+				DatagramPacket sendPacket;
+
+				for (int i = 0; i <= 100000; i += 1000) {
+					byte[] message = new byte[i];
+					InetAddress address = InetAddress.getByName(UDPClientSettings.SERVER_ADDRESS);
+					sendPacket = new DatagramPacket(message, message.length, address, 999);
+					clientSocket.send(sendPacket);
+
+					System.out.println("send=" + i);
+					Thread.sleep(100);
+				}
+
 				BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
 				String sentence = inFromUser.readLine();
 
 				System.out.println("Send message:" + sentence);
-				DatagramPacket sendPacket;
 
 				if (flow == 0) {
 					System.out.println("Open connection called.");
