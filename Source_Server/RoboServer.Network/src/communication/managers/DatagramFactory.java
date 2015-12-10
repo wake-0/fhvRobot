@@ -14,24 +14,21 @@ public class DatagramFactory {
 	public static DatagramPacket createNoFreeSlotPacket(IConfiguration configuration) {
 		byte answerFlags = NumberParser.intToByte(ConfigurationSettings.NO_FREE_SESSION_FLAGS);
 		byte answerSessionId = NumberParser.intToByte(ConfigurationSettings.DEFAULT_SESSION_ID);
-		byte length = 2;
-		byte[] answer = new byte[] { length, answerFlags, answerSessionId };
+		byte[] answer = new byte[] { answerFlags, answerSessionId };
 		return createPacket(configuration, answer);
 	}
 
 	public static DatagramPacket createDisconnectedPacket(IConfiguration configuration) {
 		byte answerFlags = NumberParser.intToByte(ConfigurationSettings.DISCONNECTED);
 		byte answerSessionId = NumberParser.intToByte(configuration != null ? configuration.getSessionId() : 0);
-		byte length = 2;
-		byte[] answer = new byte[] { length, answerFlags, answerSessionId };
+		byte[] answer = new byte[] { answerFlags, answerSessionId };
 		return createPacket(configuration, answer);
 	}
 
 	public static DatagramPacket createSessionPacket(IConfiguration configuration, int sessionId) {
 		byte answerFlags = NumberParser.intToByte(ConfigurationSettings.REQUEST_SESSION_FLAGS);
 		byte answerSessionId = NumberParser.intToByte(sessionId);
-		byte length = 2;
-		byte[] answer = new byte[] { length, answerFlags, answerSessionId };
+		byte[] answer = new byte[] { answerFlags, answerSessionId };
 		return DatagramFactory.createPacket(configuration, answer);
 	}
 
