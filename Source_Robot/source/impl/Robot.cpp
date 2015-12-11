@@ -9,8 +9,6 @@
 #include "../../source/dmcc_lib/dmcc.h"
 #include <stdio.h>
 
-#define MOTOR_LEFT				(1)
-#define MOTOR_RIGHT				(2)
 #define MOTOR_LEFT_POLARITY		(1)
 #define MOTOR_RIGHT_POLARITY	(-1)
 #define SPEED_TO_PWM(x)		(x * 100)

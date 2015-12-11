@@ -8,6 +8,10 @@
 #ifndef ROBOT_H_
 #define ROBOT_H_
 
+#define MOTOR_LEFT				(1)
+#define MOTOR_RIGHT				(2)
+#define MOTOR_BOTH				(3)
+
 namespace FhvRobot {
 
 class Robot {

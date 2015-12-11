@@ -9,10 +9,14 @@
 #define SOURCE_IMPL_CONTROLLER_H_
 
 #include "ConnectionAPI.h"
+#include "Robot.h"
 
 namespace FhvRobot {
 
 class Controller : ApplicationCallback {
+private:
+	Robot robot;
+	ConnectionAPI* connection;
 public:
 	Controller();
 	virtual ~Controller();

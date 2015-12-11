@@ -6,12 +6,16 @@
  */
 
 #include "../../include/ConnectionAPI.h"
+#include "../../include/Robot.h"
+
 #include <stdexcept>
 
 #define TYPE_BYTE					(0b00000000)
-#define COMMAND_CONNECT				(0b00000000)
+#define COMMAND_REGISTER			(0b00000001)
 
 namespace FhvRobot {
+
+static int getMotorValue(signed char command_value);
 
 ConnectionAPI::ConnectionAPI(ApplicationCallback* cb) {
 	if (cb == NULL)
@@ -35,7 +39,20 @@ void ConnectionAPI::SetConnection(FhvRobotProtocolStack::ProtocolLayer* c)
 void ConnectionAPI::MessageReceived(const char* msg, unsigned int len)
 {
 
+	int command = msg[0];
 
+	// Parse message
+	if (command == 10 || command == 11)
+	{
+		// Right motor == 10
+		// Left motor == 11
+		callback->MotorCommand((command == 11) ? MOTOR_LEFT : MOTOR_RIGHT, getMotorValue(msg[2]));
+	}
+	else if (command == 12)
+	{
+		// Both motors
+		callback->MotorCommand(MOTOR_BOTH, getMotorValue(msg[2]));
+	}
 }
 
 bool ConnectionAPI::Connect(const char* robotName, const char* hostname, int port)
@@ -57,14 +74,15 @@ bool ConnectionAPI::Connect(const char* robotName, const char* hostname, int por
 	if (result == true) {
 		// New Application message to actually connect to the server
 		Debugger(VERBOSE) << "Sending connect message\n";
-		char* msg = (char*) malloc(sizeof(char) * robotNameLen + 1);
+		char* msg = (char*) malloc(sizeof(char) * robotNameLen + 2);
 		if (msg == NULL) {
 			Debugger(ERROR) << "Could not allocate memory for sending connect message\n";
 			return false;
 		}
 
-		msg[0] = COMMAND_CONNECT;
-		memcpy(&msg[1], robotName, strlen(hostname));
+		msg[0] = COMMAND_REGISTER;
+		msg[1] = strlen(robotName);
+		memcpy(&msg[2], robotName, msg[1]);
 		result = result && connection->Send(msg, robotNameLen + 2);
 		free(msg);
 
@@ -77,6 +95,14 @@ bool ConnectionAPI::SendHeartBeat()
 {
 
 	return true;
+}
+
+int getMotorValue(signed char command_value)
+{
+	signed char value = command_value;
+	value = (value > 100) ? 100 : value;
+	value = (value < -100) ? -100 : value;
+	return (int) value;
 }
 
 } /* namespace FhvRobot */
