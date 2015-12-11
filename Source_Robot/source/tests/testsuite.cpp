@@ -19,6 +19,10 @@
 #define TEST_LAYERS
 #define TEST_CONNECTION_API
 
+//#define VALID_SERVER_IP_ADDRESS					("192.168.7.1")
+#define VALID_SERVER_IP_ADDRESS					("83.212.127.13")
+#define VALID_SERVER_PORT						(998)
+
 bool test_class_Robot(void);
 bool test_class_UdpConnection(void);
 bool test_classes_layers(void);
@@ -93,13 +97,8 @@ bool test_connection_api() {
 		return false;
 	}
 
-	res = connection.Connect("Nico", "127.0.0.1", 111);
-	if (res == true) {
-		return false;
-	}
-
 	// Succeed test
-	res = connection.Connect("Nico", "83.212.127.13", 998);
+	res = connection.Connect("Nico", VALID_SERVER_IP_ADDRESS, VALID_SERVER_PORT);
 	if (res == false) {
 		return false;
 	}
@@ -140,8 +139,8 @@ bool test_class_UdpConnection() {
 		return false;
 	}
 
-	printf("Trying to connect to server 83.212.127.13:997\n");
-	res = connection.Connect("83.212.127.13", 997); // Call should succeed
+	printf("Trying to connect to server %s:%d\n", VALID_SERVER_IP_ADDRESS, VALID_SERVER_PORT);
+	res = connection.Connect(VALID_SERVER_IP_ADDRESS, VALID_SERVER_PORT); // Call should succeed
 	if (res == false) {
 		printf("FAILED\n");
 		return false;
