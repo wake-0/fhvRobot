@@ -16,60 +16,16 @@
  *
  */
 
- int main(int argc, char** argv)
-{ 
-	 /*
-	printf("Starting server\n");
+#include "../include/Controller.h"
 
-	int session = DMCCstart(0);
-	sleep(5);
+using namespace FhvRobot;
 
-	int p;
-	for (p = 0; p < 5000; p+=10)
-	{
-		setAllMotorPower(session, p, p);
-		usleep(10000);
-		printf("Motor with %d\n", p);
-		printf("Motor current: %d\n", getMotorCurrent(session, 1));
+int main(int argc, char** argv)
+{
 
-		usleep(1000);
-	}
+	Controller controller;
+	controller.Init();
+	controller.Start(); // Non-returning
 
-	sleep(3);
-
-	for (p = 5000; p >= -5000; p-=10)
-	{
-		setAllMotorPower(session, p, p);
-		usleep(10000);
-	}
-
-	sleep(3);
-
-	setAllMotorPower(session, 0, 0);
-
-	sleep(1);
-
-	//setMotorPower(session, 2, 3500);
-
-	DMCCend(session);
-	sleep(3);
-
-	//setMotorPower(session, 1, 0);
-	//setMotorPower(session, 2, 0);
-
-	sleep(3);
-
-	//setMotorPower(session, 1, -3500);
-	//setMotorPower(session, 2, -3500);
-
-	sleep(3);
-
-	//setMotorPower(session, 1, 0);
-	//setMotorPower(session, 2, 0);
-
-	sleep(3);
-
-	//DMCCend(session);
-	*/
-    return 0; 
+	return 0;
 }
