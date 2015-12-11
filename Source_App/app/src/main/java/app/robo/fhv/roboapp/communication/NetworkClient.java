@@ -12,8 +12,8 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import app.robo.fhv.roboapp.utils.ProgressMapper;
-import communication.IConfiguration;
 import communication.commands.Commands;
+import communication.configurations.IConfiguration;
 import communication.managers.CommunicationManager;
 import communication.managers.IAnswerHandler;
 import communication.managers.IDataReceivedHandler;
@@ -25,33 +25,32 @@ import communication.utils.NumberParser;
  */
 public class NetworkClient implements Runnable, IDataReceivedHandler<ApplicationPDU>, IAnswerHandler {
 
+    // Fields
     private boolean isRunning;
     private boolean isConnectionOpened;
 
     private final DatagramSocket clientSocket;
-    private TextView textView;
+    private TextView inputTextView;
+    private TextView outputTextView;
 
     private final ConfigurationManager configManager;
     private final CommunicationManager comManager;
     private final IConfiguration configuration;
 
-    public NetworkClient(TextView textView) throws SocketException, UnknownHostException {
-        int port = 997;
-        //String address = "83.212.127.13";
-        String address = "10.0.2.2";
+    // Constructor
+    public NetworkClient(TextView inputTextView, TextView outputTextView) throws SocketException, UnknownHostException {
         this.clientSocket = new DatagramSocket();
-        this.textView = textView;
+        this.inputTextView = inputTextView;
+        this.outputTextView = outputTextView;
 
         this.configManager = new ConfigurationManager();
         this.comManager = new CommunicationManager(configManager);
 
+        // Configuration is setup by default
         this.configuration = this.configManager.createConfiguration();
-
-        // Setup configuration
-        this.configuration.setIpAddress(address);
-        this.configuration.setPort(port);
     }
 
+    // Methods
     public void send(String message) {
         new SendTask(clientSocket, comManager, configuration, Commands.CHANGE_NAME).execute(message.getBytes());
     }
@@ -78,11 +77,11 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
         try {
 
             while (isRunning) {
-                byte[] receiveData = new byte[1024];
+                byte[] receiveData = new byte[GlobalSettings.RECEIVE_PACKET_SIZE];
 
                 // Open connection
                 if (!isConnectionOpened) {
-                    DatagramPacket openPacket = comManager.createOpenConnectionDatagramPacket(configuration, "open");
+                    DatagramPacket openPacket = comManager.createOpenConnectionDatagramPacket(configuration);
                     clientSocket.send(openPacket);
 
                     DatagramPacket receiveSessionPacket = new DatagramPacket(receiveData, receiveData.length);
@@ -104,23 +103,18 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
     }
 
     @Override
-    public void answer(IConfiguration iConfiguration, byte[] bytes) {
-
-    }
-
-    @Override
-    public void answer(IConfiguration iConfiguration, DatagramPacket datagramPacket) {
+    public void answer(DatagramPacket packet) {
 
     }
 
     @Override
     public boolean handleDataReceived(DatagramPacket datagramPacket, ApplicationPDU applicationPDU, IAnswerHandler iAnswerHandler) {
-        final String message = "payload[" + applicationPDU.getPayload() + "], command[" + applicationPDU.getCommand() + "]";
+        final String message = " received: payload[" + applicationPDU.getPayload() + "], command[" + applicationPDU.getCommand() + "]";
         Handler updateView = new Handler(Looper.getMainLooper());
         updateView.post(new Runnable() {
             @Override
             public void run() {
-                textView.setText(message);
+                inputTextView.setText(message);
             }
         });
 
@@ -142,8 +136,16 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
         }
 
         @Override
-        protected Void doInBackground(byte[] ... message) {
-            DatagramPacket sendPacket = communicationManager.createDatagramPacket(configuration, command, message[0]);
+        protected Void doInBackground(final byte[] ... message) {
+            final DatagramPacket sendPacket = communicationManager.createDatagramPacket(configuration, command, message[0]);
+            Handler updateView = new Handler(Looper.getMainLooper());
+            updateView.post(new Runnable() {
+                @Override
+                public void run() {
+                    outputTextView.setText("output: payload[" + message[0] + "], command[" + command + "]");
+                }
+            });
+
 
             try {
                 clientSocket.send(sendPacket);

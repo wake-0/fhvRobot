@@ -23,7 +23,6 @@ public class PresentationManager extends LayerManager<PresentationPDU> {
 	// Methods
 	@Override
 	public boolean handleDataReceived(DatagramPacket packet, PresentationPDU pdu, IAnswerHandler sender) {
-		// TODO: e.g. add checksum
 		return false;
 	}
 }

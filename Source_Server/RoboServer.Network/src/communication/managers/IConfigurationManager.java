@@ -11,7 +11,7 @@ package communication.managers;
 
 import java.util.List;
 
-import communication.IConfiguration;
+import communication.configurations.IConfiguration;
 
 public interface IConfigurationManager {
 

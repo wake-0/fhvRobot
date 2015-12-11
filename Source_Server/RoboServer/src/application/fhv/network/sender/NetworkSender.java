@@ -15,12 +15,15 @@ import java.net.DatagramSocket;
 
 public class NetworkSender implements INetworkSender {
 
-	private final DatagramSocket socket;
+	// Fields
+	protected final DatagramSocket socket;
 
+	// Constructor
 	public NetworkSender(DatagramSocket socket) {
 		this.socket = socket;
 	}
 
+	// Methods
 	@Override
 	public void send(DatagramPacket packet) {
 		try {
@@ -33,5 +36,4 @@ public class NetworkSender implements INetworkSender {
 			e.printStackTrace();
 		}
 	}
-
 }

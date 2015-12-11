@@ -15,6 +15,7 @@ import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TextArea;
 import models.Client;
 import network.NetworkServer;
 
@@ -31,6 +32,9 @@ public class MainWindowController implements Initializable {
 	@FXML
 	private RoboTabPageController tab1Controller;
 
+	@FXML
+	private TextArea taServerOutput;
+
 	// Methods
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -42,6 +46,11 @@ public class MainWindowController implements Initializable {
 
 			tab1Controller.setServer(server);
 			tab2Controller.setServer(server);
+
+			// PrintStream outputStream = new PrintStream(new
+			// ServerOutputPrinter(taServerOutput));
+			// System.setOut(outputStream);
+			System.out.println("System output redirected ...");
 
 		} catch (SocketException e) {
 			e.printStackTrace();

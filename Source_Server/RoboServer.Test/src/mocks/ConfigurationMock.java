@@ -9,12 +9,13 @@
  */
 package mocks;
 
-import communication.IConfiguration;
+import communication.configurations.IConfiguration;
 
 public class ConfigurationMock implements IConfiguration {
 
 	private int sessionId;
 	private int port;
+	private int heartBeatCount;
 	private String ipAddress;
 
 	@Override
@@ -45,6 +46,21 @@ public class ConfigurationMock implements IConfiguration {
 	@Override
 	public int getPort() {
 		return port;
+	}
+
+	@Override
+	public int getHeartBeatCount() {
+		return heartBeatCount;
+	}
+
+	@Override
+	public void increaseHeartBeatCount() {
+		heartBeatCount++;
+	}
+
+	@Override
+	public void cleanHeartBeatCount() {
+		heartBeatCount = 0;
 	}
 
 }

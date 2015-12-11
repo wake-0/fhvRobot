@@ -3,23 +3,32 @@ package app.robo.fhv.roboapp.communication;
 import java.util.ArrayList;
 import java.util.List;
 
-import communication.IConfiguration;
+import communication.configurations.IConfiguration;
 import communication.managers.IConfigurationManager;
+import communication.configurations.*;
 
 /**
  * Created by Kevin on 24.11.2015.
  */
 public class ConfigurationManager implements IConfigurationManager {
 
+    // Fields
     private List<IConfiguration> configurations;
     private Configuration configuration;
 
+    // Constructor
     public ConfigurationManager() {
-        configuration = new Configuration();
+
+        int sessionId = ConfigurationSettings.DEFAULT_SESSION_ID;
+        int port = GlobalSettings.SERVER_PORT;
+        String address = GlobalSettings.SERVER_ADDRESS;
+
+        configuration = new Configuration(sessionId, port, address);
         configurations = new ArrayList<>();
         configurations.add(configuration);
     }
 
+    // Methods
     @Override
     public IConfiguration createConfiguration() {
         return configuration;

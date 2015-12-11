@@ -25,9 +25,10 @@ public class DecoratorEnhanceDataTests {
 
 	@Test
 	public void NetworkDecoratorEnhanceData() {
-		byte[] expectedData = new byte[] { 0b01010101 };
-		NetworkPDU decorator = new NetworkPDU(new PDU(expectedData));
+		byte[] innerData = new byte[] { 0b01010101 };
+		NetworkPDU decorator = new NetworkPDU(new PDU(innerData));
 
+		byte[] expectedData = new byte[] { innerData[0] };
 		byte[] data = decorator.getEnhancedData();
 		assertArrayEquals(expectedData, data);
 	}
@@ -78,7 +79,7 @@ public class DecoratorEnhanceDataTests {
 		byte[] data = new byte[] { 0b01010101 };
 		byte[] expectedFlags = new byte[] { 0b00000000 };
 		byte expectedCommands = (byte) 0b00000000;
-		byte expectedLength = (byte) 0b00000000;
+		byte expectedLength = (byte) 0b00000001;
 
 		ApplicationPDU decorator = new ApplicationPDU(new PDU(data));
 
@@ -96,7 +97,7 @@ public class DecoratorEnhanceDataTests {
 		byte presentationFlags = (byte) 0b00000000;
 		byte applicationFlags = (byte) 0b00000000;
 		byte applicationCommands = (byte) 0b00000000;
-		byte applicationLength = (byte) 0b00000000;
+		byte applicationLength = (byte) 0b00000001;
 		byte[] expectedData = new byte[] { sessionFlags, sessionId, presentationFlags, applicationFlags,
 				applicationCommands, applicationLength, data[0] };
 

@@ -11,7 +11,7 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.Button?>
 
-<SplitPane dividerPositions="0.5" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="controllers.AppTabPageController">
+<SplitPane dividerPositions="0.6" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="controllers.AppTabPageController">
 	<items>
 		<GridPane minHeight="0.0" minWidth="0.0">
 			<columnConstraints>

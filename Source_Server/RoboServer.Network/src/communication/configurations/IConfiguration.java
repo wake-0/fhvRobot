@@ -7,7 +7,7 @@
  * @author: Kevin Wallis
  * @version: 1
  */
-package communication;
+package communication.configurations;
 
 public interface IConfiguration {
 
@@ -22,4 +22,10 @@ public interface IConfiguration {
 	public void setPort(int port);
 
 	public int getPort();
+
+	public int getHeartBeatCount();
+
+	public void increaseHeartBeatCount();
+
+	public void cleanHeartBeatCount();
 }

@@ -38,9 +38,16 @@
                     android:text="@string/roboTitle"/>
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/inputTextView"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:text="input" />
+
+                <TextView
+                    android:id="@+id/outputTextView"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="output" />
 
                 <EditText
                     android:id="@+id/editText"
@@ -57,13 +64,13 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/tvLeft"
-                    android:text="10" />
+                    android:text="100" />
 
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/tvRight"
-                    android:text="10" />
+                    android:text="100" />
             </LinearLayout>
 
     <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper

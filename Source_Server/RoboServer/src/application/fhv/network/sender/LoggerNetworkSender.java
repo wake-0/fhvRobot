@@ -14,10 +14,12 @@ import java.net.DatagramSocket;
 
 public class LoggerNetworkSender extends NetworkSender {
 
+	// Constructor
 	public LoggerNetworkSender(DatagramSocket socket) {
 		super(socket);
 	}
 
+	// Methods
 	@Override
 	public void send(DatagramPacket packet) {
 		super.send(packet);

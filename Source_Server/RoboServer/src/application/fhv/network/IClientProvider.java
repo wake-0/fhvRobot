@@ -11,7 +11,7 @@ package network;
 
 import java.util.List;
 
-import communication.IConfiguration;
+import communication.configurations.IConfiguration;
 
 public interface IClientProvider<T extends IConfiguration> {
 

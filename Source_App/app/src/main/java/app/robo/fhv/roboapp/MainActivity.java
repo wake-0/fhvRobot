@@ -14,7 +14,9 @@ public class MainActivity extends Activity {
 
     private NetworkClient client;
 
-    private TextView textView;
+    private TextView inputTextView;
+    private TextView outputTextView;
+
     private EditText editText;
     private Button button;
     private SeekBar sbLeft;
@@ -29,11 +31,12 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_layout);
 
-        textView = (TextView) findViewById(R.id.textView);
+        inputTextView = (TextView) findViewById(R.id.inputTextView);
+        outputTextView = (TextView) findViewById(R.id.outputTextView);
         editText = (EditText) findViewById(R.id.editText);
         button = (Button) findViewById(R.id.button);
 
-        textView.setText("text view");
+        inputTextView.setText("text view");
         editText.setText("edit text");
 
         sbLeft = (SeekBar) findViewById(R.id.sbLeft);
@@ -41,16 +44,16 @@ public class MainActivity extends Activity {
         tvLeft = (TextView) findViewById(R.id.tvLeft);
         tvRight = (TextView) findViewById(R.id.tvRight);
 
-        sbLeft.setProgress(30);
-        sbRight.setProgress(30);
+        sbLeft.setProgress(100);
+        sbRight.setProgress(100);
 
         try {
-            client = new NetworkClient(textView);
+            client = new NetworkClient(inputTextView, outputTextView);
             new Thread(client).start();
         } catch (Exception e) {
             e.printStackTrace();
 
-            textView.setText("Error");
+            inputTextView.setText("Error");
         }
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -62,12 +65,20 @@ public class MainActivity extends Activity {
 
 
         sbLeft.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int lastProgress = sbLeft.getProgress();
+
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                progress = (progress/stepSize)*stepSize;
+                progress = (progress / stepSize) * stepSize;
+                if (progress == lastProgress) {
+                    return;
+                }
+
                 seekBar.setProgress(progress);
                 tvLeft.setText(String.valueOf(progress));
                 client.driveLeft(progress);
+
+                lastProgress = progress;
             }
 
             @Override
@@ -81,12 +92,18 @@ public class MainActivity extends Activity {
             }
         });
         sbRight.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int lastProgress = sbRight.getProgress();
+
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progress = (progress/stepSize)*stepSize;
+                if (progress == lastProgress) {return;}
+
                 seekBar.setProgress(progress);
                 tvRight.setText(String.valueOf(progress));
                 client.driveRight(progress);
+
+                lastProgress = progress;
             }
 
             @Override

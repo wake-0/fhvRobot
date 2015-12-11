@@ -12,8 +12,8 @@ package communication.pdu;
 public class NetworkPDU extends PDUDecorator {
 
 	// Constructors
-	public NetworkPDU(PDU data) {
-		super(data);
+	public NetworkPDU(PDU pdu) {
+		super(pdu);
 	}
 
 	// Methods

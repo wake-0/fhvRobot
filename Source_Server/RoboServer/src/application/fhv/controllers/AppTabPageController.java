@@ -1,10 +1,12 @@
 package controllers;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -40,16 +42,33 @@ public class AppTabPageController implements Initializable {
 
 	private NetworkServer server;
 
+	// Constructor
 	public AppTabPageController() {
 		appController = new ClientController<>(new ClientFactory());
+		appController.getClients().addListener(new ListChangeListener<Client>() {
+
+			@Override
+			public void onChanged(ListChangeListener.Change<? extends Client> change) {
+				while (change.next()) {
+					if (change.wasRemoved()) {
+						List<? extends Client> removedClients = change.getRemoved();
+						for (Client c : removedClients) {
+							server.DisconnectedAppClient(c);
+						}
+					}
+				}
+			}
+		});
+		;
 	}
 
+	// Methods
 	@FXML
 	private void handleKillClick() {
-		System.out.println("button kill clicked.");
 		Client selectedClient = appController.getSelectedClient();
 
 		if (selectedClient != null) {
+			server.DisconnectedAppClient(selectedClient);
 			appController.removeClient(selectedClient);
 			clearDetails();
 		}
@@ -61,19 +80,18 @@ public class AppTabPageController implements Initializable {
 	}
 
 	@FXML
+	private void handleDownClick() {
+		System.out.println("button down clicked.");
+	}
+
+	@FXML
 	private void handleSendClick() {
-		System.out.println("button send clicked.");
 		Client selectedClient = appController.getSelectedClient();
 		selectedClient.setSendData(tfSend.getText());
 
 		if (selectedClient != null) {
 			server.sendToApp(selectedClient);
 		}
-	}
-
-	@FXML
-	private void handleDownClick() {
-		System.out.println("button down clicked.");
 	}
 
 	@Override

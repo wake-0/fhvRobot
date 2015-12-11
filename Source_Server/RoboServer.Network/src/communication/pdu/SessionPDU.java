@@ -50,7 +50,6 @@ public class SessionPDU extends PDUDecorator {
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			outputStream.write(header);
 			outputStream.write(packet.getEnhancedData());
-			System.out.println(outputStream.toByteArray());
 			return outputStream.toByteArray();
 
 		} catch (IOException e) {
