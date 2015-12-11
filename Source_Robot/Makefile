@@ -26,6 +26,7 @@ DEPS = \
  include/Robot.h \
  include/ConnectionLayer.h \
  include/mocks/TransportMock.h \
+ include/Controller.h \
  include/ConnectionAPI.h
 
 # Compiler object files 
@@ -36,12 +37,14 @@ CPPOBJ = \
  $(OBJDIR)/impl/Robot.o \
  $(OBJDIR)/impl/ConnectionLayer.o \
  $(OBJDIR)/tests/TransportMock.o \
+ $(OBJDIR)/impl/Controller.o \
  $(OBJDIR)/impl/ConnectionAPI.o
  
 CPPSRC = \
  ./source/main.cpp \
  ./source/impl/Robot.cpp \
  ./source/impl/ConnectionLayer.cpp \
+ ./source/impl/Controller.cpp \
  ./source/impl/ConnectionAPI.cpp
 
 # gcc binaries to use
@@ -81,6 +84,7 @@ all: $(PROJECT) $(CPPSRC) $(DEPS) $(SOURCES) $(CPPOBJ) ./source/impl/* ./source/
 $(PROJECT): $(COBJ) $(SOURCES)
 	$(CXX) -c ./source/main.cpp -o $(OBJDIR)/main.o -Wall
 	$(CXX) -c ./source/impl/Robot.cpp -o $(OBJDIR)/impl/Robot.o -Wall
+	$(CXX) -c ./source/impl/Controller.cpp -o $(OBJDIR)/impl/Controller.o -Wall
 	$(CXX) -c ./source/impl/ConnectionLayer.cpp -o $(OBJDIR)/impl/ConnectionLayer.o -Wall
 	$(CXX) -c ./source/impl/ConnectionAPI.cpp -o $(OBJDIR)/impl/ConnectionAPI.o -Wall
 	$(CXX) -c ./source/impl/mocks/TransportMock.cpp -o $(OBJDIR)/tests/TransportMock.o -Wall
