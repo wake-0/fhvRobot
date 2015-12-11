@@ -50,8 +50,8 @@ protected:
 
 public:
 	ProtocolLayer(ProtocolLayer* lower) { lowerLayer = lower; callback = NULL; }
-	virtual ~ProtocolLayer() { lowerLayer = 0; callback = 0; }
-	void SetCallback(ProtocolLayerCallback* cb) { callback = cb; }
+	virtual ~ProtocolLayer() { Debugger(VERBOSE) << "Freeing ProtocolLayer\n"; lowerLayer = 0; callback = 0; }
+	void SetCallback(ProtocolLayerCallback* cb) { Debugger(VERBOSE) << "Setting callback to address " << cb << "\n"; callback = cb; }
 
 	virtual bool Send(const char* msg, unsigned int len) {
 		Debugger(VERBOSE) << "Sending message in " << typeid(this).name() << "\n";
@@ -68,6 +68,7 @@ public:
 	}
 
 	virtual void MessageReceived(const char* msg, unsigned int len) {
+		Debugger(VERBOSE) << "Handling message in MessageReceived(..)" << typeid(this).name() << "\n";
 		char* outMsg = NULL;
 		unsigned int outLen = 0;
 		bool result = DecomposeMessage(msg, len, &outMsg, &outLen);

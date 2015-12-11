@@ -94,6 +94,7 @@ bool UdpConnection::Send(const char* msg, unsigned int len) {
 void* UdpConnection::ReceiveLoop()
 {
 	Debugger(INFO) << "Hello I'm the receive thread.\n";
+	Debugger(INFO) << "My callback is " << callback << "\n";
 	int res = 0;
 	char buf[4096];
 	struct sockaddr_in sender;
@@ -111,7 +112,23 @@ void* UdpConnection::ReceiveLoop()
 		else
 		{
 			Debugger(INFO) << "Message received with len=" << res << "\n";
-			callback->MessageReceived(buf, res);
+			Debugger(VERBOSE) << "Message raw data: \n";
+			for (int i = 0; i < res; i++)
+			{
+				Debugger(VERBOSE) << buf[i] << " ";
+			}
+			Debugger(VERBOSE) << "\n";
+
+			if (ProtocolLayer::callback != NULL)
+			{
+				Debugger(VERBOSE) << "Calling callback at address " << ProtocolLayer::callback << "\n";
+				ProtocolLayer::callback->MessageReceived(buf, res);
+				Debugger(VERBOSE) << "Callback called\n";
+			}
+			else
+			{
+				Debugger(WARNING) << "Could not call callback (0 address)\n";
+			}
 		}
 	}
 	return NULL;
@@ -124,6 +141,8 @@ void* UdpConnection::ReceiveLoop()
 #define SESSION_LAYER_EMPTY_MASK					(0b00000000)
 #define SESSION_LAYER_REQUEST_BIT_MASK				(0b00000001)
 #define SESSION_LAYER_VERSION_MASK					(0b00000011)
+#define SESSION_LAYER_SESSION_ACCEPT_MASK			(0b00000001)
+#define SESSION_LAYER_SESSION_DECLINE_MASK			(0b00000000)
 #define SESSION_REQUEST_TIMEOUT_S					(3)
 
 
@@ -159,6 +178,7 @@ void SessionLayer::ComposeMessage(const char* inMsg, unsigned int inLen, char* o
 
 bool SessionLayer::DecomposeMessage(const char* inMsg, unsigned int inLen, char** outMsg, unsigned int* outLen)
 {
+	Debugger(VERBOSE) << "SessionLayer decomposing message\n";
 	if (inLen < 2) {
 		Debugger(WARNING) << "Session layer got invalid message (len < 2)\n";
 		return false;
@@ -213,13 +233,23 @@ bool SessionLayer::Connect(const char* address, int port)
 void SessionLayer::MessageReceived(const char* msg, unsigned int len)
 {
 	// Check if this is the answer for our session request
-	if (len == 2 && msg[0] == SESSION_LAYER_EMPTY_MASK)
+	if (len == 2 && msg[0] == SESSION_LAYER_SESSION_ACCEPT_MASK && msg[1] != 0)
 	{
+		// Accepted session
 		sessId = msg[1];
 		pthread_cond_broadcast(&condition_var);
 		return;
 	}
-	ProtocolLayer::MessageReceived(msg, len);
+	else if (len == 2 && msg[0] == SESSION_LAYER_SESSION_DECLINE_MASK && msg[1] == 0)
+	{
+		// Declined session
+		sessId = 0;
+		pthread_cond_broadcast(&condition_var);
+	}
+	else if (len >= 2 && msg[1] == sessId && sessId != 0)
+	{
+		ProtocolLayer::MessageReceived(msg, len);
+	}
 }
 
 
@@ -250,6 +280,7 @@ void PresentationLayer::ComposeMessage(const char* inMsg, unsigned int inLen, ch
 
 bool PresentationLayer::DecomposeMessage(const char* inMsg, unsigned int inLen, char** outMsg, unsigned int* outLen)
 {
+	Debugger(VERBOSE) << "PresentationLayer decomposing message\n";
 	/* THIS CODE IS COMMENTED BY INTENTION as it may be used at a later point
 	 * The following code would append a XOR-checksum to the message
 	// Check checksum
@@ -294,6 +325,7 @@ void ApplicationLayer::ComposeMessage(const char* inMsg, unsigned int inLen, cha
 
 bool ApplicationLayer::DecomposeMessage(const char* inMsg, unsigned int inLen, char** outMsg, unsigned int* outLen)
 {
+	Debugger(VERBOSE) << "ApplicationLayer decomposing message\n";
 	if (inMsg[0] != APPLICATION_LAYER_EMPTY_FLAGS)
 	{
 		return false;
