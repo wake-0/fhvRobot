@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.* ?>
+<?import javafx.scene.control.* ?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.shape.Box?>
+<?import javafx.scene.layout.StackPane?>
+
+<GridPane stylesheets="theme.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="controllers.RobotViewController">
+		<columnConstraints>
+			<ColumnConstraints minWidth="60" maxWidth="60" hgrow="NEVER" />
+			<ColumnConstraints hgrow="ALWAYS" />
+			<ColumnConstraints minWidth="50" maxWidth="50" hgrow="NEVER" />
+		</columnConstraints>
+		<rowConstraints>
+			<RowConstraints percentHeight="100" />
+		</rowConstraints>
+	<children>
+		<Slider nodeOrientation="RIGHT_TO_LEFT" showTickMarks="true" showTickLabels="true" fx:id="sldLeftMotor" value="0" min="-100" max="100" orientation="VERTICAL" GridPane.columnIndex="0"></Slider>
+		<StackPane GridPane.columnIndex="1" >
+			<Label prefHeight="100000" prefWidth="100000" fx:id="camCanvas"/>
+		</StackPane>
+		<Slider showTickMarks="true" showTickLabels="true" fx:id="sldRightMotor" value="0" min="-100" max="100" orientation="VERTICAL" GridPane.columnIndex="2"></Slider>
+	</children>
+</GridPane>

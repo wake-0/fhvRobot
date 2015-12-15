@@ -4,15 +4,19 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import views.FlashingLabel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.util.Callback;
 import models.Client;
 import models.ClientFactory;
 import network.NetworkServer;
@@ -31,15 +35,15 @@ public class AppTabPageController implements Initializable {
 	private TableColumn<Client, String> tcAppName;
 	@FXML
 	private TableColumn<Client, String> tcAppIp;
-
+	@FXML
+	private TableColumn<Client, Number> tcAppRXCount;
+	
 	// App details
 	@FXML
 	private TextField tfSend;
 	@FXML
-	private TextArea tfReceive;
-	@FXML
-	private TextField tfName;
-
+	private Button btnSend;
+	
 	private NetworkServer server;
 
 	// Constructor
@@ -100,22 +104,37 @@ public class AppTabPageController implements Initializable {
 		tcAppId.setCellValueFactory(cellData -> cellData.getValue().SessionIdProperty());
 		tcAppName.setCellValueFactory(cellData -> cellData.getValue().NameProperty());
 		tcAppIp.setCellValueFactory(cellData -> cellData.getValue().IpAddressProperty());
+		tcAppRXCount.setCellValueFactory(cellData -> cellData.getValue().HeartBeatProperty());
 
 		tvAppClients.setItems(appController.getClients());
 		tvAppClients.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Client>() {
 			@Override
 			public void changed(ObservableValue<? extends Client> observable, Client oldValue, Client newValue) {
-				if (newValue != null) {
-					tfName.textProperty().bind(newValue.NameProperty());
-					tfReceive.textProperty().bind(newValue.ReceiveDataProperty());
-				} else if (oldValue != null) {
-					tfName.textProperty().unbind();
-					tfReceive.textProperty().unbind();
-				}
-
 				appController.setSelectedClient(newValue);
 			}
 		});
+		
+		tcAppRXCount.setCellFactory(new Callback<TableColumn<Client, Number>, TableCell<Client, Number>>()
+		        {
+		            public TableCell<Client, Number> call(TableColumn<Client, Number> column)
+		            {
+		                final FlashingLabel label = new FlashingLabel();
+		                TableCell<Client, Number> cell = new TableCell<Client, Number>()
+		                {
+		                    protected void updateItem(Number value, boolean empty)
+		                    {
+		                        super.updateItem(value, empty);
+		                        if (value != null)
+		                        	label.setText(value.toString());
+		                    }
+		                };
+		                cell.setGraphic(label);
+		                cell.setStyle("-fx-alignment: CENTER;");
+		                return cell;
+		            }
+		        });
+		
+		btnSend.disableProperty().bind(tvAppClients.getSelectionModel().selectedItemProperty().isNull());
 	}
 
 	public ClientController<Client> getAppController() {
@@ -128,7 +147,5 @@ public class AppTabPageController implements Initializable {
 
 	private void clearDetails() {
 		tfSend.clear();
-		tfReceive.clear();
-		tfName.clear();
 	}
 }

@@ -43,6 +43,7 @@ public class Main extends Application {
 				public void handle(Event event) {
 					MainWindowController controller = loader.getController();
 					controller.shutdown();
+					System.exit(0);
 				}
 			});
 

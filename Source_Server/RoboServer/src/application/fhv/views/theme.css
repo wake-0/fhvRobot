@@ -20,6 +20,26 @@
     -fx-background-insets: 5px;
 }
 
+.table-header {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold; 
+    -fx-fill: blue;
+    -fx-border-insets: 5px;
+    -fx-padding: 5px 0 0 5px;
+}
+
+#camCanvas {
+	-fx-background-color: aliceblue ;
+}
+
+#sldRightMotor {
+	-fx-padding: 0 10px 0 0;
+}
+
+#sldLeftMotor {
+	-fx-padding: 0 0 0 0;
+}
+
 .text-field {
    	-fx-padding: 10px;
     -fx-border-insets: 5px;

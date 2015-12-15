@@ -28,9 +28,12 @@ public class MainWindowController implements Initializable {
 	private ClientController<Client> appController;
 
 	@FXML
-	private AppTabPageController tab2Controller;
+	private AppTabPageController appViewController;
 	@FXML
-	private RoboTabPageController tab1Controller;
+	private RoboTabPageController roboViewController;
+	
+	@FXML
+	private RobotViewController robotViewController;
 
 	@FXML
 	private TextArea taServerOutput;
@@ -39,13 +42,14 @@ public class MainWindowController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		try {
-			roboController = tab1Controller.getRoboController();
-			appController = tab2Controller.getAppController();
-
+			roboController = roboViewController.getRoboController();
+			appController = appViewController.getAppController();
+			
 			this.server = new NetworkServer(roboController, appController);
 
-			tab1Controller.setServer(server);
-			tab2Controller.setServer(server);
+			roboViewController.setServer(server);
+			roboViewController.setRobotViewController(robotViewController);
+			appViewController.setServer(server);
 
 			// PrintStream outputStream = new PrintStream(new
 			// ServerOutputPrinter(taServerOutput));

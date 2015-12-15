@@ -4,7 +4,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import communication.utils.NumberParser;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -12,13 +11,17 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.util.Callback;
 import models.Client;
 import models.ClientFactory;
 import network.NetworkServer;
+import views.FlashingLabel;
+import communication.utils.NumberParser;
 
 public class RoboTabPageController implements Initializable {
 
@@ -36,7 +39,10 @@ public class RoboTabPageController implements Initializable {
 	private TableColumn<Client, String> tcRoboName;
 	@FXML
 	private TableColumn<Client, String> tcRoboIp;
+	@FXML
+	private TableColumn<Client, Number> tcRoboRXCount;
 
+	
 	// Robo details
 	@FXML
 	private TextField tfSend;
@@ -46,15 +52,9 @@ public class RoboTabPageController implements Initializable {
 	private TextField tfName;
 
 	@FXML
-	private Button btnDriveLeft;
-	@FXML
-	private Button btnDriveRight;
-	@FXML
-	private Button btnDriveBoth;
-
-	@FXML
-	private TextField tfDirectionValue;
-
+	private Button btnSend;
+	private RobotViewController robotViewController;
+	
 	// Constructor
 	public RoboTabPageController() {
 		roboController = new ClientController<>(new ClientFactory());
@@ -85,15 +85,14 @@ public class RoboTabPageController implements Initializable {
 			clearDetails();
 		}
 	}
-
+	
 	@FXML
-	private void handleUpClick() {
-		System.out.println("button up clicked.");
-	}
+	private void handleViewClick() {
+		Client selectedClient = roboController.getSelectedClient();
 
-	@FXML
-	private void handleDownClick() {
-		System.out.println("button down clicked.");
+		if (selectedClient != null) {
+			robotViewController.setRobotView(selectedClient, driveController);
+		}
 	}
 
 	@FXML
@@ -106,46 +105,42 @@ public class RoboTabPageController implements Initializable {
 		}
 	}
 
-	@FXML
-	private void handleDriveClick(ActionEvent event) {
-		if (!NumberParser.tryParseInt(tfDirectionValue.getText())) {
-			return;
-		}
-
-		int value = Integer.parseInt(tfDirectionValue.getText());
-		Object source = event.getSource();
-
-		if (source == btnDriveLeft) {
-			driveController.driveLeft(value);
-		} else if (source == btnDriveRight) {
-			driveController.driveRight(value);
-		} else if (source == btnDriveBoth) {
-			driveController.driveBoth(value);
-		}
-	}
-
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// Initialize the person table with the two columns.
 		tcRoboId.setCellValueFactory(cellData -> cellData.getValue().SessionIdProperty());
 		tcRoboName.setCellValueFactory(cellData -> cellData.getValue().NameProperty());
 		tcRoboIp.setCellValueFactory(cellData -> cellData.getValue().IpAddressProperty());
-
+		tcRoboRXCount.setCellValueFactory(cellData -> cellData.getValue().HeartBeatProperty());
 		tvRoboClients.setItems(roboController.getClients());
 		tvRoboClients.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Client>() {
 			@Override
 			public void changed(ObservableValue<? extends Client> observable, Client oldValue, Client newValue) {
-				if (newValue != null) {
-					tfName.textProperty().bind(newValue.NameProperty());
-					tfReceive.textProperty().bind(newValue.ReceiveDataProperty());
-				} else if (oldValue != null) {
-					tfName.textProperty().unbind();
-					tfReceive.textProperty().unbind();
-				}
-
 				roboController.setSelectedClient(newValue);
 			}
 		});
+		
+		tcRoboRXCount.setCellFactory(new Callback<TableColumn<Client, Number>, TableCell<Client, Number>>()
+        {
+            public TableCell<Client, Number> call(TableColumn<Client, Number> column)
+            {
+                final FlashingLabel label = new FlashingLabel();
+                TableCell<Client, Number> cell = new TableCell<Client, Number>()
+                {
+                    protected void updateItem(Number value, boolean empty)
+                    {
+                        super.updateItem(value, empty);
+                        if (value != null)
+                        	label.setText(value.toString());
+                    }
+                };
+                cell.setGraphic(label);
+                cell.setStyle("-fx-alignment: CENTER;");
+                return cell;
+            }
+        });
+
+		btnSend.disableProperty().bind(tvRoboClients.getSelectionModel().selectedItemProperty().isNull());
 	}
 
 	public ClientController<Client> getRoboController() {
@@ -159,7 +154,9 @@ public class RoboTabPageController implements Initializable {
 
 	private void clearDetails() {
 		tfSend.clear();
-		tfReceive.clear();
-		tfName.clear();
+	}
+
+	public void setRobotViewController(RobotViewController robotViewController) {
+		this.robotViewController = robotViewController;
 	}
 }
