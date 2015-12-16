@@ -20,12 +20,23 @@
 
 using namespace FhvRobot;
 
+#define DEFAULT_SERVER_IP		("83.212.127.13")
+
 int main(int argc, char** argv)
 {
 
+	char serverIp[255] = { 0 };
+	if (argc == 2)
+	{
+		memcpy(serverIp, argv[1], strlen(argv[1]));
+	}
+	else
+	{
+		memcpy(serverIp, DEFAULT_SERVER_IP, strlen(DEFAULT_SERVER_IP));
+	}
 	Controller controller;
 	controller.Init();
-	controller.Start(); // Non-returning
+	controller.Start(serverIp); // Non-returning
 
 	return 0;
 }

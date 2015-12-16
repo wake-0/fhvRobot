@@ -22,7 +22,7 @@ public:
 	virtual ~Controller();
 
 	void Init();
-	void Start(); // Non-Returning
+	void Start(char* serverIp); // Non-Returning
 
 	void MotorCommand(unsigned int motorNum, int motorSpeed);
 	void CameraEnable(bool cameraEnable);

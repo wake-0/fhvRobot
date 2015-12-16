@@ -7,7 +7,7 @@
 
 #include "../../include/Controller.h"
 #include "../../include/Debugger.h"
-
+#include <unistd.h>
 
 namespace FhvRobot {
 
@@ -25,7 +25,7 @@ void Controller::Init()
 
 }
 
-void Controller::Start() {
+void Controller::Start(char* serverIp) {
 	connection = new ConnectionAPI(this);
 	UdpConnection udp;
 	SessionLayer sess(&udp);
@@ -39,12 +39,14 @@ void Controller::Start() {
 	connection->SetConnection(&app);
 	// Fail tests
 	bool res;
-	res = connection->Connect("Controlled Nico", "83.212.127.13", 998);
+	res = connection->Connect("Controlled Nico", serverIp, 998);
 	(void) res;
 
 	while(true)
 	{
+		connection->SendHeartBeat();
 
+		usleep(1000000);
 	}
 }
 

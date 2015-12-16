@@ -12,6 +12,7 @@
 
 #define TYPE_BYTE					(0b00000000)
 #define COMMAND_REGISTER			(0b00000001)
+#define COMMAND_HEARTBEAT			(0b00000000)
 
 namespace FhvRobot {
 
@@ -93,8 +94,11 @@ bool ConnectionAPI::Connect(const char* robotName, const char* hostname, int por
 
 bool ConnectionAPI::SendHeartBeat()
 {
+	char msg[2];
+	msg[0] = COMMAND_HEARTBEAT;
+	msg[1] = 0;
 
-	return true;
+	return connection->Send(msg, 2);
 }
 
 int getMotorValue(signed char command_value)
