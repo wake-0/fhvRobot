@@ -9,6 +9,7 @@ import java.util.TimerTask;
 import communication.configurations.IConfiguration;
 import communication.managers.IConfigurationManager;
 import controllers.factory.IClientFactory;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import network.IClientProvider;
@@ -46,7 +47,9 @@ public class ClientController<T extends IConfiguration> implements IClientProvid
 			public void run() {
 				if (client.getHeartBeatCount() == 0) {
 					timer.cancel();
-					removeClient(client);
+					Platform.runLater(() -> {
+						removeClient(client);
+					});
 					System.out.println("Missing heart beat, client disconnected: [" + client.getSessionId() + "]");
 				} else {
 					client.cleanHeartBeatCount();
