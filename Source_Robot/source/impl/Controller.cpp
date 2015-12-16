@@ -21,8 +21,7 @@ Controller::~Controller() {
 
 void Controller::Init()
 {
-	robot.MotorStop();
-
+	robot.MotorStop(true);
 }
 
 void Controller::Start(char* serverIp) {
@@ -55,16 +54,16 @@ void Controller::MotorCommand(unsigned int motorNum, int motorSpeed)
 	Debugger(VERBOSE) << "Controller got motor command " << motorNum << " with payload=" << motorSpeed << "\n";
 	if (motorNum == MOTOR_BOTH)
 	{
-		robot.MotorLeft(motorSpeed);
-		robot.MotorRight(motorSpeed);
+		robot.MotorLeft(motorSpeed, false);
+		robot.MotorRight(motorSpeed, false);
 	}
 	else if (motorNum == MOTOR_RIGHT)
 	{
-		robot.MotorRight(motorSpeed);
+		robot.MotorRight(motorSpeed, false);
 	}
 	else if (motorNum == MOTOR_LEFT)
 	{
-		robot.MotorLeft(motorSpeed);
+		robot.MotorLeft(motorSpeed, false);
 	}
 }
 

@@ -457,7 +457,7 @@ void setAllMotorPower(int fd, int pwm1, int pwm2)
     putByte(fd, 0x04, ((unsigned char)(pwm2_16 & 0xff)));
     putByte(fd, 0x05, ((unsigned char)((pwm2_16 >> 8) & 0xff)));
 
-    printf("Setting pwm1 to %d and pwm2 to %d\n", pwm1, pwm2);
+    //printf("Setting pwm1 to %d and pwm2 to %d\n", pwm1, pwm2);
     // Send the set motor power 1 and 2 command
     putByte(fd, 0xff, 0x03);
 }

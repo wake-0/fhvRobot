@@ -160,71 +160,71 @@ bool test_class_Robot() {
 	Robot r;
 	// Both forward
 	printf("Running forward with 50\n");
-	assert( r.MotorLeft(50) == true);
-	assert( r.MotorRight(50) == true);
+	assert( r.MotorLeft(50, true) == true);
+	assert( r.MotorRight(50, true) == true);
 	sleep(2);
 
 	// Both stop
 	printf("Stopping the motor \n");
-	assert( r.MotorStop() == true);
+	assert( r.MotorStop(true) == true);
 	sleep(2);
 
 	// Both reverse
 	printf("Running reverse with -50\n");
-	assert( r.MotorLeft(-50) == true);
-	assert( r.MotorRight(-50) == true);
+	assert( r.MotorLeft(-50, true) == true);
+	assert( r.MotorRight(-50, true) == true);
 	sleep(2);
 
 	// Both stop
 	printf("Stopping the motor \n");
-	assert( r.MotorStop() == true);
+	assert( r.MotorStop(true) == true);
 	sleep(2);
 
 	// Both forward
 	printf("Running forward with 50\n");
-	assert( r.MotorLeft(50) == true);
-	assert( r.MotorRight(50) == true);
+	assert( r.MotorLeft(50, true) == true);
+	assert( r.MotorRight(50, true) == true);
 	sleep(2);
 
 	// Both stop
 	printf("Stopping the motor \n");
-	assert( r.MotorStop() == true);
+	assert( r.MotorStop(true) == true);
 	sleep(2);
 
 	// Both reverse
 	printf("Running reverse with -100\n");
-	assert( r.MotorLeft(-100) == true);
-	assert( r.MotorRight(-100) == true);
+	assert( r.MotorLeft(-100, true) == true);
+	assert( r.MotorRight(-100, true) == true);
 	sleep(2);
 
 	// Both stop
 	printf("Stopping the motor \n");
-	assert( r.MotorStop() == true);
+	assert( r.MotorStop(true) == true);
 	sleep(2);
 
 	// Both reverse
 	printf("Running forward with 100\n");
-	r.MotorLeft(100);
-	r.MotorRight(100);
+	r.MotorLeft(100, true);
+	r.MotorRight(100, true);
 	sleep(2);
 
 	// Both stop
 	printf("Stopping the motor \n");
-	assert( r.MotorStop() == true);
+	assert( r.MotorStop(true) == true);
 	sleep(2);
 
 	// Acceleration Test
 	printf("Accelerating both motors for 1 percent per 50ms\n");
 	for (int i = 0; i < 100; i++)
 	{
-		r.MotorLeft(i);
-		r.MotorRight(i);
+		r.MotorLeft(i, true);
+		r.MotorRight(i, true);
 		usleep(50000);
 	}
 
 	// Both stop
 	printf("Stopping the motor \n");
-	assert( r.MotorStop() == true);
+	assert( r.MotorStop(true) == true);
 	sleep(2);
 
 	return true;
