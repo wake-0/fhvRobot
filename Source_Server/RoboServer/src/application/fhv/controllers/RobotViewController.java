@@ -43,6 +43,11 @@ public class RobotViewController implements Initializable {
 	@FXML
 	private Node camCanvas;
 	
+	@FXML
+	private Button btnCameraOn;
+	@FXML
+	private Button btnCameraOff;
+	
 	private BooleanProperty robotControlledProperty;
 	
 	@Override
@@ -67,6 +72,8 @@ public class RobotViewController implements Initializable {
 		
 		sldLeftMotor.disableProperty().bind(robotControlledProperty.not());
 		sldRightMotor.disableProperty().bind(robotControlledProperty.not());
+		btnCameraOff.disableProperty().bind(robotControlledProperty.not());
+		btnCameraOn.disableProperty().bind(robotControlledProperty.not());
 	}
 
 	public void setRobotView(Client selectedClient,
@@ -84,4 +91,11 @@ public class RobotViewController implements Initializable {
 		this.driveController = null;
 	}
 
+	@FXML
+	private void handleCameraOn() {
+	}
+	
+	@FXML
+	private void handleCameraOff() {
+	}
 }
