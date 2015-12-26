@@ -51,8 +51,8 @@ public class CommunicationManager {
 		return DatagramFactory.createPacketFromPDU(configuration, pdu);
 	}
 
-	public DatagramPacket createDatagramPacket(IConfiguration configuration, int command, byte[] payload) {
-		PDU pdu = PDUFactory.createApplicationPDU(configuration, command, payload);
+	public DatagramPacket createDatagramPacket(IConfiguration configuration, int flag, int command, byte[] payload) {
+		PDU pdu = PDUFactory.createApplicationPDU(configuration, flag, command, payload);
 		return DatagramFactory.createPacketFromPDU(configuration, pdu);
 	}
 

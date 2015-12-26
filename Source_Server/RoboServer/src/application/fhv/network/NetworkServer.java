@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.SocketException;
 
 import communication.commands.Commands;
+import communication.flags.Flags;
 import controllers.ClientController;
 import models.Client;
 import network.communication.AppCommunication;
@@ -63,8 +64,8 @@ public class NetworkServer {
 		}
 	}
 
-	public void sendToRobo(Client client, int command, byte[] payload) {
-		roboCommunication.sendToClient(client, command, payload);
+	public void sendToRobo(Client client, int flags, int command, byte[] payload) {
+		roboCommunication.sendToClient(client, flags, command, payload);
 	}
 
 	public void shutdown() {
@@ -81,15 +82,15 @@ public class NetworkServer {
 		}
 	}
 
-	public void sendToApp(Client client, int command, byte[] payload) {
-		appCommunication.sendToClient(client, command, payload);
+	public void sendToApp(Client client, int flags, int command, byte[] payload) {
+		appCommunication.sendToClient(client, flags, command, payload);
 	}
 
 	public void DisconnectedAppClient(Client client) {
-		sendToApp(client, Commands.DISCONNECTED, new byte[] { 0 });
+		sendToApp(client, Flags.REQUEST_FLAG, Commands.DISCONNECTED, new byte[] { 0 });
 	}
 
 	public void DisconnectedRoboClient(Client client) {
-		sendToRobo(client, Commands.DISCONNECTED, new byte[] { 0 });
+		sendToRobo(client, Flags.REQUEST_FLAG, Commands.DISCONNECTED, new byte[] { 0 });
 	}
 }

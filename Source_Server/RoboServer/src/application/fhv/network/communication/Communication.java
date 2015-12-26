@@ -15,6 +15,7 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 
 import communication.commands.Commands;
+import communication.flags.Flags;
 import communication.managers.CommunicationManager;
 import communication.managers.IAnswerHandler;
 import communication.managers.IDataReceivedHandler;
@@ -79,7 +80,8 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 			String name = new String(payload);
 			client.setName(name);
 
-			DatagramPacket datagram = manager.createDatagramPacket(client, Commands.CHANGE_NAME, new byte[] { 1 });
+			DatagramPacket datagram = manager.createDatagramPacket(client, Flags.ANSWER_FLAG, Commands.CHANGE_NAME,
+					new byte[] { 1 });
 			sender.answer(datagram);
 			handled = true;
 
@@ -103,19 +105,20 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 	protected abstract boolean handleDataReceivedCore(DatagramPacket packet, ApplicationPDU pdu, IAnswerHandler sender,
 			Client client);
 
-	public void sendToClient(Client client, int command, byte[] payload) {
+	public void sendToClient(Client client, int flags, int command, byte[] payload) {
 		if (client == null) {
 			return;
 		}
 
-		DatagramPacket sendPacket = manager.createDatagramPacket(client, command, payload);
+		DatagramPacket sendPacket = manager.createDatagramPacket(client, flags, command, payload);
 		sender.send(sendPacket);
 	}
 
 	public void sendToClient(Client client) throws IOException {
 		int command = Commands.GENERAL_MESSAGE;
+		int flags = Flags.REQUEST_FLAG;
 		byte[] data = client.getSendData().getBytes();
-		sendToClient(client, command, data);
+		sendToClient(client, flags, command, data);
 	}
 
 	@Override

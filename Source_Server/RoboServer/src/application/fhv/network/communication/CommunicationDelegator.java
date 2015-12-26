@@ -19,25 +19,25 @@ public class CommunicationDelegator {
 	}
 
 	// Methods
-	public void DelegateMessage(Communication channel, int command, byte[] payload) {
+	public void DelegateMessage(Communication channel, int flags, int command, byte[] payload) {
 		// TODO: Add a condition controller, which checks if a specific
 		// operation is allowed
 		try {
 			if (channel == getChannelA()) {
-				sendToChannelClients(channelB, channelBClients, command, payload);
+				sendToChannelClients(channelB, channelBClients, flags, command, payload);
 			} else if (channel == getChannelB()) {
-				sendToChannelClients(channelA, channelAClients, command, payload);
+				sendToChannelClients(channelA, channelAClients, flags, command, payload);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void sendToChannelClients(Communication channel, ClientController<Client> clientController, int command,
-			byte[] payload) {
+	private void sendToChannelClients(Communication channel, ClientController<Client> clientController, int flags,
+			int command, byte[] payload) {
 		for (Client c : clientController.getClients()) {
 			System.out.println("Send message [" + new String(payload) + "]");
-			channel.sendToClient(c, command, payload);
+			channel.sendToClient(c, flags, command, payload);
 		}
 	}
 

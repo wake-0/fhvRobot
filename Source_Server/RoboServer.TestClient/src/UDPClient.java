@@ -12,7 +12,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +19,7 @@ import communication.commands.Commands;
 import communication.configurations.Configuration;
 import communication.configurations.ConfigurationSettings;
 import communication.configurations.IConfiguration;
+import communication.flags.Flags;
 import communication.managers.CommunicationManager;
 import communication.managers.IAnswerHandler;
 import communication.managers.IConfigurationManager;
@@ -61,17 +61,6 @@ public class UDPClient
 			try {
 
 				DatagramPacket sendPacket;
-
-				for (int i = 0; i <= 100000; i += 1000) {
-					byte[] message = new byte[i];
-					InetAddress address = InetAddress.getByName(UDPClientSettings.SERVER_ADDRESS);
-					sendPacket = new DatagramPacket(message, message.length, address, 999);
-					clientSocket.send(sendPacket);
-
-					System.out.println("send=" + i);
-					Thread.sleep(100);
-				}
-
 				BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
 				String sentence = inFromUser.readLine();
 
@@ -82,10 +71,11 @@ public class UDPClient
 					sendPacket = manager.createOpenConnectionDatagramPacket(configuration);
 				} else if (flow == 1) {
 					System.out.println("Change name called.");
-					sendPacket = manager.createDatagramPacket(configuration, Commands.CHANGE_NAME, sentence.getBytes());
-				} else {
-					sendPacket = manager.createDatagramPacket(configuration, Commands.GENERAL_MESSAGE,
+					sendPacket = manager.createDatagramPacket(configuration, Flags.REQUEST_FLAG, Commands.CHANGE_NAME,
 							sentence.getBytes());
+				} else {
+					sendPacket = manager.createDatagramPacket(configuration, Flags.REQUEST_FLAG,
+							Commands.GENERAL_MESSAGE, sentence.getBytes());
 				}
 				System.out.println("Enhanced send message:" + new String(sendPacket.getData()));
 

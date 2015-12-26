@@ -1,6 +1,7 @@
 package controllers;
 
 import communication.commands.Commands;
+import communication.flags.Flags;
 import communication.utils.NumberParser;
 import models.Client;
 import network.NetworkServer;
@@ -43,6 +44,6 @@ public class DriveController {
 		}
 
 		Client client = roboController.getSelectedClient();
-		server.sendToRobo(client, command, new byte[] { NumberParser.intToByte(value) });
+		server.sendToRobo(client, Flags.REQUEST_FLAG, command, new byte[] { NumberParser.intToByte(value) });
 	}
 }

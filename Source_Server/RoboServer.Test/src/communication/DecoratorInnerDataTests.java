@@ -74,8 +74,9 @@ public class DecoratorInnerDataTests {
 	public void ApplicationDecoratorInnerData() {
 		byte[] expectedData = new byte[] { 0b01010101 };
 		byte expectedCommands = (byte) 0b00000000;
+		byte expectedFlags = (byte) 0b00000000;
 
-		ApplicationPDU decorator = new ApplicationPDU(expectedCommands, new PDU(expectedData));
+		ApplicationPDU decorator = new ApplicationPDU(expectedFlags, expectedCommands, new PDU(expectedData));
 
 		byte[] actualData = decorator.getInnerData();
 		assertArrayEquals(expectedData, actualData);
