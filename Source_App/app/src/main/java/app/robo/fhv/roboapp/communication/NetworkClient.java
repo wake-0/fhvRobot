@@ -14,6 +14,7 @@ import java.net.UnknownHostException;
 import app.robo.fhv.roboapp.utils.ProgressMapper;
 import communication.commands.Commands;
 import communication.configurations.IConfiguration;
+import communication.flags.Flags;
 import communication.managers.CommunicationManager;
 import communication.managers.IAnswerHandler;
 import communication.managers.IDataReceivedHandler;
@@ -52,21 +53,21 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
 
     // Methods
     public void send(String message) {
-        new SendTask(clientSocket, comManager, configuration, Commands.CHANGE_NAME).execute(message.getBytes());
+        new SendTask(clientSocket, comManager, configuration, Flags.REQUEST_FLAG, Commands.CHANGE_NAME).execute(message.getBytes());
     }
 
     public void driveLeft(int leftValue) {
-        sendCommand(Commands.DRIVE_LEFT, leftValue);
+        sendCommand(Flags.REQUEST_FLAG, Commands.DRIVE_LEFT, leftValue);
     }
 
     public void driveRight(int rightValue) {
-        sendCommand(Commands.DRIVE_RIGHT, rightValue);
+        sendCommand(Flags.REQUEST_FLAG, Commands.DRIVE_RIGHT, rightValue);
     }
 
-    private void sendCommand(int command, int value) {
+    private void sendCommand(int flags, int command, int value) {
         int mappedValue = ProgressMapper.progressToDriveValue(value);
         byte byteValue = NumberParser.intToByte(mappedValue);
-        new SendTask(clientSocket, comManager, configuration, command).execute(new byte[]{byteValue});
+        new SendTask(clientSocket, comManager, configuration, flags, command).execute(new byte[]{byteValue});
     }
 
     @Override
@@ -127,17 +128,19 @@ public class NetworkClient implements Runnable, IDataReceivedHandler<Application
         private final CommunicationManager communicationManager;
         private final IConfiguration configuration;
         private final int command;
+        private final int flags;
 
-        protected SendTask(DatagramSocket clientSocket, CommunicationManager communicationManager, IConfiguration configuration, int command) {
+        protected SendTask(DatagramSocket clientSocket, CommunicationManager communicationManager, IConfiguration configuration, int flags, int command) {
             this.clientSocket = clientSocket;
             this.communicationManager = communicationManager;
             this.configuration = configuration;
             this.command = command;
+            this.flags = flags;
         }
 
         @Override
         protected Void doInBackground(final byte[] ... message) {
-            final DatagramPacket sendPacket = communicationManager.createDatagramPacket(configuration, command, message[0]);
+            final DatagramPacket sendPacket = communicationManager.createDatagramPacket(configuration, flags, command, message[0]);
             Handler updateView = new Handler(Looper.getMainLooper());
             updateView.post(new Runnable() {
                 @Override
