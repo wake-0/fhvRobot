@@ -24,6 +24,8 @@ import communication.pdu.TransportPDU;
 public class CommunicationManager {
 
 	// Fields
+	private final ReconnectionService reconnectionService;
+
 	private final NetworkManager networkManager;
 	private final TransportManager transportManager;
 	private final SessionManager sessionManager;
@@ -33,6 +35,7 @@ public class CommunicationManager {
 	// Constructor
 	public CommunicationManager(IConfigurationManager clientManager) {
 		this.currentConfigurationService = new CurrentConfigurationService();
+		this.reconnectionService = new ReconnectionService(this);
 
 		// Add a manager foreach layer
 		this.networkManager = new NetworkManager(clientManager, currentConfigurationService);
@@ -66,6 +69,12 @@ public class CommunicationManager {
 
 		byte[] data = Arrays.copyOfRange(packet.getData(), 0, packet.getLength());
 
+		// Check reconnection should be called
+		if (data == null || reconnectionService.handleDataReceived(packet, new PDU(data), answerHandler)) {
+			return;
+		}
+
+		// Otherwise check network stack
 		NetworkPDU network = PDUFactory.createNetworkPDU(data);
 		if (network == null || networkManager.handleDataReceived(packet, network, answerHandler)) {
 			return;
