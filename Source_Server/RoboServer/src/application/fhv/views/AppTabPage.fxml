@@ -42,6 +42,8 @@
 				maxWidth="Infinity" />
 			<Button fx:id="btnDown" onAction="#handleDownClick" text="Down"
 				maxWidth="Infinity" />
+			<Button fx:id="btnKill" onAction="#handleKillClick" text="Kill"
+				maxWidth="Infinity" />
 		</children>
 	</VBox>
 	<TextField  fx:id="tfSend" GridPane.rowIndex="1" GridPane.columnIndex="0"></TextField>
