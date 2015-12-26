@@ -39,8 +39,12 @@ public class ClientController<T extends IConfiguration>
 		}
 
 		clients.add(client);
+
 		// Each minute check heart beat
-		clientTimers.put(client, new HeartbeatManager<T>(client, this));
+		HeartbeatManager<T> manager = new HeartbeatManager<T>(client, this);
+		manager.run();
+
+		clientTimers.put(client, manager);
 	}
 
 	@Override

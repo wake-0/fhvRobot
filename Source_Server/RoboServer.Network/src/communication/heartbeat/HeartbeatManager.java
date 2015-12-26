@@ -14,22 +14,29 @@ public class HeartbeatManager<T extends IConfiguration> implements Runnable {
 	private final T configuration;
 
 	private final Timer timer;
-	// Period of 1 minute
-	// private final long delay = 1 * 60 * 1000;
-	// private final long period = 1 * 60 * 1000;
 
+	private final long delay;
+	private final long period;
+
+	// Period of 1 minute
+	// private static final long DEFAULT_TIME = 1 * 60 * 1000;
 	// Period of 5 seconds
-	private final long delay = 1 * 5 * 1000;
-	private final long period = 1 * 5 * 1000;
+	private static final long DEFAULT_TIME = 1 * 5 * 1000;
 
 	private final IHeartbeatHandler<T> handler;
 
 	// Constructor
 	public HeartbeatManager(T configuration, IHeartbeatHandler<T> handler) {
+		this(configuration, handler, DEFAULT_TIME, DEFAULT_TIME);
+	}
+
+	public HeartbeatManager(T configuration, IHeartbeatHandler<T> handler, long delay, long period) {
 		this.configuration = configuration;
 
 		this.timer = new Timer();
 		this.handler = handler;
+		this.delay = delay;
+		this.period = period;
 	}
 
 	// Methods
