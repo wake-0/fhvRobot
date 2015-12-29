@@ -89,11 +89,13 @@ $(PROJECT): $(COBJ) $(SOURCES)
 	$(CXX) -c ./source/impl/ConnectionAPI.cpp -o $(OBJDIR)/impl/ConnectionAPI.o -Wall
 	$(CXX) -c ./source/impl/mocks/TransportMock.cpp -o $(OBJDIR)/tests/TransportMock.o -Wall
 	$(CXX) -c ./source/tests/testsuite.cpp -o $(OBJDIR)/tests/testsuite.o -Wall
+	$(CXX) -c ./source/streaming/ClCamIp.c -o $(OBJDIR)/streaming.o -Wall
 	
 	@echo $(MSG_EMPTYLINE)
 	@echo $(MSG_LINKING)
 	$(LD) -o $@ $^ $(CPPOBJ) $(OBJDIR)/main.o $(CFLAGS)
 	$(LD) -o $@_test $^ $(CPPOBJ) $(OBJDIR)/tests/testsuite.o $(CFLAGS)
+	$(LD) -o $@_streaming $^ $(OBJDIR)/streaming.o $(CFLAGS)
 	@echo $(MSG_EMPTYLINE)
 	@echo $(MSG_SUCCESS) $(PROJECT)
 
