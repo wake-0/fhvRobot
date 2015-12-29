@@ -27,13 +27,14 @@ public class AppCommunication extends Communication {
 		try {
 			byte[] payload = pdu.getPayload();
 			int command = pdu.getCommand();
+			int flags = pdu.getFlags();
 
 			// Only for test purposes
 			client.setSendData(new String(payload));
 
 			// This delegator is used to communicate with the robos
 			if (delegator != null) {
-				delegator.DelegateMessage(this, command, payload);
+				delegator.DelegateMessage(this, flags, command, payload);
 			}
 
 		} catch (Exception e) {

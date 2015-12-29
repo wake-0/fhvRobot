@@ -4,7 +4,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import views.FlashingLabel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -14,12 +13,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
 import models.Client;
 import models.ClientFactory;
 import network.NetworkServer;
+import views.FlashingLabel;
 
 public class AppTabPageController implements Initializable {
 
@@ -37,13 +36,13 @@ public class AppTabPageController implements Initializable {
 	private TableColumn<Client, String> tcAppIp;
 	@FXML
 	private TableColumn<Client, Number> tcAppRXCount;
-	
+
 	// App details
 	@FXML
 	private TextField tfSend;
 	@FXML
 	private Button btnSend;
-	
+
 	private NetworkServer server;
 
 	// Constructor
@@ -113,27 +112,23 @@ public class AppTabPageController implements Initializable {
 				appController.setSelectedClient(newValue);
 			}
 		});
-		
-		tcAppRXCount.setCellFactory(new Callback<TableColumn<Client, Number>, TableCell<Client, Number>>()
-		        {
-		            public TableCell<Client, Number> call(TableColumn<Client, Number> column)
-		            {
-		                final FlashingLabel label = new FlashingLabel();
-		                TableCell<Client, Number> cell = new TableCell<Client, Number>()
-		                {
-		                    protected void updateItem(Number value, boolean empty)
-		                    {
-		                        super.updateItem(value, empty);
-		                        if (value != null)
-		                        	label.setText(value.toString());
-		                    }
-		                };
-		                cell.setGraphic(label);
-		                cell.setStyle("-fx-alignment: CENTER;");
-		                return cell;
-		            }
-		        });
-		
+
+		tcAppRXCount.setCellFactory(new Callback<TableColumn<Client, Number>, TableCell<Client, Number>>() {
+			public TableCell<Client, Number> call(TableColumn<Client, Number> column) {
+				final FlashingLabel label = new FlashingLabel();
+				TableCell<Client, Number> cell = new TableCell<Client, Number>() {
+					protected void updateItem(Number value, boolean empty) {
+						super.updateItem(value, empty);
+						if (value != null)
+							label.setText(value.toString());
+					}
+				};
+				cell.setGraphic(label);
+				cell.setStyle("-fx-alignment: CENTER;");
+				return cell;
+			}
+		});
+
 		btnSend.disableProperty().bind(tvAppClients.getSelectionModel().selectedItemProperty().isNull());
 	}
 

@@ -83,7 +83,7 @@ public class NetworkManager extends LayerManager<NetworkPDU> {
 		int sessionId = sessionPDU.getSessionId();
 		int flags = sessionPDU.getFlags();
 
-		// This is a big security issue, beccause an attacker can change the
+		// This is a big security issue, because an attacker can change the
 		// session id
 		return sessionId != ConfigurationSettings.DEFAULT_SESSION_ID
 				&& flags != ConfigurationSettings.REQUEST_SESSION_FLAGS && configuration == null;

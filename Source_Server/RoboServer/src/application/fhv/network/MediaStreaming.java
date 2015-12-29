@@ -1,6 +1,5 @@
 package network;
 
-import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
@@ -8,6 +7,8 @@ import network.receiver.INetworkReceiver;
 import network.receiver.LoggerNetworkReceiver;
 import network.sender.INetworkSender;
 import network.sender.LoggerNetworkSender;
+import uk.co.caprica.vlcj.player.MediaPlayerFactory;
+import uk.co.caprica.vlcj.player.headless.HeadlessMediaPlayer;
 
 public class MediaStreaming implements Runnable {
 
@@ -17,8 +18,6 @@ public class MediaStreaming implements Runnable {
 	protected final INetworkReceiver receiver;
 	protected final INetworkSender sender;
 	protected final DatagramSocket socket;
-
-	private final int packetSize = 64000;
 
 	public MediaStreaming(int mediaStreamingPort) throws SocketException {
 		this.socket = new DatagramSocket(mediaStreamingPort);
@@ -31,17 +30,26 @@ public class MediaStreaming implements Runnable {
 		isRunning = true;
 
 		while (isRunning) {
-			byte[] receiveData = new byte[packetSize];
-			DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-			receiver.receive(receivePacket);
+			String media = "udp://@:13337";
+			String options = formatHttpStream("127.0.0.1", 990);
 
-			if (socket.isClosed()) {
-				continue;
-			}
+			System.out.println("Streaming '" + media + "' to '" + options + "'");
 
-			System.out.println("length=" + receivePacket.getLength());
-			// sender.send(receivePacket);
+			MediaPlayerFactory mediaPlayerFactory = new MediaPlayerFactory("");
+			HeadlessMediaPlayer mediaPlayer = mediaPlayerFactory.newHeadlessMediaPlayer();
+			mediaPlayer.playMedia(media, options);
 		}
+	}
+
+	private static String formatHttpStream(String serverAddress, int serverPort) {
+		StringBuilder sb = new StringBuilder(60);
+		sb.append(":sout=#duplicate{dst=std{access=http,mux=ts,");
+		sb.append("dst=");
+		sb.append(serverAddress);
+		sb.append(':');
+		sb.append(serverPort);
+		sb.append("}}");
+		return sb.toString();
 	}
 
 	public void stop() {

@@ -3,10 +3,10 @@ package controllers;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import communication.configurations.IConfiguration;
+import communication.heartbeat.HeartbeatManager;
+import communication.heartbeat.IHeartbeatHandler;
 import communication.managers.IConfigurationManager;
 import controllers.factory.IClientFactory;
 import javafx.application.Platform;
@@ -14,13 +14,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import network.IClientProvider;
 
-public class ClientController<T extends IConfiguration> implements IClientProvider<T>, IConfigurationManager {
+public class ClientController<T extends IConfiguration>
+		implements IClientProvider<T>, IConfigurationManager, IHeartbeatHandler<T> {
 
 	// Fields
 	private final ObservableList<T> clients;
 	private final IClientFactory<T> factory;
 
-	private final HashMap<T, Timer> clientTimers;
+	private final HashMap<T, HeartbeatManager<T>> clientTimers;
 
 	private T selectedClient;
 
@@ -38,24 +39,12 @@ public class ClientController<T extends IConfiguration> implements IClientProvid
 		}
 
 		clients.add(client);
-		Timer timer = new Timer();
-		clientTimers.put(client, timer);
 
 		// Each minute check heart beat
-		timer.scheduleAtFixedRate(new TimerTask() {
-			@Override
-			public void run() {
-				if (client.getHeartBeatCount() == 0) {
-					timer.cancel();
-					Platform.runLater(() -> {
-						removeClient(client);
-					});
-					System.out.println("Missing heart beat, client disconnected: [" + client.getSessionId() + "]");
-				} else {
-					client.cleanHeartBeatCount();
-				}
-			}
-		}, 1 * 60 * 1000, 1 * 60 * 1000);
+		HeartbeatManager<T> manager = new HeartbeatManager<T>(client, this);
+		manager.run();
+
+		clientTimers.put(client, manager);
 	}
 
 	@Override
@@ -91,6 +80,19 @@ public class ClientController<T extends IConfiguration> implements IClientProvid
 
 	public void setSelectedClient(T selectedClient) {
 		this.selectedClient = selectedClient;
+	}
+
+	@Override
+	public void handleNoHeartbeat(T client) {
+		Platform.runLater(() -> {
+			removeClient(client);
+		});
+		System.out.println("Missing heart beat, client disconnected: [" + client.getSessionId() + "]");
+	}
+
+	@Override
+	public void handleHeartbeat(T client) {
+		client.cleanHeartBeatCount();
 	}
 
 }

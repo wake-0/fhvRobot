@@ -17,9 +17,17 @@ public class PDUFactory {
 				new SessionPDU(flags, sessionId, new PresentationPDU(new ApplicationPDU(new PDU(openMessage))))));
 	}
 
-	public static PDU createApplicationPDU(IConfiguration configuration, int command, byte[] payload) {
+	public static PDU createHeartbeatPDU(IConfiguration configuration) {
+		int flag = ConfigurationSettings.DEFAULT_APPLICATION_FLAGS;
+		int command = ConfigurationSettings.DEFAULT_APPLICATION_COMMAND;
+		byte[] payload = new byte[] { 0 };
+
+		return createApplicationPDU(configuration, flag, command, payload);
+	}
+
+	public static PDU createApplicationPDU(IConfiguration configuration, int flag, int command, byte[] payload) {
 		return new NetworkPDU(new TransportPDU(new SessionPDU(configuration.getSessionId(),
-				new PresentationPDU(new ApplicationPDU(command, new PDU(payload))))));
+				new PresentationPDU(new ApplicationPDU(flag, command, new PDU(payload))))));
 	}
 
 	public static NetworkPDU createNetworkPDU(byte[] data) {

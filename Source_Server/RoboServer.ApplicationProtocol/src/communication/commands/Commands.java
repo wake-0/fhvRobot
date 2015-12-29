@@ -1,6 +1,9 @@
 package communication.commands;
 
 public class Commands {
+
+	public static final int DEFAULT = 0;
+
 	public static final int CHANGE_NAME = 1;
 	public static final int GENERAL_MESSAGE = 2;
 

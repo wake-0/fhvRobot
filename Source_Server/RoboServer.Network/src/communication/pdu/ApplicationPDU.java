@@ -24,11 +24,7 @@ public class ApplicationPDU extends PDUDecorator {
 
 	// Constructors
 	public ApplicationPDU(PDU data) {
-		this(ConfigurationSettings.DEFAULT_APPLICATION_COMMAND, data);
-	}
-
-	public ApplicationPDU(int command, PDU pdu) {
-		this(ConfigurationSettings.DEFAULT_SESSION_FLAGS, command, pdu);
+		this(ConfigurationSettings.DEFAULT_APPLICATION_FLAGS, ConfigurationSettings.DEFAULT_APPLICATION_COMMAND, data);
 	}
 
 	public ApplicationPDU(int flags, int command, PDU pdu) {
