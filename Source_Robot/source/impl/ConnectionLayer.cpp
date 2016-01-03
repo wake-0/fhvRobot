@@ -12,6 +12,7 @@
 #include <sys/time.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <unistd.h>
 #include "../../include/ConnectionLayer.h"
 
 namespace FhvRobotProtocolStack {
@@ -58,7 +59,7 @@ bool UdpConnection::Connect(const char* address, int port) {
 	in_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	if (bind(sock, (const sockaddr*) &in_addr, sizeof(struct sockaddr_in)) == -1)
 	{
-		Debugger(ERROR) << "Failed to set in addr\n";
+		Debugger(ERROR) << "Failed to bind socket in UdpConnection\n";
 		return false;
 	}
 
@@ -88,6 +89,12 @@ bool UdpConnection::Send(const char* msg, unsigned int len) {
 		return false;
 	}
 	Debugger(VERBOSE) << "Message sent correctly in Transport layer. ret=" << ret << "\n";
+	return true;
+}
+
+bool UdpConnection::CloseConnection() {
+	close(sock);
+	pthread_cancel(receiveThread);
 	return true;
 }
 
@@ -157,7 +164,7 @@ int SessionLayer::GetMessageDecorationLength(const char* inMsg, unsigned int inL
 	return 2;
 }
 
-void SessionLayer::ComposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int outLen)
+void SessionLayer::ComposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int outLen, tPacketFlags flags)
 {
 	char* buf = outMsg;
 	Debugger(VERBOSE) << "Setting session id\n";
@@ -223,6 +230,7 @@ bool SessionLayer::Connect(const char* address, int port)
 			}
 			if (sessId != 0)
 			{
+				Debugger(INFO) << "Got session id " << sessId << "\n";
 				return true;
 			}
 		}
@@ -252,6 +260,12 @@ void SessionLayer::MessageReceived(const char* msg, unsigned int len)
 	}
 }
 
+bool SessionLayer::CloseConnection() {
+	bool res = ProtocolLayer::CloseConnection();
+	sessId = 0;
+	return res;
+}
+
 
 /* PresentationLayer */
 
@@ -262,7 +276,7 @@ int PresentationLayer::GetMessageDecorationLength(const char* inMsg, unsigned in
 	return 1;
 }
 
-void PresentationLayer::ComposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int outLen)
+void PresentationLayer::ComposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int outLen, tPacketFlags flags)
 {
 	/* THIS CODE IS COMMENTED BY INTENTION as it may be used at a later point
 	 * The following code would append a XOR-checksum to the message
@@ -317,9 +331,9 @@ int ApplicationLayer::GetMessageDecorationLength(const char* inMsg, unsigned int
 	return 1;
 }
 
-void ApplicationLayer::ComposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int outLen)
+void ApplicationLayer::ComposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int outLen, tPacketFlags flags)
 {
-	outMsg[0] = APPLICATION_LAYER_EMPTY_FLAGS;
+	outMsg[0] = flags | APPLICATION_LAYER_EMPTY_FLAGS;
 	memcpy(&outMsg[1], inMsg, inLen);
 }
 
