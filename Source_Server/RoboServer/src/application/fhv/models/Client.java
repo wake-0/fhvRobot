@@ -9,6 +9,8 @@
  */
 package models;
 
+import java.net.SocketAddress;
+
 import communication.configurations.IConfiguration;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -26,6 +28,7 @@ public class Client implements Comparable<Client>, IConfiguration {
 	private IntegerProperty port;
 	private IntegerProperty sessionId;
 	private IntegerProperty heartBeatCount;
+	private SocketAddress socketAddress;
 
 	// Constructor
 	public Client() {
@@ -156,5 +159,15 @@ public class Client implements Comparable<Client>, IConfiguration {
 		}
 
 		return getIpAddress().compareTo(o.getIpAddress());
+	}
+
+	@Override
+	public void setSocketAddress(SocketAddress socketAddress) {
+		this.socketAddress = socketAddress;
+	}
+	
+	@Override
+	public SocketAddress getSocketAddress() {
+		return socketAddress;
 	}
 }

@@ -36,6 +36,10 @@ public class DatagramFactory {
 		byte[] data = pdu.getEnhancedData();
 		int length = data.length;
 		InetAddress ipAddress;
+		
+		if (configuration.getSocketAddress() != null) {
+			return new DatagramPacket(data, length, configuration.getSocketAddress());
+		}
 
 		try {
 			ipAddress = InetAddress.getByName(configuration.getIpAddress());
@@ -47,9 +51,13 @@ public class DatagramFactory {
 	}
 
 	private static DatagramPacket createPacket(IConfiguration configuration, byte[] data) {
-		InetAddress address = parseStringToInetAddress(configuration.getIpAddress());
-		int port = configuration.getPort();
-		return new DatagramPacket(data, data.length, address, port);
+		if (configuration.getSocketAddress() != null) {
+			return new DatagramPacket(data, data.length, configuration.getSocketAddress());
+		} else {
+			InetAddress address = parseStringToInetAddress(configuration.getIpAddress());
+			int port = configuration.getPort();
+			return new DatagramPacket(data, data.length, address, port);
+		}
 	}
 
 	public static InetAddress parseStringToInetAddress(String address) {

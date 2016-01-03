@@ -9,6 +9,8 @@
  */
 package mocks;
 
+import java.net.SocketAddress;
+
 import communication.configurations.IConfiguration;
 
 public class ConfigurationMock implements IConfiguration {
@@ -17,6 +19,7 @@ public class ConfigurationMock implements IConfiguration {
 	private int port;
 	private int heartBeatCount;
 	private String ipAddress;
+	private SocketAddress socketAddress;
 
 	@Override
 	public void setSessionId(int sessionId) {
@@ -63,4 +66,13 @@ public class ConfigurationMock implements IConfiguration {
 		heartBeatCount = 0;
 	}
 
+	@Override
+	public void setSocketAddress(SocketAddress socketAddress) {
+		this.socketAddress = socketAddress;
+	}
+
+	@Override
+	public SocketAddress getSocketAddress() {
+		return socketAddress;
+	}
 }

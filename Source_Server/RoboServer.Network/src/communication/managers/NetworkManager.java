@@ -55,6 +55,7 @@ public class NetworkManager extends LayerManager<NetworkPDU> {
 		if (currentConfiguration == null) {
 			currentConfiguration = manager.createConfiguration();
 			currentConfiguration.setIpAddress(ipAddress);
+			currentConfiguration.setSocketAddress(packet.getSocketAddress());
 		}
 
 		// Heart beat increase

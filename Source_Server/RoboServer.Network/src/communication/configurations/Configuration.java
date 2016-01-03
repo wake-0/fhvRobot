@@ -1,5 +1,7 @@
 package communication.configurations;
 
+import java.net.SocketAddress;
+
 public class Configuration implements IConfiguration {
 
 	// Fields
@@ -7,6 +9,7 @@ public class Configuration implements IConfiguration {
 	private int port;
 	private String ipAddress;
 	private int heartBeatCount;
+	private SocketAddress socketAddress;
 
 	// Constructor
 	public Configuration(int sessionId, int port, String ipAddress) {
@@ -60,5 +63,15 @@ public class Configuration implements IConfiguration {
 	@Override
 	public void cleanHeartBeatCount() {
 		heartBeatCount = 0;
+	}
+
+	@Override
+	public void setSocketAddress(SocketAddress socketAddress) {
+		this.socketAddress = socketAddress;
+	}
+
+	@Override
+	public SocketAddress getSocketAddress() {
+		return socketAddress;
 	}
 }
