@@ -9,6 +9,8 @@
 #include "../../include/Debugger.h"
 #include <unistd.h>
 
+#define DEFAULT_ROBOT_PORT		(998)
+
 namespace FhvRobot {
 
 Controller::Controller() {
@@ -36,11 +38,18 @@ void Controller::Start(char* serverIp) {
 	app.SetCallback(connection);
 
 	connection->SetConnection(&app);
-	// Fail tests
-	bool res;
-	res = connection->Connect("Controlled Nico", serverIp, 998);
-	(void) res;
+	bool res = false;
 
+	while (res == false) {
+		Debugger(INFO) << "Trying to connecto to the server " << serverIp << " at " << DEFAULT_ROBOT_PORT << "\n";
+
+		res = connection->Connect("Controlled Nico", serverIp, DEFAULT_ROBOT_PORT);
+		if (res == false) {
+			Debugger(WARNING) << "Connection was not succesful. Trying to reconnect in 10s...\n";
+			usleep(10 * 1000 * 1000);
+		}
+	}
+	Debugger(INFO) << "Connection was succesful\n";
 	while(true)
 	{
 		connection->SendHeartBeat();

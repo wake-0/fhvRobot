@@ -41,6 +41,7 @@ void ConnectionAPI::MessageReceived(const char* msg, unsigned int len)
 {
 
 	int command = msg[0];
+	Debugger(VERBOSE) << "Got command " << command << " in application with len=" << (len - 1) << "\n";
 
 	// Parse message
 	if (command == 10 || command == 11)
@@ -88,6 +89,8 @@ bool ConnectionAPI::Connect(const char* robotName, const char* hostname, int por
 		free(msg);
 
 		return result;
+	} else {
+		connection->CloseConnection();
 	}
 	return false;
 }
