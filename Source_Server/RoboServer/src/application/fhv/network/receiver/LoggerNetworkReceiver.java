@@ -26,7 +26,7 @@ public class LoggerNetworkReceiver extends NetworkReceiver {
 	public void receive(DatagramPacket packet) {
 		super.receive(packet);
 
-		System.out.println("Received message:");
+		System.out.println("[" + System.currentTimeMillis() + "] Received message:");
 		NetworkUtils.printDatagramPacket(packet);
 	}
 }

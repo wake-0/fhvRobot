@@ -40,7 +40,10 @@ public class NetworkManager extends LayerManager<NetworkPDU> {
 		}
 
 		// Try find a configuration
-		String ipAddress = packet.getAddress().getHostName();
+		//String ipAddress = packet.getAddress().getHostName(); NOTE: This call is super-slow as it performs a DNS lookup
+		// See http://stackoverflow.com/questions/11795167/datagrampacket-getaddress-gethostname-is-blocking-my-thread
+		// Better is to get the ip as follows:
+		String ipAddress = packet.getAddress().toString().substring(1);
 		IConfiguration currentConfiguration = getConfiguration(configurations, ipAddress, pdu);
 
 		// When no configuration was found the session id needs to be 0

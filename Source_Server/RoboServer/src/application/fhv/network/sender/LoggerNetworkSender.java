@@ -26,7 +26,7 @@ public class LoggerNetworkSender extends NetworkSender {
 	public void send(DatagramPacket packet) {
 		super.send(packet);
 
-		System.out.println("Send message:");
+		System.out.println("[" + System.currentTimeMillis() + "] Send message:");
 		NetworkUtils.printDatagramPacket(packet);
 	}
 }

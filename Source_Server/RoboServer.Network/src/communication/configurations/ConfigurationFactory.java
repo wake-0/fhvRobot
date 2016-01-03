@@ -9,6 +9,6 @@ public class ConfigurationFactory {
 			throw new IllegalArgumentException();
 		}
 
-		return new Configuration(0, packet.getPort(), packet.getAddress().getHostName());
+		return new Configuration(0, packet.getPort(), packet.getAddress().toString().substring(1));
 	}
 }
