@@ -12,6 +12,8 @@ package network.sender;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
+import utils.NetworkUtils;
+
 public class LoggerNetworkSender extends NetworkSender {
 
 	// Constructor
@@ -24,6 +26,7 @@ public class LoggerNetworkSender extends NetworkSender {
 	public void send(DatagramPacket packet) {
 		super.send(packet);
 
-		System.out.println("Send message: " + (packet == null ? "" : new String(packet.getData())));
+		System.out.println("Send message:");
+		NetworkUtils.printDatagramPacket(packet);
 	}
 }
