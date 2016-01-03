@@ -52,7 +52,7 @@ public class NetworkServer {
 
 		new Thread(roboCommunication).start();
 		new Thread(appCommunication).start();
-		new Thread(mediaStreaming).start();
+		// new Thread(mediaStreaming).start();
 	}
 
 	// Methods

@@ -9,6 +9,7 @@
  * @version: 1
  */
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -20,14 +21,16 @@ import communication.configurations.Configuration;
 import communication.configurations.ConfigurationSettings;
 import communication.configurations.IConfiguration;
 import communication.flags.Flags;
+import communication.heartbeat.HeartbeatManager;
+import communication.heartbeat.IHeartbeatHandler;
 import communication.managers.CommunicationManager;
 import communication.managers.IAnswerHandler;
 import communication.managers.IConfigurationManager;
 import communication.managers.IDataReceivedHandler;
 import communication.pdu.ApplicationPDU;
 
-public class UDPClient
-		implements Runnable, IDataReceivedHandler<ApplicationPDU>, IAnswerHandler, IConfigurationManager {
+public class UDPClient implements Runnable, IDataReceivedHandler<ApplicationPDU>, IAnswerHandler, IConfigurationManager,
+		IHeartbeatHandler<IConfiguration> {
 
 	private DatagramSocket clientSocket;
 	private int sessionId = ConfigurationSettings.DEFAULT_SESSION_ID;
@@ -37,6 +40,9 @@ public class UDPClient
 	private CommunicationManager manager;
 	private IConfiguration configuration;
 	private List<IConfiguration> configurations;
+
+	private HeartbeatManager<IConfiguration> heartBeatManager;
+	private static final int HEARTBEAT_TIME = 1 * 1000;
 
 	private int flow = 0;
 
@@ -48,6 +54,9 @@ public class UDPClient
 			this.configuration = new Configuration(sessionId, port, address);
 			this.configurations = new ArrayList<>();
 			configurations.add(configuration);
+
+			this.heartBeatManager = new HeartbeatManager<IConfiguration>(configuration, this, HEARTBEAT_TIME,
+					HEARTBEAT_TIME);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -69,6 +78,7 @@ public class UDPClient
 				if (flow == 0) {
 					System.out.println("Open connection called.");
 					sendPacket = manager.createOpenConnectionDatagramPacket(configuration);
+					this.heartBeatManager.run();
 				} else if (flow == 1) {
 					System.out.println("Change name called.");
 					sendPacket = manager.createDatagramPacket(configuration, Flags.REQUEST_FLAG, Commands.CHANGE_NAME,
@@ -122,6 +132,27 @@ public class UDPClient
 	@Override
 	public List<IConfiguration> getConfigurations() {
 		return configurations;
+	}
+
+	@Override
+	public void handleNoHeartbeat(IConfiguration configuration) {
+		heartBeat();
+	}
+
+	@Override
+	public void handleHeartbeat(IConfiguration configuration) {
+		heartBeat();
+	}
+
+	private void heartBeat() {
+		DatagramPacket sendPacket = manager.createDatagramPacket(configuration, Flags.REQUEST_FLAG, Commands.DEFAULT,
+				"0".getBytes());
+		try {
+			clientSocket.send(sendPacket);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
