@@ -149,7 +149,7 @@ public class RoboTabPageController implements Initializable {
 
 	public void setServer(NetworkServer server) {
 		this.server = server;
-		this.driveController = new DriveController(server, roboController);
+		this.driveController = new DriveController(server);
 	}
 
 	private void clearDetails() {

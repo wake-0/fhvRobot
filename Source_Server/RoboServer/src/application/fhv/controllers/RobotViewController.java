@@ -57,7 +57,7 @@ public class RobotViewController implements Initializable {
             public void changed(ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) {
             		if (new_val != null && driveController != null) {
-                        driveController.driveLeft(new_val.intValue());
+                        driveController.driveLeft(selectedClient, new_val.intValue());
             		}
                 }
             });
@@ -65,7 +65,7 @@ public class RobotViewController implements Initializable {
             public void changed(ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) {
             		if (new_val != null && driveController != null) {
-                        driveController.driveRight(new_val.intValue());
+                        driveController.driveRight(selectedClient, new_val.intValue());
             		}
                 }
             });
