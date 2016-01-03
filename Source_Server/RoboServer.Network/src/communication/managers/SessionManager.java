@@ -22,6 +22,12 @@ import communication.pdu.SessionPDU;
 
 public class SessionManager extends LayerManager<SessionPDU> {
 
+	// Init ThreadLocalRandom
+	// NOTE: See Ticket #68: ThreadLocalRandom's first call is sometimes slow on some machines
+	{
+		ThreadLocalRandom.current().nextInt(1, 1000);
+	}
+
 	// Fields
 	private final int maxIterations = 200;
 
