@@ -42,7 +42,7 @@
 #include <sys/socket.h>
 
 #define LOCAL_PORT 5000
-#define PACKET_SIZE 65000
+#define PACKET_SIZE 10000
 
 void handleQuit(int numSig);
 int openSocket(int port);

@@ -23,6 +23,7 @@
 ******************************************************************/
 #include "../../include/streaming/camIpCli.h"
 
+#define FRAMES_PER_SECOND		(20)
 
 static int xioctl(int fd, int request, void* arg)
 {
@@ -132,8 +133,8 @@ int main(int argc, char** argv)
     struct v4l2_format form;
     memset(&form, 0, sizeof(form));
     form.type                = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    form.fmt.pix.width       = 320;
-    form.fmt.pix.height      = 240;
+    form.fmt.pix.width       = 160;
+    form.fmt.pix.height      = 120;
     form.fmt.pix.pixelformat = V4L2_PIX_FMT_MJPEG;
     form.fmt.pix.field       = V4L2_FIELD_ANY;
     status = xioctl(webcam, VIDIOC_S_FMT, &form);
@@ -143,6 +144,24 @@ int main(int argc, char** argv)
                 status, (int)form.fmt.pix.pixelformat);
         exit(EXIT_FAILURE);
     }
+
+    /* NOTE: Not working for our webcam
+    int quality = 5;
+	struct v4l2_jpegcompression comp = {
+	    .quality = quality,
+	};
+
+	if (-1 == xioctl( webcam, VIDIOC_G_JPEGCOMP, &comp)) {
+	    if ( errno != EINVAL) errno_exit("VIDIOC_G_JPEGCOMP");
+	    fprintf(stderr,"driver does not support VIDIOC_G_JPEGCOMP\n");
+	    comp.quality = quality;
+	} else {
+	    comp.quality = quality;
+	    if (-1 == xioctl( webcam, VIDIOC_S_JPEGCOMP, &comp)) errno_exit("VIDIOC_S_JPEGCOMP");
+	    if (-1 == xioctl( webcam, VIDIOC_G_JPEGCOMP, &comp)) errno_exit("VIDIOC_G_JPEGCOMP");
+	    fprintf(stderr,"jpegcomp quality came out at %d\n", comp.quality);
+	}
+	*/
 
     unsigned int min = form.fmt.pix.width * 2;
     if (form.fmt.pix.bytesperline < min)
@@ -277,6 +296,8 @@ int main(int argc, char** argv)
 	    char* buffer = (char *)buffers[buf.index].start;
 	    int bytes_read = buffers[buf.index].length;
 	    int size = bytes_read;
+
+	    printf("INFO: Frame size: %d\n", size);
 	    int i;
 	    for (i = 0; i < size; i++)
 	    {
@@ -295,6 +316,13 @@ int main(int argc, char** argv)
 	    memcpy(cameraFrame + offset, buffer + i + 19, size - i - 19);
 	    cameraFrameSize = size + huffmanTablesSize;
 	    int j;
+	    while (cameraFrameSize > 0) {
+	    	if ((unsigned char)cameraFrame[cameraFrameSize - 2] == 0xFF && (unsigned char)cameraFrame[cameraFrameSize - 1] == 0xD9) {
+	    		break;
+	    	}
+	    	cameraFrameSize--;
+	    }
+	    printf("INFO: Frame size after resizing: %d\n", cameraFrameSize);
 	    for (j = 0; j < ((cameraFrameSize/PACKET_SIZE) + 1); j++)
 	    {
 		    if (j == cameraFrameSize/PACKET_SIZE)
@@ -323,6 +351,8 @@ int main(int argc, char** argv)
 	    {
 		    fprintf(stderr, "ERROR: ioctl VIDIOC_QBUF returned status %d\n", status);
 	    }
+
+	    usleep(1000000 / FRAMES_PER_SECOND);
 	}
 
 	enum v4l2_buf_type type2;
