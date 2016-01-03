@@ -16,6 +16,8 @@ import java.net.SocketException;
 
 import communication.commands.Commands;
 import communication.flags.Flags;
+import communication.heartbeat.HeartbeatProvider;
+import communication.heartbeat.IHeartbeatCreator;
 import communication.managers.CommunicationManager;
 import communication.managers.IAnswerHandler;
 import communication.managers.IDataReceivedHandler;
@@ -27,7 +29,8 @@ import network.receiver.LoggerNetworkReceiver;
 import network.sender.INetworkSender;
 import network.sender.LoggerNetworkSender;
 
-public abstract class Communication implements Runnable, IDataReceivedHandler<ApplicationPDU>, IAnswerHandler {
+public abstract class Communication
+		implements Runnable, IDataReceivedHandler<ApplicationPDU>, IAnswerHandler, IHeartbeatCreator {
 
 	// Field
 	private boolean isRunning;
@@ -37,6 +40,7 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 	protected final DatagramSocket socket;
 	protected final CommunicationManager manager;
 	protected final ClientController<Client> clientController;
+	protected final HeartbeatProvider heartbeatProvider;
 
 	// Constructors
 	public Communication(ClientController<Client> clientController, int port) throws SocketException {
@@ -46,6 +50,9 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 
 		this.receiver = new LoggerNetworkReceiver(socket);
 		this.sender = new LoggerNetworkSender(socket);
+
+		this.heartbeatProvider = new HeartbeatProvider(this);
+		this.heartbeatProvider.run();
 	}
 
 	// Methods
@@ -129,5 +136,16 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 	public void stop() {
 		isRunning = false;
 		socket.close();
+	}
+
+	public void createHeartBeat() {
+		try {
+			for (Client client : clientController.getClients()) {
+				DatagramPacket heartbeatPacket = manager.createHeartbeatDatagramPacket(client);
+				socket.send(heartbeatPacket);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

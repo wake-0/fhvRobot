@@ -27,8 +27,8 @@ public class ClientController<T extends IConfiguration>
 
 	// Constructor
 	public ClientController(IClientFactory<T> factory) {
-		clients = FXCollections.observableArrayList();
-		clientTimers = new HashMap<>();
+		this.clients = FXCollections.observableArrayList();
+		this.clientTimers = new HashMap<>();
 		this.factory = factory;
 	}
 
@@ -94,5 +94,4 @@ public class ClientController<T extends IConfiguration>
 	public void handleHeartbeat(T client) {
 		client.cleanHeartBeatCount();
 	}
-
 }
