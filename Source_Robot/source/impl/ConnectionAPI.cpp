@@ -14,6 +14,7 @@
 #define TYPE_BYTE					(0b00000000)
 #define COMMAND_REGISTER			(0b00000001)
 #define COMMAND_HEARTBEAT			(0b00000000)
+#define COMMAND_KILL				(0b01001110)
 
 namespace FhvRobot {
 
@@ -51,7 +52,11 @@ void ConnectionAPI::MessageReceived(const char* msg, unsigned int len)
 	lastMessageTime = ms;
 
 	// Parse message
-	if (command == 10 || command == 11)
+	if (command == COMMAND_KILL)
+	{
+		callback->ForceDisconnect();
+	}
+	else if (command == 10 || command == 11)
 	{
 		// Right motor == 10
 		// Left motor == 11

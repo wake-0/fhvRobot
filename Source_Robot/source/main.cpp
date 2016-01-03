@@ -38,15 +38,18 @@ int main(int argc, char** argv)
 	}
 	Controller controller;
 	controller.Init();
-
-	while (1)
+	bool running = true;
+	while (running)
 	{
 		Debugger(INFO) << "Trying to connect...\n";
-		controller.Start(serverIp); // Returns after a disconnect only
-		Debugger(WARNING) << "Disconnect because of timeout\n";
-		Debugger(INFO) << "Trying to reconnect in 10s\n";
-		usleep(10 * 1000 * 1000);
+		running = controller.Start(serverIp); // Returns after a disconnect only
+		if (running)
+		{
+			Debugger(WARNING) << "Disconnect because of timeout\n";
+			Debugger(INFO) << "Trying to reconnect in 10s\n";
+			usleep(10 * 1000 * 1000);
+		}
 	}
-
+	Debugger(INFO) << "Stopping robot\n";
 	return 0;
 }

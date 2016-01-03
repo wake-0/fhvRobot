@@ -20,6 +20,7 @@ public:
 	virtual ~ApplicationCallback() { }
 	virtual void MotorCommand(unsigned int motorNum, int motorSpeed) = 0;
 	virtual void CameraEnable(bool cameraEnable) = 0;
+	virtual void ForceDisconnect() = 0;
 };
 
 class ConnectionAPI : public ProtocolLayerCallback {

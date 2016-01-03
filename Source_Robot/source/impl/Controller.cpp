@@ -17,6 +17,7 @@ namespace FhvRobot {
 
 Controller::Controller() {
 	connection = NULL;
+	running = false;
 }
 
 Controller::~Controller() {
@@ -28,7 +29,7 @@ void Controller::Init()
 	robot.MotorStop(true);
 }
 
-void Controller::Start(char* serverIp) {
+bool Controller::Start(char* serverIp) {
 	connection = new ConnectionAPI(this);
 	UdpConnection udp;
 	SessionLayer sess(&udp);
@@ -52,7 +53,8 @@ void Controller::Start(char* serverIp) {
 		}
 	}
 	Debugger(INFO) << "Connection was succesful\n";
-	while(true)
+	running = true;
+	while(running)
 	{
 		connection->SendHeartBeat();
 
@@ -69,6 +71,7 @@ void Controller::Start(char* serverIp) {
 			break;
 		}
 	}
+	return running;
 }
 
 void Controller::MotorCommand(unsigned int motorNum, int motorSpeed)
@@ -92,6 +95,11 @@ void Controller::MotorCommand(unsigned int motorNum, int motorSpeed)
 void Controller::CameraEnable(bool cameraEnable)
 {
 
+}
+
+void Controller::ForceDisconnect()
+{
+	running = false;
 }
 
 } /* namespace FhvRobot */
