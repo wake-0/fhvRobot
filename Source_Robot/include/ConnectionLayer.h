@@ -119,6 +119,7 @@ private:
     	Debugger(VERBOSE) << "ReceiveLoopHelper calling private method\n";
         return ((UdpConnection*)context)->ReceiveLoop();
     }
+    static void DebugOutputBuffer(char* buf, int len);
 public:
 	UdpConnection() : TransportLayer() { sock = 0; receiveThread = PTHREAD_ONCE_INIT; }
 	virtual ~UdpConnection();

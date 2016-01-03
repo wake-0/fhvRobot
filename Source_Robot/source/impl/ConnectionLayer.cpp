@@ -81,7 +81,7 @@ bool UdpConnection::Connect(const char* address, int port) {
 
 bool UdpConnection::Send(const char* msg, unsigned int len) {
 	Debugger(VERBOSE) << "Sending message with len=" << len << " (UDP)\n";
-
+	UdpConnection::DebugOutputBuffer((char*) msg, len);
 	int ret = sendto(sock, msg, len, 0, (const sockaddr*)&addr, sizeof(struct sockaddr_in));
 
 	if (ret < 0) {
@@ -119,12 +119,7 @@ void* UdpConnection::ReceiveLoop()
 		else
 		{
 			Debugger(INFO) << "Message received with len=" << res << "\n";
-			Debugger(VERBOSE) << "Message raw data: \n";
-			for (int i = 0; i < res; i++)
-			{
-				Debugger(VERBOSE) << buf[i] << " ";
-			}
-			Debugger(VERBOSE) << "\n";
+			UdpConnection::DebugOutputBuffer(buf, res);
 
 			if (ProtocolLayer::callback != NULL)
 			{
@@ -139,6 +134,23 @@ void* UdpConnection::ReceiveLoop()
 		}
 	}
 	return NULL;
+}
+
+void UdpConnection::DebugOutputBuffer(char* buf, int len)
+{
+	Debugger(VERBOSE) << "Message raw data: ";
+	for (int i = 0; i < len; i++)
+	{
+		Debugger(VERBOSE) << buf[i] << " ";
+	}
+	Debugger(VERBOSE) << "\n";
+	for (int i = 0; i < len; i++)
+	{
+		char hexbuf[5] = { 0 };
+		sprintf(hexbuf, "%02x", buf[i]);
+		Debugger(VERBOSE) << hexbuf << " ";
+	}
+	Debugger(VERBOSE) << "\n";
 }
 
 

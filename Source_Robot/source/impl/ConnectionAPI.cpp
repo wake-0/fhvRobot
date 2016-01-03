@@ -9,6 +9,7 @@
 #include "../../include/Robot.h"
 
 #include <stdexcept>
+#include <sys/time.h>
 
 #define TYPE_BYTE					(0b00000000)
 #define COMMAND_REGISTER			(0b00000001)
@@ -26,6 +27,7 @@ ConnectionAPI::ConnectionAPI(ApplicationCallback* cb) {
 	}
 	connection = NULL;
 	callback = cb;
+	lastMessageTime = 0;
 }
 
 ConnectionAPI::~ConnectionAPI() {
@@ -42,6 +44,11 @@ void ConnectionAPI::MessageReceived(const char* msg, unsigned int len)
 
 	int command = msg[0];
 	Debugger(VERBOSE) << "Got command " << command << " in application with len=" << (len - 1) << "\n";
+
+	struct timeval tp;
+	gettimeofday(&tp, NULL);
+	long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+	lastMessageTime = ms;
 
 	// Parse message
 	if (command == 10 || command == 11)

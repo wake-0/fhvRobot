@@ -7,9 +7,11 @@
 
 #include "../../include/Controller.h"
 #include "../../include/Debugger.h"
+#include <sys/time.h>
 #include <unistd.h>
 
 #define DEFAULT_ROBOT_PORT		(998)
+#define TIMEOUT_MS				(5000)
 
 namespace FhvRobot {
 
@@ -55,6 +57,17 @@ void Controller::Start(char* serverIp) {
 		connection->SendHeartBeat();
 
 		usleep(1000000);
+
+		// Check if we have received a heartbeat (or any other message) within a given timespan
+		struct timeval tp;
+		gettimeofday(&tp, NULL);
+		long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+		if (connection->GetLastMessageTime() + TIMEOUT_MS < ms)
+		{
+			connection->Disconnect();
+			robot.MotorStop(true);
+			break;
+		}
 	}
 }
 

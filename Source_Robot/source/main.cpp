@@ -17,6 +17,8 @@
  */
 
 #include "../include/Controller.h"
+#include "../include/Debugger.h"
+#include <unistd.h>
 
 using namespace FhvRobot;
 
@@ -36,7 +38,15 @@ int main(int argc, char** argv)
 	}
 	Controller controller;
 	controller.Init();
-	controller.Start(serverIp); // Non-returning
+
+	while (1)
+	{
+		Debugger(INFO) << "Trying to connect...\n";
+		controller.Start(serverIp); // Returns after a disconnect only
+		Debugger(WARNING) << "Disconnect because of timeout\n";
+		Debugger(INFO) << "Trying to reconnect in 10s\n";
+		usleep(10 * 1000 * 1000);
+	}
 
 	return 0;
 }
