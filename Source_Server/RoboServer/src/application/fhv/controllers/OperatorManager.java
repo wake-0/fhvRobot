@@ -19,7 +19,8 @@ public class OperatorManager implements Runnable {
 	private Timer timer;
 
 	// 2 min Operator time
-	private static final long OPERATOR_TIME = 2 * 60 * 1000;
+	// private static final long OPERATOR_TIME = 2 * 60 * 1000;
+	private static final long OPERATOR_TIME = 10 * 1000;
 
 	// Constructor
 	public OperatorManager(ClientController<Client> appClients, Communication appCommunication) {
@@ -39,6 +40,11 @@ public class OperatorManager implements Runnable {
 			}
 		}
 
+		if (oldOperator != null) {
+			appCommunication.sendToClient(oldOperator, Flags.REQUEST_FLAG, Commands.ROBO_NOT_STEARING,
+					new byte[] { 0 });
+		}
+
 		return oldOperator;
 	}
 
@@ -47,9 +53,11 @@ public class OperatorManager implements Runnable {
 
 		// Select new operator
 		int nextIndex = oldOperator == null ? 0 : clients.indexOf(oldOperator) + 1;
-		Client nextOperator = null;
+		Client nextOperator;
 
-		if (nextIndex < clients.size() && nextIndex > -1) {
+		if (clients == null || clients.size() == 0) {
+			nextOperator = null;
+		} else if (nextIndex < clients.size() && nextIndex > -1) {
 			nextOperator = clients.get(nextIndex);
 		} else {
 			nextOperator = clients.get(0);
@@ -65,7 +73,7 @@ public class OperatorManager implements Runnable {
 
 		Timer newTimer = new Timer();
 
-		newTimer.schedule(new TimerTask() {
+		newTimer.scheduleAtFixedRate(new TimerTask() {
 
 			@Override
 			public void run() {
@@ -85,21 +93,24 @@ public class OperatorManager implements Runnable {
 
 			@Override
 			public void onChanged(ListChangeListener.Change<? extends Client> client) {
-				if (client.wasRemoved()) {
+				while (client.next()) {
+					if (client.wasRemoved()) {
 
-					List<? extends Client> removed = client.getRemoved();
+						List<? extends Client> removed = client.getRemoved();
 
-					// Select next operator when the operator was removed
-					if (removed.stream().anyMatch(c -> c.getIsOperator())) {
+						// Select next operator when the operator was removed
+						if (removed.stream().anyMatch(c -> c.getIsOperator())) {
 
-						Client oldOperator = removeOldOperator(removed);
-						selectNextOperator(oldOperator);
+							Client oldOperator = removeOldOperator(removed);
+							selectNextOperator(oldOperator);
 
-						// Restart timer
-						timer.cancel();
-						timer = createNewTimer();
+							// Restart timer
+							timer.cancel();
+							timer = createNewTimer();
+						}
 					}
 				}
+
 			}
 		});
 	}

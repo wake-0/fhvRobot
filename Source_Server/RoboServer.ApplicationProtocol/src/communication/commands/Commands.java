@@ -12,6 +12,7 @@ public class Commands {
 	public static final int DRIVE_BOTH = 12;
 
 	public static final int ROBO_STEARING = 50;
+	public static final int ROBO_NOT_STEARING = 51;
 
 	public static final int REQUEST_DISCONNECT = 77;
 	public static final int DISCONNECTED = 78;
