@@ -26,8 +26,8 @@ public class ConfigurationManager implements IConfigurationManager {
 
         int sessionId = ConfigurationSettings.DEFAULT_SESSION_ID;
         int port = GlobalSettings.SERVER_PORT;
-        //String address = GlobalSettings.SERVER_ADDRESS;
-        String address = GlobalSettings.LOCAL_ADDRESS;
+        String address = GlobalSettings.SERVER_ADDRESS;
+        //String address = GlobalSettings.LOCAL_ADDRESS;
 
         configuration = new Configuration(sessionId, port, address);
         configurations = new ArrayList<>();

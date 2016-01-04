@@ -1,25 +1,35 @@
 package app.robo.fhv.roboapp;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import app.robo.fhv.roboapp.communication.CommunicationClient;
+import app.robo.fhv.roboapp.communication.MediaStreaming;
 import app.robo.fhv.roboapp.communication.NetworkClient;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements MediaStreaming.IFrameReceived {
 
     private static final String LOG_TAG = "MainActivity";
 
     private EditText editText;
-    private Button button;
+    private ImageButton button;
     private SeekBar sbLeft;
     private SeekBar sbRight;
+
+    private ImageView camCanvas;
 
     private int stepSize = 10;
     private NetworkClient networkClient;
@@ -29,8 +39,9 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_layout);
 
+        camCanvas = (ImageView) findViewById(R.id.imgCamCanvas);
         editText = (EditText) findViewById(R.id.editText);
-        button = (Button) findViewById(R.id.button);
+        button = (ImageButton) findViewById(R.id.button);
 
         editText.setText("edit text");
 
@@ -41,7 +52,7 @@ public class MainActivity extends Activity {
         sbRight.setProgress(100);
 
         try {
-            networkClient = new NetworkClient();
+            networkClient = new NetworkClient(this);
             networkClient.start();
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,4 +124,14 @@ public class MainActivity extends Activity {
     }
 
 
+    @Override
+    public void frameReceived(Bitmap i) {
+        final BitmapDrawable d = new BitmapDrawable(getResources(), i);
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                camCanvas.setBackground(d);
+            }
+        });
+    }
 }

@@ -138,6 +138,11 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
         new SendTask(clientSocket, comManager, configuration, Flags.REQUEST_FLAG, Commands.DEFAULT).execute(message.getBytes());
     }
 
+    public void stop() {
+        isRunning = false;
+        clientSocket.close();
+    }
+
     private class SendTask extends AsyncTask<byte[], Void, Void> {
 
         private final DatagramSocket clientSocket;
