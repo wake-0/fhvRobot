@@ -1,186 +1,21 @@
 package app.robo.fhv.roboapp.communication;
 
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Looper;
-import android.widget.TextView;
-
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-import app.robo.fhv.roboapp.utils.ProgressMapper;
-import communication.commands.Commands;
-import communication.configurations.Configuration;
-import communication.configurations.IConfiguration;
-import communication.flags.Flags;
-import communication.heartbeat.HeartbeatManager;
-import communication.heartbeat.IHeartbeatHandler;
-import communication.managers.CommunicationManager;
-import communication.managers.IAnswerHandler;
-import communication.managers.IDataReceivedHandler;
-import communication.pdu.ApplicationPDU;
-import communication.utils.NumberParser;
+public class NetworkClient {
 
-/**
- * Created by Kevin on 05.11.2015.
- */
-public class NetworkClient implements Runnable, IDataReceivedHandler<ApplicationPDU>, IAnswerHandler, IHeartbeatHandler<IConfiguration> {
+    private CommunicationClient communicationClient;
 
-    // Fields
-    private boolean isRunning;
-    private boolean isConnectionOpened;
-
-    private final DatagramSocket clientSocket;
-    private TextView inputTextView;
-    private TextView outputTextView;
-
-    private final ConfigurationManager configManager;
-    private final CommunicationManager comManager;
-    private final IConfiguration configuration;
-
-    private final HeartbeatManager<IConfiguration> heartbeatManager;
-    private static final int HEARTBEAT_TIME = 1 * 1000;
-
-    // Constructor
-    public NetworkClient(TextView inputTextView, TextView outputTextView) throws SocketException, UnknownHostException {
-        this.clientSocket = new DatagramSocket();
-        this.inputTextView = inputTextView;
-        this.outputTextView = outputTextView;
-
-        this.configManager = new ConfigurationManager();
-        this.comManager = new CommunicationManager(configManager);
-
-        // Configuration is setup by default
-        this.configuration = this.configManager.createConfiguration();
-
-        // Add a manager which is responsible for the heartbeats
-        this.heartbeatManager = new HeartbeatManager<>(configuration, this, HEARTBEAT_TIME, HEARTBEAT_TIME);
-        this.heartbeatManager.run();
+    public NetworkClient() throws SocketException, UnknownHostException {
+        communicationClient = new CommunicationClient();
     }
 
-    // Methods
-    public void send(String message) {
-        new SendTask(clientSocket, comManager, configuration, Flags.REQUEST_FLAG, Commands.CHANGE_NAME).execute(message.getBytes());
+    public void start() {
+        new Thread(communicationClient).start();
     }
 
-    public void driveLeft(int leftValue) {
-        sendCommand(Flags.REQUEST_FLAG, Commands.DRIVE_LEFT, leftValue);
-    }
-
-    public void driveRight(int rightValue) {
-        sendCommand(Flags.REQUEST_FLAG, Commands.DRIVE_RIGHT, rightValue);
-    }
-
-    private void sendCommand(int flags, int command, int value) {
-        int mappedValue = ProgressMapper.progressToDriveValue(value);
-        byte byteValue = NumberParser.intToByte(mappedValue);
-        new SendTask(clientSocket, comManager, configuration, flags, command).execute(new byte[]{byteValue});
-    }
-
-    @Override
-    public void run() {
-
-        isRunning = true;
-
-        try {
-
-            while (isRunning) {
-                byte[] receiveData = new byte[GlobalSettings.RECEIVE_PACKET_SIZE];
-
-                // Open connection
-                if (!isConnectionOpened) {
-                    DatagramPacket openPacket = comManager.createOpenConnectionDatagramPacket(configuration);
-                    clientSocket.send(openPacket);
-
-                    DatagramPacket receiveSessionPacket = new DatagramPacket(receiveData, receiveData.length);
-                    clientSocket.receive(receiveSessionPacket);
-
-                    comManager.readDatagramPacket(receiveSessionPacket, this, this);
-
-                    isConnectionOpened = true;
-                } else {
-                    DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-                    clientSocket.receive(receivePacket);
-
-                    comManager.readDatagramPacket(receivePacket, this, this);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void answer(DatagramPacket packet) {
-
-    }
-
-    @Override
-    public boolean handleDataReceived(DatagramPacket datagramPacket, ApplicationPDU applicationPDU, IAnswerHandler iAnswerHandler) {
-        final String message = " received: payload[" + applicationPDU.getPayload() + "], command[" + applicationPDU.getCommand() + "]";
-        Handler updateView = new Handler(Looper.getMainLooper());
-        updateView.post(new Runnable() {
-            @Override
-            public void run() {
-                inputTextView.setText(message);
-            }
-        });
-
-        return true;
-    }
-
-    @Override
-    public void handleNoHeartbeat(IConfiguration configuration) {
-        createHeartBeat(configuration);
-    }
-
-    @Override
-    public void handleHeartbeat(IConfiguration configuration) {
-        createHeartBeat(configuration);
-    }
-
-    private void createHeartBeat(IConfiguration configuration) {
-        String message = "0";
-        new SendTask(clientSocket, comManager, configuration, Flags.REQUEST_FLAG, Commands.DEFAULT).execute(message.getBytes());
-    }
-
-    private class SendTask extends AsyncTask<byte[], Void, Void> {
-
-        private final DatagramSocket clientSocket;
-        private final CommunicationManager communicationManager;
-        private final IConfiguration configuration;
-        private final int command;
-        private final int flags;
-
-        protected SendTask(DatagramSocket clientSocket, CommunicationManager communicationManager, IConfiguration configuration, int flags, int command) {
-            this.clientSocket = clientSocket;
-            this.communicationManager = communicationManager;
-            this.configuration = configuration;
-            this.command = command;
-            this.flags = flags;
-        }
-
-        @Override
-        protected Void doInBackground(final byte[] ... message) {
-            final DatagramPacket sendPacket = communicationManager.createDatagramPacket(configuration, flags, command, message[0]);
-            Handler updateView = new Handler(Looper.getMainLooper());
-            updateView.post(new Runnable() {
-                @Override
-                public void run() {
-                    outputTextView.setText("output: payload[" + message[0] + "], command[" + command + "]");
-                }
-            });
-
-
-            try {
-                clientSocket.send(sendPacket);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
+    public CommunicationClient getCommunicationClient() {
+        return communicationClient;
     }
 }
