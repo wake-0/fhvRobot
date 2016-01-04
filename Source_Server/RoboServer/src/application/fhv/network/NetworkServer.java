@@ -29,6 +29,7 @@ public class NetworkServer {
 	private final Communication appCommunication;
 	private final CommunicationDelegator delegator;
 	private final OperatorManager operatorManager;
+	private final ClientController<Client> appController;
 
 	// Ports
 	private final int roboPort = 998;
@@ -38,6 +39,7 @@ public class NetworkServer {
 	public NetworkServer(ClientController<Client> roboController, ClientController<Client> appController)
 			throws SocketException {
 
+		this.appController = appController;
 		this.delegator = new CommunicationDelegator(roboController, appController);
 
 		// Added network sender and receiver which can log
@@ -92,5 +94,9 @@ public class NetworkServer {
 
 	public void DisconnectedRoboClient(Client client) {
 		sendToRobo(client, Flags.REQUEST_FLAG, Commands.DISCONNECTED, new byte[] { 0 });
+	}
+
+	public ClientController<Client> getAppController() {
+		return appController;
 	}
 }

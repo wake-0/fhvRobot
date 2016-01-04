@@ -159,4 +159,5 @@ public class RoboTabPageController implements Initializable {
 	public void setRobotViewController(RobotViewController robotViewController) {
 		this.robotViewController = robotViewController;
 	}
+
 }

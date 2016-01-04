@@ -50,11 +50,19 @@ public class DatagramFactory {
 
 		return new DatagramPacket(data, length, ipAddress, configuration.getPort());
 	}
+	
+	public static DatagramPacket createRawBytePacket(IConfiguration configuration, byte[] data, int len) {
+		return createPacket(configuration, data, len);
+	}
 
 	private static DatagramPacket createPacket(IConfiguration configuration, byte[] data) {
+		return createPacket(configuration, data, data.length);
+	}
+	
+	private static DatagramPacket createPacket(IConfiguration configuration, byte[] data, int len) {
 		if (configuration.getSocketAddress() != null) {
 			try {
-				return new DatagramPacket(data, data.length, configuration.getSocketAddress());
+				return new DatagramPacket(data, len, configuration.getSocketAddress());
 			} catch (SocketException e) {
 				// TODO: Check this case
 				return null;
@@ -62,7 +70,7 @@ public class DatagramFactory {
 		} else {
 			InetAddress address = parseStringToInetAddress(configuration.getIpAddress());
 			int port = configuration.getPort();
-			return new DatagramPacket(data, data.length, address, port);
+			return new DatagramPacket(data, len, address, port);
 		}
 	}
 

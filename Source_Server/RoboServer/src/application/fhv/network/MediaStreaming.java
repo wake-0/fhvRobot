@@ -14,6 +14,11 @@ import network.receiver.INetworkReceiver;
 import network.receiver.LoggerNetworkReceiver;
 import network.sender.INetworkSender;
 import network.sender.LoggerNetworkSender;
+import network.sender.NetworkSender;
+
+import communication.managers.DatagramFactory;
+
+import controllers.ClientController;
 
 public class MediaStreaming implements Runnable {
 	
@@ -21,6 +26,8 @@ public class MediaStreaming implements Runnable {
 		public void frameReceived(Image image, Client client);
 	}
 	
+	public static final int APP_CLIENT_FORWARD_PORT	= 9000;
+
 	private static final int MAX_PACKET_SIZE	=	0xFFFF;
 	private static final int MAX_FRAME_SIZE		=	0xFFFFF;
 
@@ -34,13 +41,18 @@ public class MediaStreaming implements Runnable {
 	private ByteBuffer imageBuffer;
 	private Client client;
 	private IMediaStreamingFrameReceived callback;
+	private ClientController<Client> appController;
 
-	public MediaStreaming(int mediaStreamingPort, Client client, MediaStreaming.IMediaStreamingFrameReceived callback) throws SocketException {
+	private NetworkSender forwardSender;
+
+	public MediaStreaming(int mediaStreamingPort, ClientController<Client> appController, Client client, MediaStreaming.IMediaStreamingFrameReceived callback) throws SocketException {
 		this.socket = new DatagramSocket(mediaStreamingPort);
 		this.receiver = new LoggerNetworkReceiver(socket);
 		this.sender = new LoggerNetworkSender(socket);
 		this.client = client;
 		this.callback = callback;
+		this.appController = appController;
+		forwardSender = new LoggerNetworkSender(new DatagramSocket());
 		imageBuffer = ByteBuffer.allocate(MAX_FRAME_SIZE);
 	}
 
@@ -50,9 +62,8 @@ public class MediaStreaming implements Runnable {
 		while (isRunning) {
 
 			byte[] receiveData = new byte[MAX_PACKET_SIZE];
-			DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+			final DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 			receiver.receive(receivePacket);
-
 			if (socket.isClosed()) {
 				continue;
 			}
@@ -60,6 +71,20 @@ public class MediaStreaming implements Runnable {
 			byte[] data = receivePacket.getData();
 			int len = receivePacket.getLength();
 			
+			// Forward packet to all clients which are interested in streaming packets
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					for (Client c : appController.getClients()) {
+						if (c.requiresStreamForwarding(client)) {
+							DatagramPacket p = DatagramFactory.createRawBytePacket(c, data, len);
+							p.setPort(APP_CLIENT_FORWARD_PORT);
+							forwardSender.send(p);
+						}
+					}
+				}
+			}).start();
+
 			if (findMPEGStart(data, len) > 0) {
 				imageBuffer.clear();
 				imageBuffer.put(receivePacket.getData(), 0, receivePacket.getLength());

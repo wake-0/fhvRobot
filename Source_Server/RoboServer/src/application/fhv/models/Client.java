@@ -186,4 +186,9 @@ public class Client implements Comparable<Client>, IConfiguration {
 	public SocketAddress getSocketAddress() {
 		return socketAddress;
 	}
+
+	public boolean requiresStreamForwarding(Client robotClient) {
+		// TODO: We can change this to specific logic to distinguish between clients which get a stream from a specific robot
+		return true;
+	}
 }

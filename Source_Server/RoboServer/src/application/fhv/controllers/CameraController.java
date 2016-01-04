@@ -28,7 +28,7 @@ public class CameraController {
 		
 		// 2. Open mediastream on that port
 		try {
-			MediaStreaming mediaStreaming = new MediaStreaming(port, client, frameReceivedCallback);
+			MediaStreaming mediaStreaming = new MediaStreaming(port, server.getAppController(), client, frameReceivedCallback);
 			new Thread(mediaStreaming).start();
 			
 			// 3. Map the client to the media stream
