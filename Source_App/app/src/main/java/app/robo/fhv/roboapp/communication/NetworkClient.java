@@ -8,9 +8,9 @@ public class NetworkClient {
     private final MediaStreaming mediaStreaming;
     private CommunicationClient communicationClient;
 
-    public NetworkClient(MediaStreaming.IFrameReceived callback) throws SocketException, UnknownHostException {
-        communicationClient = new CommunicationClient();
-        mediaStreaming = new MediaStreaming(GlobalSettings.MEDIA_STREAMING_INPUT_PORT, callback);
+    public NetworkClient(CommunicationClient.ICommunicationCallback commCallback, MediaStreaming.IFrameReceived frameCallback) throws SocketException, UnknownHostException {
+        communicationClient = new CommunicationClient(commCallback);
+        mediaStreaming = new MediaStreaming(GlobalSettings.MEDIA_STREAMING_INPUT_PORT, frameCallback);
     }
 
     public void start() {

@@ -30,6 +30,12 @@ import communication.utils.NumberParser;
  */
 public class CommunicationClient implements Runnable, IDataReceivedHandler<ApplicationPDU>, IAnswerHandler, IHeartbeatHandler<IConfiguration> {
 
+    private final ICommunicationCallback callback;
+
+    public interface ICommunicationCallback {
+        void generalMessageReceived(String message);
+    }
+
     private static final String LOG_TAG = "CommunicationClient";
     // Fields
     private boolean isRunning;
@@ -45,9 +51,9 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
     private static final int HEARTBEAT_TIME = 1 * 1000;
 
     // Constructor
-    public CommunicationClient() throws SocketException, UnknownHostException {
+    public CommunicationClient(ICommunicationCallback callback) throws SocketException, UnknownHostException {
         this.clientSocket = new DatagramSocket();
-
+        this.callback = callback;
         this.configManager = new ConfigurationManager();
         this.comManager = new CommunicationManager(configManager);
 
@@ -120,6 +126,16 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
     public boolean handleDataReceived(DatagramPacket datagramPacket, ApplicationPDU applicationPDU, IAnswerHandler iAnswerHandler) {
         final String message = " received: payload[" + applicationPDU.getPayload() + "], command[" + applicationPDU.getCommand() + "]";
         Log.d(LOG_TAG, message);
+        int command = applicationPDU.getCommand();
+        switch (command) {
+            case Commands.GENERAL_MESSAGE:
+                String serverMessage = new String(applicationPDU.getPayload());
+                callback.generalMessageReceived(serverMessage);
+                break;
+
+            default:
+                break;
+        }
         return true;
     }
 

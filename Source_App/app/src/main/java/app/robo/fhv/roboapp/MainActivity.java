@@ -16,12 +16,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import app.robo.fhv.roboapp.communication.CommunicationClient;
 import app.robo.fhv.roboapp.communication.MediaStreaming;
 import app.robo.fhv.roboapp.communication.NetworkClient;
 
-public class MainActivity extends Activity implements MediaStreaming.IFrameReceived {
+public class MainActivity extends Activity implements CommunicationClient.ICommunicationCallback, MediaStreaming.IFrameReceived {
 
     private static final String LOG_TAG = "MainActivity";
     private static final long SNAP_BACK_TIME_MS = 300;
@@ -57,7 +58,7 @@ public class MainActivity extends Activity implements MediaStreaming.IFrameRecei
         sbRight.setProgress(MOTOR_SEEK_BAR_ZERO_VALUE);
 
         try {
-            networkClient = new NetworkClient(this);
+            networkClient = new NetworkClient(this, this);
             networkClient.start();
         } catch (Exception e) {
             e.printStackTrace();
@@ -164,6 +165,16 @@ public class MainActivity extends Activity implements MediaStreaming.IFrameRecei
             @Override
             public void run() {
                 camCanvas.setBackground(d);
+            }
+        });
+    }
+
+    @Override
+    public void generalMessageReceived(final String message) {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
             }
         });
     }
