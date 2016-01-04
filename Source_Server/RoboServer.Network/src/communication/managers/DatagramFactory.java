@@ -2,6 +2,7 @@ package communication.managers;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import communication.configurations.ConfigurationSettings;
@@ -36,14 +37,14 @@ public class DatagramFactory {
 		byte[] data = pdu.getEnhancedData();
 		int length = data.length;
 		InetAddress ipAddress;
-		
-		if (configuration.getSocketAddress() != null) {
-			return new DatagramPacket(data, length, configuration.getSocketAddress());
-		}
 
 		try {
+			if (configuration.getSocketAddress() != null) {
+				return new DatagramPacket(data, length, configuration.getSocketAddress());
+			}
+
 			ipAddress = InetAddress.getByName(configuration.getIpAddress());
-		} catch (UnknownHostException e) {
+		} catch (UnknownHostException | SocketException e) {
 			ipAddress = InetAddress.getLoopbackAddress();
 		}
 
@@ -52,7 +53,12 @@ public class DatagramFactory {
 
 	private static DatagramPacket createPacket(IConfiguration configuration, byte[] data) {
 		if (configuration.getSocketAddress() != null) {
-			return new DatagramPacket(data, data.length, configuration.getSocketAddress());
+			try {
+				return new DatagramPacket(data, data.length, configuration.getSocketAddress());
+			} catch (SocketException e) {
+				// TODO: Check this case
+				return null;
+			}
 		} else {
 			InetAddress address = parseStringToInetAddress(configuration.getIpAddress());
 			int port = configuration.getPort();

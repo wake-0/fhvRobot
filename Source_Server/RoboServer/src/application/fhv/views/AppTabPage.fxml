@@ -30,6 +30,7 @@
 
 		<columns>
 			<TableColumn fx:id="tcAppRXCount" minWidth="25" maxWidth="25" />
+			<TableColumn fx:id="tcAppIsOperator" minWidth="25" maxWidth="25" />
 			<TableColumn fx:id="tcAppId" minWidth="70" maxWidth="85" text="Id" />
 			<TableColumn fx:id="tcAppName" minWidth="100" text="Name" />
 			<TableColumn fx:id="tcAppIp" minWidth="150" text="IP Address" />

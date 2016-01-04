@@ -12,7 +12,9 @@ package models;
 import java.net.SocketAddress;
 
 import communication.configurations.IConfiguration;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -29,6 +31,7 @@ public class Client implements Comparable<Client>, IConfiguration {
 	private IntegerProperty sessionId;
 	private IntegerProperty heartBeatCount;
 	private SocketAddress socketAddress;
+	private BooleanProperty isOperator;
 
 	// Constructor
 	public Client() {
@@ -40,6 +43,7 @@ public class Client implements Comparable<Client>, IConfiguration {
 		port = new SimpleIntegerProperty();
 		sessionId = new SimpleIntegerProperty();
 		heartBeatCount = new SimpleIntegerProperty();
+		isOperator = new SimpleBooleanProperty(false);
 
 		setName("Anonymous");
 	}
@@ -129,6 +133,18 @@ public class Client implements Comparable<Client>, IConfiguration {
 		return sessionId;
 	}
 
+	public final boolean getIsOperator() {
+		return isOperator.get();
+	}
+
+	public final void setIsOperator(boolean value) {
+		isOperator.set(value);
+	}
+
+	public BooleanProperty IsOperatorProperty() {
+		return isOperator;
+	}
+
 	@Override
 	public final int getHeartBeatCount() {
 		return heartBeatCount.get();
@@ -165,7 +181,7 @@ public class Client implements Comparable<Client>, IConfiguration {
 	public void setSocketAddress(SocketAddress socketAddress) {
 		this.socketAddress = socketAddress;
 	}
-	
+
 	@Override
 	public SocketAddress getSocketAddress() {
 		return socketAddress;

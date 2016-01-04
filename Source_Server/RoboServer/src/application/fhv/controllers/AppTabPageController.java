@@ -36,6 +36,8 @@ public class AppTabPageController implements Initializable {
 	private TableColumn<Client, String> tcAppIp;
 	@FXML
 	private TableColumn<Client, Number> tcAppRXCount;
+	@FXML
+	private TableColumn<Client, Boolean> tcAppIsOperator;
 
 	// App details
 	@FXML
@@ -104,6 +106,7 @@ public class AppTabPageController implements Initializable {
 		tcAppName.setCellValueFactory(cellData -> cellData.getValue().NameProperty());
 		tcAppIp.setCellValueFactory(cellData -> cellData.getValue().IpAddressProperty());
 		tcAppRXCount.setCellValueFactory(cellData -> cellData.getValue().HeartBeatProperty());
+		tcAppIsOperator.setCellValueFactory(cellData -> cellData.getValue().IsOperatorProperty());
 
 		tvAppClients.setItems(appController.getClients());
 		tvAppClients.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Client>() {
