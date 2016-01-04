@@ -1,33 +1,25 @@
 package controllers;
 
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
-import javafx.beans.binding.Bindings;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ListChangeListener;
-import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.util.Callback;
+import javafx.scene.input.KeyEvent;
+import javafx.util.Duration;
 import models.Client;
-import models.ClientFactory;
-import network.NetworkServer;
-import views.FlashingLabel;
-import communication.utils.NumberParser;
 
 public class RobotViewController implements Initializable {
 
@@ -36,9 +28,13 @@ public class RobotViewController implements Initializable {
 	
 	@FXML
 	private Slider sldLeftMotor;
+	private Timeline leftTimeline;
 
 	@FXML
 	private Slider sldRightMotor;
+	private Timeline rightTimeline;
+	
+	private Object timelineLock = new Object();
 	
 	@FXML
 	private Node camCanvas;
@@ -57,7 +53,7 @@ public class RobotViewController implements Initializable {
             public void changed(ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) {
             		if (new_val != null && driveController != null) {
-                        driveController.driveLeft(new_val.intValue());
+                        driveController.driveLeft(selectedClient, new_val.intValue());
             		}
                 }
             });
@@ -65,7 +61,7 @@ public class RobotViewController implements Initializable {
             public void changed(ObservableValue<? extends Number> ov,
                     Number old_val, Number new_val) {
             		if (new_val != null && driveController != null) {
-                        driveController.driveRight(new_val.intValue());
+                        driveController.driveRight(selectedClient, new_val.intValue());
             		}
                 }
             });
@@ -74,6 +70,71 @@ public class RobotViewController implements Initializable {
 		sldRightMotor.disableProperty().bind(robotControlledProperty.not());
 		btnCameraOff.disableProperty().bind(robotControlledProperty.not());
 		btnCameraOn.disableProperty().bind(robotControlledProperty.not());
+	}
+	
+	public void setupListeners(Scene s) {
+		s.setOnKeyPressed(new EventHandler<KeyEvent>() {
+	        @Override
+	        public void handle(KeyEvent t) {
+	            if (t.getText().charAt(0) == 'w') {
+	            	if (leftTimeline != null)
+	            		leftTimeline.stop();
+	            	else
+	            		leftTimeline = new Timeline();
+	            	createTimeline(leftTimeline, sldLeftMotor, true, timelineLock);
+	            	leftTimeline.play();
+	            } else if (t.getText().charAt(0) == 's') {
+	            	if (leftTimeline != null)
+	            		leftTimeline.stop();
+	            	else
+	            		leftTimeline = new Timeline();
+	            	createTimeline(leftTimeline, sldLeftMotor, false, timelineLock);
+	            	leftTimeline.play();
+	            } else if (t.getText().charAt(0) == 'd') {
+	            	sldLeftMotor.valueProperty().set(0);
+	            } else if (t.getText().charAt(0) == 'i') {
+	            	if (rightTimeline != null)
+	            		rightTimeline.stop();
+	            	else
+	            		rightTimeline = new Timeline();
+	            	createTimeline(rightTimeline, sldRightMotor, true, timelineLock);
+	            	rightTimeline.play();
+	            } else if (t.getText().charAt(0) == 'k') {
+	            	if (rightTimeline != null)
+	            		rightTimeline.stop();
+	            	else
+	            		rightTimeline = new Timeline();
+	            	createTimeline(rightTimeline, sldRightMotor, false, timelineLock);
+	            	rightTimeline.play();
+	            } else if (t.getText().charAt(0) == 'j') {
+	            	sldRightMotor.valueProperty().set(0);
+	            }
+	        }
+	    });
+		
+		s.setOnKeyReleased(new EventHandler<KeyEvent>() {
+	        @Override
+	        public void handle(KeyEvent t) {
+	            if (t.getText().charAt(0) == 'w') {
+	            	leftTimeline.stop();
+	            } else if (t.getText().charAt(0) == 's') {
+	            	leftTimeline.stop();
+	            } else if (t.getText().charAt(0) == 'i') {
+	            	rightTimeline.stop();
+	            } else if (t.getText().charAt(0) == 'k') {
+	            	rightTimeline.stop();
+	            }
+	        }
+	    });
+	}
+	
+	private void createTimeline(Timeline tl, Slider slider, boolean up, Object lock) {
+		synchronized (lock) {
+			tl.getKeyFrames().clear();
+			final KeyValue kv = new KeyValue(slider.valueProperty(), 100 * (up ? 1 : -1));
+        	final KeyFrame kf = new KeyFrame(Duration.millis(1000), kv);
+        	tl.getKeyFrames().add(kf);
+		}
 	}
 
 	public void setRobotView(Client selectedClient,

@@ -64,6 +64,10 @@ public class Main extends Application {
 
 			// Show stage
 			stage.show();
+			
+			// Post initialize
+			MainWindowController controller = loader.getController();
+			controller.postInitialize(scene);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

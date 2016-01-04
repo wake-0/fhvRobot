@@ -13,37 +13,34 @@ public class DriveController {
 	private final int upperBound = 100;
 
 	private final NetworkServer server;
-	private final ClientController<Client> roboController;
 
 	// Constructors
-	public DriveController(NetworkServer server, ClientController<Client> roboController) {
+	public DriveController(NetworkServer server) {
 		this.server = server;
-		this.roboController = roboController;
 	}
 
 	// Methods
-	public void driveLeft(int value) {
-		drive(Commands.DRIVE_LEFT, value);
+	public void driveLeft(Client client, int value) {
+		drive(client, Commands.DRIVE_LEFT, value);
 	}
 
-	public void driveRight(int value) {
-		drive(Commands.DRIVE_RIGHT, value);
+	public void driveRight(Client client, int value) {
+		drive(client, Commands.DRIVE_RIGHT, value);
 	}
 
-	public void driveBoth(int value) {
-		drive(Commands.DRIVE_BOTH, value);
+	public void driveBoth(Client client, int value) {
+		drive(client, Commands.DRIVE_BOTH, value);
 	}
 
 	private boolean valueCorrect(int value) {
 		return value <= upperBound && value >= lowerBound;
 	}
 
-	private void drive(int command, int value) {
+	private void drive(Client client, int command, int value) {
 		if (!valueCorrect(value)) {
 			return;
 		}
 
-		Client client = roboController.getSelectedClient();
 		server.sendToRobo(client, Flags.REQUEST_FLAG, command, new byte[] { NumberParser.intToByte(value) });
 	}
 }

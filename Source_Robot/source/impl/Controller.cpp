@@ -7,12 +7,17 @@
 
 #include "../../include/Controller.h"
 #include "../../include/Debugger.h"
+#include <sys/time.h>
 #include <unistd.h>
+
+#define DEFAULT_ROBOT_PORT		(998)
+#define TIMEOUT_MS				(5000)
 
 namespace FhvRobot {
 
 Controller::Controller() {
 	connection = NULL;
+	running = false;
 }
 
 Controller::~Controller() {
@@ -24,7 +29,7 @@ void Controller::Init()
 	robot.MotorStop(true);
 }
 
-void Controller::Start(char* serverIp) {
+bool Controller::Start(char* serverIp) {
 	connection = new ConnectionAPI(this);
 	UdpConnection udp;
 	SessionLayer sess(&udp);
@@ -36,17 +41,37 @@ void Controller::Start(char* serverIp) {
 	app.SetCallback(connection);
 
 	connection->SetConnection(&app);
-	// Fail tests
-	bool res;
-	res = connection->Connect("Controlled Nico", serverIp, 998);
-	(void) res;
+	bool res = false;
 
-	while(true)
+	while (res == false) {
+		Debugger(INFO) << "Trying to connecto to the server " << serverIp << " at " << DEFAULT_ROBOT_PORT << "\n";
+
+		res = connection->Connect("Controlled Nico", serverIp, DEFAULT_ROBOT_PORT);
+		if (res == false) {
+			Debugger(WARNING) << "Connection was not succesful. Trying to reconnect in 10s...\n";
+			usleep(10 * 1000 * 1000);
+		}
+	}
+	Debugger(INFO) << "Connection was succesful\n";
+	running = true;
+	while(running)
 	{
 		connection->SendHeartBeat();
 
 		usleep(1000000);
+
+		// Check if we have received a heartbeat (or any other message) within a given timespan
+		struct timeval tp;
+		gettimeofday(&tp, NULL);
+		long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+		if (connection->GetLastMessageTime() + TIMEOUT_MS < ms)
+		{
+			connection->Disconnect();
+			robot.MotorStop(true);
+			break;
+		}
 	}
+	return running;
 }
 
 void Controller::MotorCommand(unsigned int motorNum, int motorSpeed)
@@ -70,6 +95,11 @@ void Controller::MotorCommand(unsigned int motorNum, int motorSpeed)
 void Controller::CameraEnable(bool cameraEnable)
 {
 
+}
+
+void Controller::ForceDisconnect()
+{
+	running = false;
 }
 
 } /* namespace FhvRobot */

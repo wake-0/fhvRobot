@@ -12,6 +12,8 @@ package network.receiver;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
+import utils.NetworkUtils;
+
 public class LoggerNetworkReceiver extends NetworkReceiver {
 
 	// Constructor
@@ -24,7 +26,7 @@ public class LoggerNetworkReceiver extends NetworkReceiver {
 	public void receive(DatagramPacket packet) {
 		super.receive(packet);
 
-		System.out.println("Received message: " + (packet == null ? "" : new String(packet.getData())));
+		System.out.println("[" + System.currentTimeMillis() + "] Received message:");
+		NetworkUtils.printDatagramPacket(packet);
 	}
-
 }

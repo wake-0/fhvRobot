@@ -19,6 +19,9 @@
 #include <arpa/inet.h>
 #include "Debugger.h"
 
+typedef unsigned char tPacketFlags;
+#define EMPTY_PACKET_FLAG		(0x00)
+
 using namespace std;
 
 namespace FhvRobotProtocolStack {
@@ -39,7 +42,7 @@ protected:
 
 	virtual int GetMessageDecorationLength(const char* inMsg, unsigned int inLen) { return 0; }
 
-	virtual void ComposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int outLen) = 0;
+	virtual void ComposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int outLen, tPacketFlags flags = EMPTY_PACKET_FLAG) = 0;
 
 	/**
 	 *  \brief This function decomposes a received message and returns true if the message is a valid message acc.
@@ -80,6 +83,10 @@ public:
 	virtual bool Connect(const char* address, int port) {
 		return lowerLayer->Connect(address, port);
 	}
+
+	virtual bool CloseConnection() {
+		return lowerLayer->CloseConnection();
+	}
 };
 
 /* Transport Layer (inc. concrete class definitions) */
@@ -89,7 +96,7 @@ private:
 public:
 	TransportLayer() : ProtocolLayer(0) { }
 	virtual ~TransportLayer() { }
-	void ComposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int outLen) {
+	void ComposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int outLen, tPacketFlags flags = 0xFF) {
 		memcpy(outMsg, inMsg, inLen);
 	}
 	bool DecomposeMessage(const char* inMsg, unsigned int inLen, char** outMsg, unsigned int* outLen) {
@@ -112,12 +119,14 @@ private:
     	Debugger(VERBOSE) << "ReceiveLoopHelper calling private method\n";
         return ((UdpConnection*)context)->ReceiveLoop();
     }
+    static void DebugOutputBuffer(char* buf, int len);
 public:
 	UdpConnection() : TransportLayer() { sock = 0; receiveThread = PTHREAD_ONCE_INIT; }
 	virtual ~UdpConnection();
 
 	bool Connect(const char* address, int port);
 	bool Send(const char* msg, unsigned int len);
+	bool CloseConnection();
 };
 
 
@@ -132,10 +141,11 @@ public:
 	SessionLayer(ProtocolLayer* lower);
 	virtual ~SessionLayer() { }
 	int GetMessageDecorationLength(const char* inMsg, unsigned int inLen);
-	void ComposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int outLen);
+	void ComposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int outLen, tPacketFlags flags = 0xFF);
 	bool DecomposeMessage(const char* inMsg, unsigned int inLen, char** outMsg, unsigned int* outLen);
 	bool Connect(const char* address, int port);
 	void MessageReceived(const char* msg, unsigned int len);
+	bool CloseConnection();
 };
 
 /* Presentation Layer */
@@ -147,13 +157,13 @@ public:
 	PresentationLayer(ProtocolLayer* lower) : ProtocolLayer(lower) {  }
 	virtual ~PresentationLayer() { }
 	int GetMessageDecorationLength(const char* inMsg, unsigned int inLen);
-	void ComposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int outLen);
+	void ComposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int outLen, tPacketFlags flags = 0xFF);
 	bool DecomposeMessage(const char* inMsg, unsigned int inLen, char** outMsg, unsigned int* outLen);
 };
 
 /* Presentation Layer */
 
-/* Presentation Layer */
+/* ApplicationLayer Layer */
 
 class ApplicationLayer : public ProtocolLayer {
 private:
@@ -162,11 +172,11 @@ public:
 	ApplicationLayer(ProtocolLayer* lower) : ProtocolLayer(lower) {  }
 	virtual ~ApplicationLayer() { }
 	int GetMessageDecorationLength(const char* inMsg, unsigned int inLen);
-	void ComposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int outLen);
+	void ComposeMessage(const char* inMsg, unsigned int inLen, char* outMsg, unsigned int outLen, tPacketFlags flags = 0xFF);
 	bool DecomposeMessage(const char* inMsg, unsigned int inLen, char** outMsg, unsigned int* outLen);
 };
 
-/* Presentation Layer */
+/* ApplicationLayer Layer */
 
 } /* namespace ConnectionLayer */
 

@@ -15,6 +15,7 @@ import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import models.Client;
 import network.NetworkServer;
@@ -63,5 +64,9 @@ public class MainWindowController implements Initializable {
 
 	public void shutdown() {
 		server.shutdown();
+	}
+	
+	public void postInitialize(Scene s) {
+		robotViewController.setupListeners(s);
 	}
 }

@@ -9,10 +9,12 @@
 #include "../../include/Robot.h"
 
 #include <stdexcept>
+#include <sys/time.h>
 
 #define TYPE_BYTE					(0b00000000)
 #define COMMAND_REGISTER			(0b00000001)
 #define COMMAND_HEARTBEAT			(0b00000000)
+#define COMMAND_KILL				(0b01001110)
 
 namespace FhvRobot {
 
@@ -26,6 +28,7 @@ ConnectionAPI::ConnectionAPI(ApplicationCallback* cb) {
 	}
 	connection = NULL;
 	callback = cb;
+	lastMessageTime = 0;
 }
 
 ConnectionAPI::~ConnectionAPI() {
@@ -41,9 +44,19 @@ void ConnectionAPI::MessageReceived(const char* msg, unsigned int len)
 {
 
 	int command = msg[0];
+	Debugger(VERBOSE) << "Got command " << command << " in application with len=" << (len - 1) << "\n";
+
+	struct timeval tp;
+	gettimeofday(&tp, NULL);
+	long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+	lastMessageTime = ms;
 
 	// Parse message
-	if (command == 10 || command == 11)
+	if (command == COMMAND_KILL)
+	{
+		callback->ForceDisconnect();
+	}
+	else if (command == 10 || command == 11)
 	{
 		// Right motor == 10
 		// Left motor == 11
@@ -88,6 +101,8 @@ bool ConnectionAPI::Connect(const char* robotName, const char* hostname, int por
 		free(msg);
 
 		return result;
+	} else {
+		connection->CloseConnection();
 	}
 	return false;
 }

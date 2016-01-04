@@ -9,6 +9,8 @@
  */
 package communication.configurations;
 
+import java.net.SocketAddress;
+
 public interface IConfiguration {
 
 	public void setSessionId(int sessionId);
@@ -28,4 +30,8 @@ public interface IConfiguration {
 	public void increaseHeartBeatCount();
 
 	public void cleanHeartBeatCount();
+
+	public void setSocketAddress(SocketAddress socketAddress);
+
+	public SocketAddress getSocketAddress();
 }

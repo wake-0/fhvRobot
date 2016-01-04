@@ -17,15 +17,17 @@ class Controller : ApplicationCallback {
 private:
 	Robot robot;
 	ConnectionAPI* connection;
+	bool running;
 public:
 	Controller();
 	virtual ~Controller();
 
 	void Init();
-	void Start(char* serverIp); // Non-Returning
+	bool Start(char* serverIp); // Non-Returning
 
 	void MotorCommand(unsigned int motorNum, int motorSpeed);
 	void CameraEnable(bool cameraEnable);
+	void ForceDisconnect();
 };
 
 } /* namespace FhvRobot */
