@@ -12,7 +12,6 @@ package communication.managers;
 import java.net.DatagramPacket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 import communication.configurations.Configuration;
 import communication.configurations.ConfigurationFactory;
@@ -21,12 +20,6 @@ import communication.configurations.IConfiguration;
 import communication.pdu.SessionPDU;
 
 public class SessionManager extends LayerManager<SessionPDU> {
-
-	// Init ThreadLocalRandom
-	// NOTE: See Ticket #68: ThreadLocalRandom's first call is sometimes slow on some machines
-	{
-		ThreadLocalRandom.current().nextInt(1, 1000);
-	}
 
 	// Fields
 	private final int maxIterations = 200;
@@ -98,7 +91,7 @@ public class SessionManager extends LayerManager<SessionPDU> {
 		int numberOfIterations = 0;
 		do {
 			// Create new session number between min and max
-			newSession = ThreadLocalRandom.current().nextInt(minSession, maxSession);
+			newSession = (int)((Math.random() * (maxSession - minSession)) + minSession);
 
 			// Break condition
 			numberOfIterations++;
