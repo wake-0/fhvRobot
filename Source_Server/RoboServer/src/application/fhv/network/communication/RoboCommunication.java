@@ -23,8 +23,8 @@ public class RoboCommunication extends Communication {
 			byte[] payload = pdu.getPayload();
 
 			// Only for test purposes
-			client.setSendData(new String(payload));
-			sendToClient(client);
+			//client.setSendData(new String(payload));
+			//sendToClient(client);
 
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -15,4 +15,7 @@ public class Commands {
 
 	public static final int REQUEST_DISCONNECT = 77;
 	public static final int DISCONNECTED = 78;
+
+	public static final int CAMERA_ON = 20;
+	public static final int CAMERA_OFF = 21;
 }

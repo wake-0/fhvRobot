@@ -7,7 +7,6 @@ import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -21,13 +20,13 @@ import models.Client;
 import models.ClientFactory;
 import network.NetworkServer;
 import views.FlashingLabel;
-import communication.utils.NumberParser;
 
 public class RoboTabPageController implements Initializable {
 
 	// Fields
 	private final ClientController<Client> roboController;
 	private DriveController driveController;
+	private CameraController cameraController;
 	private NetworkServer server;
 
 	// Robo table
@@ -91,7 +90,7 @@ public class RoboTabPageController implements Initializable {
 		Client selectedClient = roboController.getSelectedClient();
 
 		if (selectedClient != null) {
-			robotViewController.setRobotView(selectedClient, driveController);
+			robotViewController.setRobotView(selectedClient, driveController, cameraController);
 		}
 	}
 
@@ -150,6 +149,7 @@ public class RoboTabPageController implements Initializable {
 	public void setServer(NetworkServer server) {
 		this.server = server;
 		this.driveController = new DriveController(server);
+		this.cameraController = new CameraController(server);
 	}
 
 	private void clearDetails() {

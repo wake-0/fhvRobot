@@ -3,6 +3,7 @@ package controllers;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import network.MediaStreaming.IMediaStreamingFrameReceived;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -13,18 +14,21 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.util.Duration;
 import models.Client;
 
-public class RobotViewController implements Initializable {
+public class RobotViewController implements Initializable, IMediaStreamingFrameReceived {
 
 	private Client selectedClient;
 	private DriveController driveController;
+	private CameraController cameraController;
 	
 	@FXML
 	private Slider sldLeftMotor;
@@ -37,7 +41,9 @@ public class RobotViewController implements Initializable {
 	private Object timelineLock = new Object();
 	
 	@FXML
-	private Node camCanvas;
+	private ImageView camCanvas;
+	@FXML
+	private ScrollPane scrollPaneCam;
 	
 	@FXML
 	private Button btnCameraOn;
@@ -70,12 +76,17 @@ public class RobotViewController implements Initializable {
 		sldRightMotor.disableProperty().bind(robotControlledProperty.not());
 		btnCameraOff.disableProperty().bind(robotControlledProperty.not());
 		btnCameraOn.disableProperty().bind(robotControlledProperty.not());
+		
+		camCanvas.setPreserveRatio(true);
+		camCanvas.fitWidthProperty().bind(scrollPaneCam.widthProperty());
+		camCanvas.fitHeightProperty().bind(scrollPaneCam.heightProperty());
 	}
 	
 	public void setupListeners(Scene s) {
 		s.setOnKeyPressed(new EventHandler<KeyEvent>() {
 	        @Override
 	        public void handle(KeyEvent t) {
+	        	if (t.getText().length() == 0) return;
 	            if (t.getText().charAt(0) == 'w') {
 	            	if (leftTimeline != null)
 	            		leftTimeline.stop();
@@ -115,6 +126,7 @@ public class RobotViewController implements Initializable {
 		s.setOnKeyReleased(new EventHandler<KeyEvent>() {
 	        @Override
 	        public void handle(KeyEvent t) {
+	        	if (t.getText().length() == 0) return;
 	            if (t.getText().charAt(0) == 'w') {
 	            	leftTimeline.stop();
 	            } else if (t.getText().charAt(0) == 's') {
@@ -138,9 +150,10 @@ public class RobotViewController implements Initializable {
 	}
 
 	public void setRobotView(Client selectedClient,
-			DriveController driveController) {
+			DriveController driveController, CameraController cameraController) {
 		this.selectedClient = selectedClient;
 		this.driveController = driveController;
+		this.cameraController = cameraController;
 		sldLeftMotor.setValue(0);
 		sldRightMotor.setValue(0);
 		robotControlledProperty.set(true);
@@ -154,9 +167,20 @@ public class RobotViewController implements Initializable {
 
 	@FXML
 	private void handleCameraOn() {
+		cameraController.turnCameraOn(selectedClient, "@", (13337 + selectedClient.getId()), this);
 	}
 	
 	@FXML
 	private void handleCameraOff() {
+		cameraController.turnCameraOff(selectedClient);
+		camCanvas.setImage(null);
 	}
+
+	@Override
+	public void frameReceived(Image image, Client client) {
+		if (client == selectedClient) {
+			camCanvas.setImage(image);
+		}
+	}
+
 }

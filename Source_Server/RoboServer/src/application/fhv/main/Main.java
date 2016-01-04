@@ -11,28 +11,17 @@ package main;
 
 import java.net.URL;
 
-import com.sun.jna.NativeLibrary;
-
-import controllers.MainWindowController;
 import javafx.application.Application;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import uk.co.caprica.vlcj.binding.LibVlc;
-import uk.co.caprica.vlcj.runtime.RuntimeUtil;
+import controllers.MainWindowController;
 
 public class Main extends Application {
 
-	private static final String NATIVE_LIBRARY_SEARCH_PATH = "C:\\Program Files\\VideoLAN\\VLC";
-
 	public static void main(String[] args) {
-
-		// Add vlc lib to search path (JNA)
-		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), NATIVE_LIBRARY_SEARCH_PATH);
-		System.out.println(LibVlc.INSTANCE.libvlc_get_version());
-
 		launch(args);
 	}
 

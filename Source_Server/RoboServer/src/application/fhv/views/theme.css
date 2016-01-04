@@ -28,16 +28,16 @@
     -fx-padding: 5px 0 0 5px;
 }
 
-#camCanvas {
-	-fx-background-color: aliceblue ;
-}
-
 #sldRightMotor {
 	-fx-padding: 0 10px 0 0;
 }
 
 #sldLeftMotor {
 	-fx-padding: 0 0 0 0;
+}
+
+#stackPaneCam {
+    -fx-padding: 10px 30px 10px 10px;
 }
 
 .text-field {

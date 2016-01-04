@@ -18,6 +18,8 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.shape.Box?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.Node?>
+<?import javafx.scene.control.ScrollPane?>
 
 <GridPane stylesheets="theme.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="controllers.RobotViewController">
 	<columnConstraints>
@@ -31,8 +33,10 @@
 	</rowConstraints>
 	<children>
 		<Slider GridPane.rowIndex="0" nodeOrientation="RIGHT_TO_LEFT" showTickMarks="true" showTickLabels="true" fx:id="sldLeftMotor" value="0" min="-100" max="100" orientation="VERTICAL" GridPane.columnIndex="0"></Slider>
-		<StackPane GridPane.rowIndex="0" GridPane.columnIndex="1" >
-			<Label prefHeight="100000" prefWidth="100000" fx:id="camCanvas"/>
+		<StackPane GridPane.rowIndex="0" GridPane.columnIndex="1" fx:id="stackPaneCam">
+			<ScrollPane prefWidth="10000" prefHeight="10000" fx:id="scrollPaneCam">
+				<ImageView fx:id="camCanvas"/>
+			</ScrollPane>
 		</StackPane>
 		<Slider GridPane.rowIndex="0" showTickMarks="true" showTickLabels="true" fx:id="sldRightMotor" value="0" min="-100" max="100" orientation="VERTICAL" GridPane.columnIndex="2"></Slider>
 		<HBox GridPane.rowIndex="1" GridPane.columnSpan="3">

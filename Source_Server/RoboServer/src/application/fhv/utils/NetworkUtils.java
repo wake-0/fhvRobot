@@ -7,6 +7,9 @@ public class NetworkUtils {
 	public static void printDatagramPacket(DatagramPacket packet) {
 		byte[] data = packet.getData();
 		int len = packet.getLength();
+		if (len > 255) {
+			System.out.println("Truncate output of long message (len=" + len + ") to len=" + (len = 50) + "!");
+		}
 		System.out.print("HEX: ");
 		for (int i = 0; i < len; i++) {
 			String s = Integer.toHexString(data[i] & 0xFF);

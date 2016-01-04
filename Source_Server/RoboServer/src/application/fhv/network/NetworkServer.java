@@ -28,12 +28,9 @@ public class NetworkServer {
 	private final Communication appCommunication;
 	private final CommunicationDelegator delegator;
 
-	private final MediaStreaming mediaStreaming;
-
 	// Ports
 	private final int roboPort = 998;
 	private final int appPort = 997;
-	private final int mediaStreamingPort = 999;
 
 	// Constructor
 	public NetworkServer(ClientController<Client> roboController, ClientController<Client> appController)
@@ -48,11 +45,8 @@ public class NetworkServer {
 		this.appCommunication = new AppCommunication(appController, delegator, appPort);
 		delegator.setChannelB(appCommunication);
 
-		this.mediaStreaming = new MediaStreaming(mediaStreamingPort);
-
 		new Thread(roboCommunication).start();
 		new Thread(appCommunication).start();
-		// new Thread(mediaStreaming).start();
 	}
 
 	// Methods
@@ -71,7 +65,6 @@ public class NetworkServer {
 	public void shutdown() {
 		roboCommunication.stop();
 		appCommunication.stop();
-		mediaStreaming.stop();
 	}
 
 	public void sendToApp(Client client) {
