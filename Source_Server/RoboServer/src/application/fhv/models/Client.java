@@ -10,7 +10,9 @@
 package models;
 
 import communication.configurations.IConfiguration;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -26,6 +28,7 @@ public class Client implements Comparable<Client>, IConfiguration {
 	private IntegerProperty port;
 	private IntegerProperty sessionId;
 	private IntegerProperty heartBeatCount;
+	private BooleanProperty isOperator;
 
 	// Constructor
 	public Client() {
@@ -37,6 +40,7 @@ public class Client implements Comparable<Client>, IConfiguration {
 		port = new SimpleIntegerProperty();
 		sessionId = new SimpleIntegerProperty();
 		heartBeatCount = new SimpleIntegerProperty();
+		isOperator = new SimpleBooleanProperty(false);
 
 		setName("Anonymous");
 	}
@@ -124,6 +128,18 @@ public class Client implements Comparable<Client>, IConfiguration {
 
 	public IntegerProperty SessionIdProperty() {
 		return sessionId;
+	}
+
+	public final boolean getIsOperator() {
+		return isOperator.get();
+	}
+
+	public final void setIsOperator(boolean value) {
+		isOperator.set(value);
+	}
+
+	public BooleanProperty IsOperatorProperty() {
+		return isOperator;
 	}
 
 	@Override
