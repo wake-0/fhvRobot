@@ -1,94 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="horizontal"
+    android:layout_height="match_parent"
     tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/imgCamCanvas"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:layout_marginTop="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true">
+
         <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
             android:id="@+id/sbLeft"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:seekBarRotation="CW270"
-            android:progress="100"
+            android:indeterminate="false"
             android:max="200"
+            android:paddingBottom="10dp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:indeterminate="false"
             android:paddingTop="10dp"
-            android:paddingBottom="10dp" />
+            android:progress="100"
+            app:seekBarRotation="CW270" />
     </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_weight="1"
-                android:padding="20dp"
-                >
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true">
 
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/roboTitle"/>
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="fill_parent"
+            android:layout_height="45dp"
+            android:hint="Enter your name" />
 
-                <TextView
-                    android:id="@+id/inputTextView"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="input" />
+        <ImageButton
+            android:id="@+id/button"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="5dp"
+            android:background="@null"
+            android:layout_alignParentRight="true"
+            android:src="@android:drawable/ic_menu_send"
+            android:text="Button"/>
 
-                <TextView
-                    android:id="@+id/outputTextView"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="output" />
-
-                <EditText
-                    android:id="@+id/editText"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" />
-
-                <Button
-                    android:id="@+id/button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="click me" />
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/tvLeft"
-                    android:text="100" />
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/tvRight"
-                    android:text="100" />
-            </LinearLayout>
+    </RelativeLayout>
 
     <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:layout_marginTop="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true">
+
         <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
             android:id="@+id/sbRight"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:seekBarRotation="CW270"
-            android:progress="100"
+            android:indeterminate="false"
             android:max="200"
+            android:paddingBottom="10dp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:indeterminate="false"
             android:paddingTop="10dp"
-            android:paddingBottom="10dp" />
+            android:progress="100"
+            app:seekBarRotation="CW270" />
     </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
 
 
-</LinearLayout>
+</RelativeLayout>
