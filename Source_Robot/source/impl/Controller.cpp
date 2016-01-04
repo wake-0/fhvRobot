@@ -9,11 +9,17 @@
 #include "../../include/Debugger.h"
 #include <sys/time.h>
 #include <unistd.h>
+#include <stdio.h>
+#include <string>
 
 #define DEFAULT_ROBOT_PORT		(998)
 #define TIMEOUT_MS				(5000)
+#define STREAM_APP				("fhvrobot_streaming")
+
 
 namespace FhvRobot {
+
+static std::string exec(char* cmd);
 
 Controller::Controller() {
 	connection = NULL;
@@ -39,6 +45,8 @@ bool Controller::Start(char* serverIp) {
 	sess.SetCallback(&pres);
 	pres.SetCallback(&app);
 	app.SetCallback(connection);
+
+	strcpy(serverAddress, serverIp);
 
 	connection->SetConnection(&app);
 	bool res = false;
@@ -92,14 +100,67 @@ void Controller::MotorCommand(unsigned int motorNum, int motorSpeed)
 	}
 }
 
-void Controller::CameraEnable(bool cameraEnable)
+void Controller::CameraOn(char* host, int port)
 {
+	Debugger(INFO) << "Starting stream on " << host << " at " << port << "\n";
+	char streamHost[255];
+	int host_len = strlen(host);
+	char* hostname;
+	if (host_len == 1 && host[0] == '@')
+	{
+		hostname = serverAddress;
+	}
+	else
+	{
+		hostname = host;
+	}
+	sprintf(streamHost, "./fhvrobot_streaming %s %d > 0&", hostname, port);
 
+	// Check if stream already running
+	char pidCall[255];
+	sprintf(pidCall, "pidof %s", STREAM_APP);
+	int s = system(pidCall);
+	if (s == 0)
+	{
+		CameraOff();
+	}
+
+	system(streamHost);
+}
+
+void Controller::CameraOff()
+{
+	Debugger(INFO) << "Stopping stream\n";
+	// Get PID of our streaming application
+	char pidCall[255];
+	sprintf(pidCall, "pidof %s", STREAM_APP);
+	std::string ret = exec(pidCall);
+	int pid = atoi( ret.c_str() );
+	Debugger(INFO) << "Streaming service was running with pid=" << pid << "\n";
+	if (pid > 0)
+	{
+		memset(pidCall, 0, 255);
+		sprintf(pidCall, "kill %d", pid);
+		system(pidCall);
+	}
 }
 
 void Controller::ForceDisconnect()
 {
 	running = false;
+}
+
+std::string exec(char* cmd) {
+    FILE* pipe = popen(cmd, "r");
+    if (!pipe) return "ERROR";
+    char buffer[128];
+    std::string result = "";
+    while(!feof(pipe)) {
+        if(fgets(buffer, 128, pipe) != NULL)
+            result += buffer;
+    }
+    pclose(pipe);
+    return result;
 }
 
 } /* namespace FhvRobot */

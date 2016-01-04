@@ -18,6 +18,7 @@ private:
 	Robot robot;
 	ConnectionAPI* connection;
 	bool running;
+	char serverAddress[255];
 public:
 	Controller();
 	virtual ~Controller();
@@ -26,7 +27,8 @@ public:
 	bool Start(char* serverIp); // Non-Returning
 
 	void MotorCommand(unsigned int motorNum, int motorSpeed);
-	void CameraEnable(bool cameraEnable);
+	void CameraOn(char* host, int port);
+	void CameraOff();
 	void ForceDisconnect();
 };
 

@@ -10,11 +10,19 @@
 
 #include <stdexcept>
 #include <sys/time.h>
+#include <string>
+#include <vector>
+#include <sstream>
 
 #define TYPE_BYTE					(0b00000000)
-#define COMMAND_REGISTER			(0b00000001)
-#define COMMAND_HEARTBEAT			(0b00000000)
-#define COMMAND_KILL				(0b01001110)
+#define COMMAND_REGISTER			(1)
+#define COMMAND_HEARTBEAT			(0)
+#define COMMAND_KILL				(78)
+#define COMMAND_CAMERA_ON			(20)
+#define COMMAND_CAMERA_OFF			(21)
+#define COMMAND_MOTOR_LEFT			(11)
+#define COMMAND_MOTOR_RIGHT			(10)
+#define COMMAND_MOTOR_BOTH			(12)
 
 namespace FhvRobot {
 
@@ -56,16 +64,26 @@ void ConnectionAPI::MessageReceived(const char* msg, unsigned int len)
 	{
 		callback->ForceDisconnect();
 	}
-	else if (command == 10 || command == 11)
+	else if (command == COMMAND_MOTOR_RIGHT || command == COMMAND_MOTOR_LEFT)
 	{
-		// Right motor == 10
-		// Left motor == 11
-		callback->MotorCommand((command == 11) ? MOTOR_LEFT : MOTOR_RIGHT, getMotorValue(msg[2]));
+		callback->MotorCommand((command == COMMAND_MOTOR_LEFT) ? MOTOR_LEFT : MOTOR_RIGHT, getMotorValue(msg[2]));
 	}
-	else if (command == 12)
+	else if (command == COMMAND_MOTOR_BOTH)
 	{
-		// Both motors
 		callback->MotorCommand(MOTOR_BOTH, getMotorValue(msg[2]));
+	}
+	else if (command == COMMAND_CAMERA_ON)
+	{
+		char hostMsg[255] = { 0 };
+		memcpy(&hostMsg[0], &msg[2], (unsigned int) msg[1]);
+		char* host = strtok(hostMsg, ":");
+		char* port = strtok(NULL, ":");
+
+		callback->CameraOn(host, atoi( port ));
+	}
+	else if (command == COMMAND_CAMERA_OFF)
+	{
+		callback->CameraOff();
 	}
 }
 

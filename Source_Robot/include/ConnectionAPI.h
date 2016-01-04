@@ -19,7 +19,8 @@ public:
 	ApplicationCallback() { }
 	virtual ~ApplicationCallback() { }
 	virtual void MotorCommand(unsigned int motorNum, int motorSpeed) = 0;
-	virtual void CameraEnable(bool cameraEnable) = 0;
+	virtual void CameraOn(char* host, int port) = 0;
+	virtual void CameraOff() = 0;
 	virtual void ForceDisconnect() = 0;
 };
 
