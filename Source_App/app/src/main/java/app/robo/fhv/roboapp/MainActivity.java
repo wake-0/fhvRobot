@@ -1,5 +1,6 @@
 package app.robo.fhv.roboapp;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -23,6 +24,8 @@ import app.robo.fhv.roboapp.communication.NetworkClient;
 public class MainActivity extends Activity implements MediaStreaming.IFrameReceived {
 
     private static final String LOG_TAG = "MainActivity";
+    private static final long SNAP_BACK_TIME_MS = 300;
+    private static final int MOTOR_SEEK_BAR_ZERO_VALUE = 100;
 
     private EditText editText;
     private ImageButton button;
@@ -33,6 +36,8 @@ public class MainActivity extends Activity implements MediaStreaming.IFrameRecei
 
     private int stepSize = 10;
     private NetworkClient networkClient;
+    private ValueAnimator leftSnapBackAnimator;
+    private ValueAnimator rightSnapBackAnimator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +53,8 @@ public class MainActivity extends Activity implements MediaStreaming.IFrameRecei
         sbLeft = (SeekBar) findViewById(R.id.sbLeft);
         sbRight = (SeekBar) findViewById(R.id.sbRight);
 
-        sbLeft.setProgress(100);
-        sbRight.setProgress(100);
+        sbLeft.setProgress(MOTOR_SEEK_BAR_ZERO_VALUE);
+        sbRight.setProgress(MOTOR_SEEK_BAR_ZERO_VALUE);
 
         try {
             networkClient = new NetworkClient(this);
@@ -86,12 +91,26 @@ public class MainActivity extends Activity implements MediaStreaming.IFrameRecei
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                if (leftSnapBackAnimator != null && leftSnapBackAnimator.isRunning()) {
+                    leftSnapBackAnimator.cancel();
+                }
             }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
+            public void onStopTrackingTouch(final SeekBar seekBar) {
+                int value = seekBar.getProgress();
+                leftSnapBackAnimator = ValueAnimator.ofInt(value, MOTOR_SEEK_BAR_ZERO_VALUE);
+                leftSnapBackAnimator.setDuration(SNAP_BACK_TIME_MS);
+                leftSnapBackAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(
+                            ValueAnimator animation) {
+                        int value = (Integer) animation
+                                .getAnimatedValue();
+                        seekBar.setProgress(value);
+                    }
+                });
+                leftSnapBackAnimator.start();
             }
         });
         sbRight.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -113,12 +132,26 @@ public class MainActivity extends Activity implements MediaStreaming.IFrameRecei
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                if (rightSnapBackAnimator != null && rightSnapBackAnimator.isRunning()) {
+                    rightSnapBackAnimator.cancel();
+                }
             }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
+            public void onStopTrackingTouch(final SeekBar seekBar) {
+                int value = seekBar.getProgress();
+                rightSnapBackAnimator = ValueAnimator.ofInt(value, MOTOR_SEEK_BAR_ZERO_VALUE);
+                rightSnapBackAnimator.setDuration(SNAP_BACK_TIME_MS);
+                rightSnapBackAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(
+                            ValueAnimator animation) {
+                        int value = (Integer) animation
+                                .getAnimatedValue();
+                        seekBar.setProgress(value);
+                    }
+                });
+                rightSnapBackAnimator.start();
             }
         });
     }
