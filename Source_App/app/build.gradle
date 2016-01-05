@@ -31,4 +31,6 @@ dependencies {
     compile 'RoboServer.Network:RoboServer.Network:0.0.1-SNAPSHOT'
     compile 'RoboServer.ApplicationProtocol:RoboServer.ApplicationProtocol:0.0.1-SNAPSHOT'
     compile 'com.h6ah4i.android.widget.verticalseekbar:verticalseekbar:0.5.2'
+    compile 'com.github.paolorotolo:appintro:3.3.0'
+    compile 'de.hdodenhof:circleimageview:2.0.0'
 }

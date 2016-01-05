@@ -35,6 +35,7 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
     private final ICommunicationCallback callback;
 
     public interface ICommunicationCallback {
+        void sessionCreated();
         void generalMessageReceived(String message);
         void signalStrengthChange(SignalStrength newStrength);
     }
@@ -112,6 +113,7 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
                     comManager.readDatagramPacket(receiveSessionPacket, this, this);
 
                     isConnectionOpened = true;
+                    callback.sessionCreated();
                 } else {
                     DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
                     clientSocket.receive(receivePacket);

@@ -1,11 +1,13 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Light.NoTitleBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:editTextStyle">@style/whiteEditText</item>
+    </style>
+
+    <style name="whiteEditText" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:textCursorDrawable">@drawable/white_cursor</item>
     </style>
 
 </resources>

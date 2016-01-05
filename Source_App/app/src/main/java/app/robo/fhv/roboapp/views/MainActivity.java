@@ -1,4 +1,4 @@
-package app.robo.fhv.roboapp;
+package app.robo.fhv.roboapp.views;
 
 import android.animation.ValueAnimator;
 import android.app.Activity;
@@ -8,26 +8,26 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import app.robo.fhv.roboapp.R;
 import app.robo.fhv.roboapp.communication.CommunicationClient;
 import app.robo.fhv.roboapp.communication.MediaStreaming;
 import app.robo.fhv.roboapp.communication.NetworkClient;
 import app.robo.fhv.roboapp.communication.SignalStrength;
+import app.robo.fhv.roboapp.views.welcome.WelcomeActivity;
 
-public class MainActivity extends Activity implements CommunicationClient.ICommunicationCallback, MediaStreaming.IFrameReceived {
+public class MainActivity extends FragmentActivity implements CommunicationClient.ICommunicationCallback, MediaStreaming.IFrameReceived {
 
     private static final String LOG_TAG = "MainActivity";
     private static final long SNAP_BACK_TIME_MS = 300;
@@ -35,8 +35,7 @@ public class MainActivity extends Activity implements CommunicationClient.ICommu
 
     private Map<SignalStrength, Drawable> signalStrengthMap;
 
-    private EditText editText;
-    private ImageButton button;
+    private String playerName;
     private SeekBar sbLeft;
     private SeekBar sbRight;
 
@@ -65,10 +64,6 @@ public class MainActivity extends Activity implements CommunicationClient.ICommu
 
         camCanvas = (ImageView) findViewById(R.id.imgCamCanvas);
         signalStrength = (ImageView) findViewById(R.id.imgSignalStrength);
-        editText = (EditText) findViewById(R.id.editText);
-        button = (ImageButton) findViewById(R.id.button);
-
-        editText.setText("edit text");
 
         sbLeft = (SeekBar) findViewById(R.id.sbLeft);
         sbRight = (SeekBar) findViewById(R.id.sbRight);
@@ -83,14 +78,6 @@ public class MainActivity extends Activity implements CommunicationClient.ICommu
             e.printStackTrace();
             Log.e(LOG_TAG, "Could not instantiate NetworkClient");
         }
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                networkClient.getCommunicationClient().send(editText.getText().toString());
-            }
-        });
-
 
         sbLeft.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int lastProgress = sbLeft.getProgress();
@@ -174,6 +161,9 @@ public class MainActivity extends Activity implements CommunicationClient.ICommu
                 rightSnapBackAnimator.start();
             }
         });
+
+        playerName = getIntent().getExtras().getString(WelcomeActivity.PLAYER_NAME_TAG);
+        Log.d(LOG_TAG, "Using player name " + playerName);
     }
 
     private void initSignalStrengthHashMap() {
@@ -200,6 +190,11 @@ public class MainActivity extends Activity implements CommunicationClient.ICommu
     }
 
     @Override
+    public void sessionCreated() {
+        networkClient.getCommunicationClient().send(playerName);
+    }
+
+    @Override
     public void generalMessageReceived(final String message) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
@@ -212,7 +207,6 @@ public class MainActivity extends Activity implements CommunicationClient.ICommu
     @Override
     public void signalStrengthChange(final SignalStrength newStrength) {
         if (newStrength == SignalStrength.DEAD_SIGNAL) {
-            // TODO We should go back to the splash screen if we have one
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
@@ -224,7 +218,7 @@ public class MainActivity extends Activity implements CommunicationClient.ICommu
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            finishAffinity();
+            finish();
             return;
         }
         new Handler(Looper.getMainLooper()).post(new Runnable() {

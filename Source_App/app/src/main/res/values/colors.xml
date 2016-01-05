@@ -3,4 +3,12 @@
     <color name="colorPrimary">#00335A</color>
     <color name="colorPrimaryDark">#035271</color>
     <color name="colorAccent">#D6D8C0</color>
+
+    <!-- Color Palette from: http://www.colourlovers.com/palette/38562/Hands_On -->
+    <color name="handsOn1">#4E4D4A</color>
+    <color name="handsOn2">#353432</color>
+    <color name="handsOn3">#94BA65</color>
+    <color name="handsOn4">#2790B0</color>
+    <color name="handsOn5">#2B4E72</color>
+
 </resources>
