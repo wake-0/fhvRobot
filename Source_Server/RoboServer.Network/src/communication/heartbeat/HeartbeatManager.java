@@ -55,4 +55,9 @@ public class HeartbeatManager<T extends IConfiguration> implements Runnable {
 			}
 		}, delay, period);
 	}
+	
+	public void stopHeartbeat() {
+		this.timer.cancel();
+		this.timer.purge();
+	}
 }
