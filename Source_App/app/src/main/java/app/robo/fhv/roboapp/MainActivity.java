@@ -4,6 +4,7 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -18,9 +19,13 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import app.robo.fhv.roboapp.communication.CommunicationClient;
 import app.robo.fhv.roboapp.communication.MediaStreaming;
 import app.robo.fhv.roboapp.communication.NetworkClient;
+import app.robo.fhv.roboapp.communication.SignalStrength;
 
 public class MainActivity extends Activity implements CommunicationClient.ICommunicationCallback, MediaStreaming.IFrameReceived {
 
@@ -28,12 +33,15 @@ public class MainActivity extends Activity implements CommunicationClient.ICommu
     private static final long SNAP_BACK_TIME_MS = 300;
     private static final int MOTOR_SEEK_BAR_ZERO_VALUE = 100;
 
+    private Map<SignalStrength, Drawable> signalStrengthMap;
+
     private EditText editText;
     private ImageButton button;
     private SeekBar sbLeft;
     private SeekBar sbRight;
 
     private ImageView camCanvas;
+    private ImageView signalStrength;
 
     private int stepSize = 10;
     private NetworkClient networkClient;
@@ -41,11 +49,22 @@ public class MainActivity extends Activity implements CommunicationClient.ICommu
     private ValueAnimator rightSnapBackAnimator;
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        if (networkClient != null) {
+            networkClient.stop();
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_layout);
 
+        initSignalStrengthHashMap();
+
         camCanvas = (ImageView) findViewById(R.id.imgCamCanvas);
+        signalStrength = (ImageView) findViewById(R.id.imgSignalStrength);
         editText = (EditText) findViewById(R.id.editText);
         button = (ImageButton) findViewById(R.id.button);
 
@@ -157,6 +176,17 @@ public class MainActivity extends Activity implements CommunicationClient.ICommu
         });
     }
 
+    private void initSignalStrengthHashMap() {
+        signalStrengthMap = new HashMap<>();
+        signalStrengthMap.put(SignalStrength.FULL_SIGNAL, getResources().getDrawable(R.drawable.ss_full));
+        signalStrengthMap.put(SignalStrength.NEARLY_FULL_SIGNAL, getResources().getDrawable(R.drawable.ss_nearly_full));
+        signalStrengthMap.put(SignalStrength.HALF_FULL_SIGNAL, getResources().getDrawable(R.drawable.ss_half_full));
+        signalStrengthMap.put(SignalStrength.NEARLY_LOW_SIGNAL, getResources().getDrawable(R.drawable.ss_nearly_low));
+        signalStrengthMap.put(SignalStrength.LOW_SIGNAL, getResources().getDrawable(R.drawable.ss_low));
+        signalStrengthMap.put(SignalStrength.NO_SIGNAL, getResources().getDrawable(R.drawable.ss_nothing));
+        signalStrengthMap.put(SignalStrength.DEAD_SIGNAL, getResources().getDrawable(R.drawable.ss_dead));
+    }
+
 
     @Override
     public void frameReceived(Bitmap i) {
@@ -175,6 +205,33 @@ public class MainActivity extends Activity implements CommunicationClient.ICommu
             @Override
             public void run() {
                 Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    @Override
+    public void signalStrengthChange(final SignalStrength newStrength) {
+        if (newStrength == SignalStrength.DEAD_SIGNAL) {
+            // TODO We should go back to the splash screen if we have one
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(MainActivity.this, "Verbindung abgebrochen!", Toast.LENGTH_SHORT).show();
+                }
+            });
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            finishAffinity();
+            return;
+        }
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                // TODO: It would be nice to alpha blend the new image
+                signalStrength.setImageDrawable(signalStrengthMap.get(newStrength));
             }
         });
     }

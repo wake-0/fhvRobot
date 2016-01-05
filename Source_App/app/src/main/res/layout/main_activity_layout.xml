@@ -55,6 +55,22 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentTop="true"
+        >
+        <ImageView
+            android:id="@+id/imgSignalStrength"
+            android:layout_alignParentTop="true"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ss_full"
+            />
+    </RelativeLayout>
+
     <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"

@@ -26,4 +26,5 @@ public class NetworkClient {
         communicationClient.stop();
         mediaStreaming.stop();
     }
+
 }
