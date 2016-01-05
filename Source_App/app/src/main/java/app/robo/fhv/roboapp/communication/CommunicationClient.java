@@ -11,6 +11,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import app.robo.fhv.roboapp.utils.ProgressMapper;
 import communication.commands.Commands;
@@ -34,6 +36,7 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
 
     public interface ICommunicationCallback {
         void generalMessageReceived(String message);
+        void signalStrengthChange(SignalStrength newStrength);
     }
 
     private static final String LOG_TAG = "CommunicationClient";
@@ -41,6 +44,9 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
     private boolean isRunning;
     private boolean isConnectionOpened;
 
+    private long lastMessageReceiveTime;
+    private TimerTask signalStrengthTimerTask;
+    private Timer signalStrengthTimer;
     private final DatagramSocket clientSocket;
 
     private final ConfigurationManager configManager;
@@ -88,6 +94,7 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
     public void run() {
 
         isRunning = true;
+        initSignalStrengthTask();
 
         try {
 
@@ -117,6 +124,39 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
         }
     }
 
+    private void initSignalStrengthTask() {
+        if (signalStrengthTimer != null) {
+            signalStrengthTimer.cancel();
+            signalStrengthTimer.purge();
+        }
+        callback.signalStrengthChange(SignalStrength.FULL_SIGNAL);
+        lastMessageReceiveTime = System.currentTimeMillis();
+        // Start timer task to check signal strength (heartbeat)
+        signalStrengthTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                if (isRunning == false) return;
+                long currentTime = System.currentTimeMillis();
+                long timeDiff = currentTime - lastMessageReceiveTime;
+                if (timeDiff > 4500) {
+                    callback.signalStrengthChange(SignalStrength.DEAD_SIGNAL);
+                } else if (timeDiff > 3500) {
+                    callback.signalStrengthChange(SignalStrength.NO_SIGNAL);
+                } else if (timeDiff > 2000) {
+                    callback.signalStrengthChange(SignalStrength.NEARLY_LOW_SIGNAL);
+                } else if (timeDiff > 1500) {
+                    callback.signalStrengthChange(SignalStrength.HALF_FULL_SIGNAL);
+                } else if (timeDiff > 1100) {
+                    callback.signalStrengthChange(SignalStrength.NEARLY_FULL_SIGNAL);
+                } else {
+                    callback.signalStrengthChange(SignalStrength.FULL_SIGNAL);
+                }
+            }
+        };
+        signalStrengthTimer = new Timer();
+        signalStrengthTimer.schedule(signalStrengthTimerTask, 300, 300);
+    }
+
     @Override
     public void answer(DatagramPacket packet) {
 
@@ -126,6 +166,8 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
     public boolean handleDataReceived(DatagramPacket datagramPacket, ApplicationPDU applicationPDU, IAnswerHandler iAnswerHandler) {
         final String message = " received: payload[" + applicationPDU.getPayload() + "], command[" + applicationPDU.getCommand() + "]";
         Log.d(LOG_TAG, message);
+        lastMessageReceiveTime = System.currentTimeMillis();
+
         int command = applicationPDU.getCommand();
         switch (command) {
             case Commands.GENERAL_MESSAGE:
@@ -156,6 +198,11 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
 
     public void stop() {
         isRunning = false;
+        if (signalStrengthTimer != null) {
+            signalStrengthTimer.cancel();
+            signalStrengthTimer.purge();
+        }
+        heartbeatManager.stopHeartbeat();
         clientSocket.close();
     }
 
