@@ -1,7 +1,6 @@
 package app.robo.fhv.roboapp.views;
 
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -10,11 +9,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageButton;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.HashMap;
@@ -42,6 +41,8 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
     private ImageView camCanvas;
     private ImageView signalStrength;
 
+    private TextView statusText;
+
     private int stepSize = 10;
     private NetworkClient networkClient;
     private ValueAnimator leftSnapBackAnimator;
@@ -64,6 +65,7 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
 
         camCanvas = (ImageView) findViewById(R.id.imgCamCanvas);
         signalStrength = (ImageView) findViewById(R.id.imgSignalStrength);
+        statusText = (TextView) findViewById(R.id.lblStatusText);
 
         sbLeft = (SeekBar) findViewById(R.id.sbLeft);
         sbRight = (SeekBar) findViewById(R.id.sbRight);
@@ -169,11 +171,11 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
     private void initSignalStrengthHashMap() {
         signalStrengthMap = new HashMap<>();
         signalStrengthMap.put(SignalStrength.FULL_SIGNAL, getResources().getDrawable(R.drawable.ss_full));
-        signalStrengthMap.put(SignalStrength.NEARLY_FULL_SIGNAL, getResources().getDrawable(R.drawable.ss_nearly_full));
-        signalStrengthMap.put(SignalStrength.HALF_FULL_SIGNAL, getResources().getDrawable(R.drawable.ss_half_full));
-        signalStrengthMap.put(SignalStrength.NEARLY_LOW_SIGNAL, getResources().getDrawable(R.drawable.ss_nearly_low));
+        signalStrengthMap.put(SignalStrength.NEARLY_FULL_SIGNAL, getResources().getDrawable(R.drawable.ss_good));
+        signalStrengthMap.put(SignalStrength.HALF_FULL_SIGNAL, getResources().getDrawable(R.drawable.ss_normal));
+        signalStrengthMap.put(SignalStrength.NEARLY_LOW_SIGNAL, getResources().getDrawable(R.drawable.ss_low));
         signalStrengthMap.put(SignalStrength.LOW_SIGNAL, getResources().getDrawable(R.drawable.ss_low));
-        signalStrengthMap.put(SignalStrength.NO_SIGNAL, getResources().getDrawable(R.drawable.ss_nothing));
+        signalStrengthMap.put(SignalStrength.NO_SIGNAL, getResources().getDrawable(R.drawable.ss_dead));
         signalStrengthMap.put(SignalStrength.DEAD_SIGNAL, getResources().getDrawable(R.drawable.ss_dead));
     }
 
@@ -189,9 +191,37 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
         });
     }
 
+    private void setStatusText(final String text) {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Animation animFadeOut = AnimationUtils.loadAnimation(MainActivity.this.getApplicationContext(), R.anim.fade_out_animation);
+                statusText.setAlpha(1.0f);
+                statusText.setText(text);
+                statusText.startAnimation(animFadeOut);
+            }
+        });
+    }
+
+    @Override
+    public void startConnectionEstablishment() {
+        setStatusText("Starte Verbindung...");
+    }
+
+    @Override
+    public void startSession() {
+        setStatusText("Starte Session...");
+    }
+
     @Override
     public void sessionCreated() {
-        networkClient.getCommunicationClient().send(playerName);
+        setStatusText("Session erstellt!");
+        networkClient.getCommunicationClient().sendChangeName(playerName);
+    }
+
+    @Override
+    public void registering() {
+        setStatusText("Registriere Name...");
     }
 
     @Override
@@ -228,5 +258,10 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
                 signalStrength.setImageDrawable(signalStrengthMap.get(newStrength));
             }
         });
+    }
+
+    @Override
+    public void registered() {
+        setStatusText("Name registriert!");
     }
 }

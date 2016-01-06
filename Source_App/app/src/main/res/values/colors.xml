@@ -11,4 +11,10 @@
     <color name="handsOn4">#2790B0</color>
     <color name="handsOn5">#2B4E72</color>
 
+    <!-- Color Palette from: http://www.colorcombos.com/color-schemes/13/ColorCombo13.html -->
+    <color name="breakdown1">#FFFF66</color>
+    <color name="breakdown2">#FFCC00</color>
+    <color name="breakdown3">#FF9900</color>
+    <color name="breakdown4">#FF0000</color>
+
 </resources>

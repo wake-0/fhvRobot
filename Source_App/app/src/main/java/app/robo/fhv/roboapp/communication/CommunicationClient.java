@@ -35,9 +35,13 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
     private final ICommunicationCallback callback;
 
     public interface ICommunicationCallback {
+        void startConnectionEstablishment();
+        void startSession();
         void sessionCreated();
+        void registering();
         void generalMessageReceived(String message);
         void signalStrengthChange(SignalStrength newStrength);
+        void registered();
     }
 
     private static final String LOG_TAG = "CommunicationClient";
@@ -73,7 +77,8 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
     }
 
     // Methods
-    public void send(String message) {
+    public void sendChangeName(String message) {
+        callback.registering();
         new SendTask(clientSocket, comManager, configuration, Flags.REQUEST_FLAG, Commands.CHANGE_NAME).execute(message.getBytes());
     }
 
@@ -96,6 +101,7 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
 
         isRunning = true;
         initSignalStrengthTask();
+        callback.startConnectionEstablishment();
 
         try {
 
@@ -104,9 +110,9 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
 
                 // Open connection
                 if (!isConnectionOpened) {
+                    callback.startSession();
                     DatagramPacket openPacket = comManager.createOpenConnectionDatagramPacket(configuration);
                     clientSocket.send(openPacket);
-
                     DatagramPacket receiveSessionPacket = new DatagramPacket(receiveData, receiveData.length);
                     clientSocket.receive(receiveSessionPacket);
 
@@ -176,7 +182,9 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
                 String serverMessage = new String(applicationPDU.getPayload());
                 callback.generalMessageReceived(serverMessage);
                 break;
-
+            case Commands.CHANGE_NAME:
+                callback.registered();
+                break;
             default:
                 break;
         }
