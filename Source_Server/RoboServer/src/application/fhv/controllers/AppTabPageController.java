@@ -76,7 +76,7 @@ public class AppTabPageController implements Initializable {
 			@Override
 			public void commandReceived(Client client, int command, byte[] payload) {
 				Platform.runLater(() -> {
-					tfReceive.appendText("[" + client.getName()+ "] " + new String(payload) + "\n");
+					tfReceive.appendText("[<-" + client.getName()+ "] " + new String(payload) + "\n");
 				});
 			}
 		}, Commands.GENERAL_MESSAGE);
@@ -108,6 +108,8 @@ public class AppTabPageController implements Initializable {
 	private void handleSendClick() {
 		Client selectedClient = appController.getSelectedClient();
 		selectedClient.setSendData(tfSend.getText());
+		
+		tfReceive.appendText("[->" + selectedClient.getName()+ "] " + tfSend.getText() + "\n");
 
 		if (selectedClient != null) {
 			server.sendToApp(selectedClient);
