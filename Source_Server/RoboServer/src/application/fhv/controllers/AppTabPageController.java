@@ -14,6 +14,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
 import javafx.util.Callback;
 import models.Client;
 import models.ClientFactory;
@@ -39,6 +40,9 @@ public class AppTabPageController implements Initializable {
 	@FXML
 	private TableColumn<Client, Boolean> tcAppIsOperator;
 
+	@FXML
+	private TextArea tfReceive;
+	
 	// App details
 	@FXML
 	private TextField tfSend;
@@ -108,6 +112,8 @@ public class AppTabPageController implements Initializable {
 		tcAppRXCount.setCellValueFactory(cellData -> cellData.getValue().HeartBeatProperty());
 		tcAppIsOperator.setCellValueFactory(cellData -> cellData.getValue().IsOperatorProperty());
 
+		tfReceive.appendText("Chat Window:");
+		
 		tvAppClients.setItems(appController.getClients());
 		tvAppClients.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Client>() {
 			@Override

@@ -17,17 +17,20 @@
 	<items>
 		<SplitPane orientation="HORIZONTAL" dividerPositions="0.35">
 			<items>
-				<VBox>
-					<Label styleClass="table-header">Registered Robots</Label>
-					<fx:include fx:id="roboView" source="RoboTabPage.fxml" />
-							
-					<Label  styleClass="table-header" >Registered App Clients</Label>
-					<fx:include fx:id="appView" source="AppTabPage.fxml" />
-					
-				</VBox>
+				<SplitPane orientation="VERTICAL" dividerPositions="0.3">
+					<VBox>
+						<Label styleClass="table-header">Registered Robots</Label>
+						<fx:include fx:id="roboView" source="RoboTabPage.fxml" />		
+					</VBox>
+						
+					<VBox>
+						<Label  styleClass="table-header" >Registered App Clients</Label>
+						<fx:include fx:id="appView" source="AppTabPage.fxml" />
+					</VBox>	
+				</SplitPane>
 				<VBox>
 					<Label  styleClass="table-header">Robot Control</Label>
-				
+					
 					<fx:include fx:id="robotView" source="RobotView.fxml" />
 				</VBox>
 			</items>

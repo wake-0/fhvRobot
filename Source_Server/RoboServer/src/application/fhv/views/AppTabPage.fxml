@@ -20,6 +20,7 @@
 	</columnConstraints>
 	<rowConstraints>
 		<RowConstraints />
+		<RowConstraints minHeight="100" maxHeight="150" />
 		<RowConstraints minHeight="30" maxHeight="30" />
 	</rowConstraints>
 
@@ -47,8 +48,10 @@
 				maxWidth="Infinity" />
 		</children>
 	</VBox>
-	<TextField  fx:id="tfSend" GridPane.rowIndex="1" GridPane.columnIndex="0"></TextField>
-	<Button GridPane.rowIndex="1" GridPane.columnIndex="1" fx:id="btnSend"
+	<TextArea fx:id="tfReceive" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="1" editable="false"/>
+	<TextField  fx:id="tfSend" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+	
+	<Button GridPane.rowIndex="2" GridPane.columnIndex="1" fx:id="btnSend"
 		onAction="#handleSendClick" text="Send" maxWidth="Infinity" />
 </GridPane>
 
