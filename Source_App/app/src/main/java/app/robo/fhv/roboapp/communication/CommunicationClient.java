@@ -42,6 +42,9 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
         void generalMessageReceived(String message);
         void signalStrengthChange(SignalStrength newStrength);
         void registered();
+
+        void startSteering();
+        void stopSteering();
     }
 
     private static final String LOG_TAG = "CommunicationClient";
@@ -184,6 +187,12 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
                 break;
             case Commands.CHANGE_NAME:
                 callback.registered();
+                break;
+            case Commands.ROBO_STEARING:
+                callback.startSteering();
+                break;
+            case Commands.ROBO_NOT_STEARING:
+                callback.stopSteering();
                 break;
             default:
                 break;

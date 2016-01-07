@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -263,5 +264,31 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
     @Override
     public void registered() {
         setStatusText("Name registriert!");
+    }
+
+    @Override
+    public void startSteering() {
+        new Handler(Looper.getMainLooper()).post(
+            new Runnable() {
+                @Override
+                public void run() {
+                    sbLeft.setVisibility(View.VISIBLE);
+                    sbRight.setVisibility(View.VISIBLE);
+                }
+            }
+        );
+    }
+
+    @Override
+    public void stopSteering() {
+        new Handler(Looper.getMainLooper()).post(
+            new Runnable() {
+                @Override
+                public void run() {
+                    sbLeft.setVisibility(View.INVISIBLE);
+                    sbRight.setVisibility(View.INVISIBLE);
+                }
+            }
+        );
     }
 }
