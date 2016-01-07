@@ -1,10 +1,7 @@
 package app.robo.fhv.roboapp.communication;
 
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
-import android.widget.TextView;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -16,7 +13,6 @@ import java.util.TimerTask;
 
 import app.robo.fhv.roboapp.utils.ProgressMapper;
 import communication.commands.Commands;
-import communication.configurations.Configuration;
 import communication.configurations.IConfiguration;
 import communication.flags.Flags;
 import communication.heartbeat.HeartbeatManager;
@@ -31,6 +27,10 @@ import communication.utils.NumberParser;
  * Created by Kevin on 05.11.2015.
  */
 public class CommunicationClient implements Runnable, IDataReceivedHandler<ApplicationPDU>, IAnswerHandler, IHeartbeatHandler<IConfiguration> {
+
+    public interface ISendTaskFinished {
+        void onFinish();
+    }
 
     private final ICommunicationCallback callback;
 
@@ -82,7 +82,7 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
     // Methods
     public void sendChangeName(String message) {
         callback.registering();
-        new SendTask(clientSocket, comManager, configuration, Flags.REQUEST_FLAG, Commands.CHANGE_NAME).execute(message.getBytes());
+        new SendTask(clientSocket, comManager, configuration, Flags.REQUEST_FLAG, Commands.CHANGE_NAME, null).execute(message.getBytes());
     }
 
     public void driveLeft(int leftValue) {
@@ -96,7 +96,7 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
     private void sendCommand(int flags, int command, int value) {
         int mappedValue = ProgressMapper.progressToDriveValue(value);
         byte byteValue = NumberParser.intToByte(mappedValue);
-        new SendTask(clientSocket, comManager, configuration, flags, command).execute(new byte[]{byteValue});
+        new SendTask(clientSocket, comManager, configuration, flags, command, null).execute(new byte[]{byteValue});
     }
 
     @Override
@@ -212,7 +212,7 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
 
     private void createHeartBeat(IConfiguration configuration) {
         String message = "0";
-        new SendTask(clientSocket, comManager, configuration, Flags.REQUEST_FLAG, Commands.DEFAULT).execute(message.getBytes());
+        new SendTask(clientSocket, comManager, configuration, Flags.REQUEST_FLAG, Commands.DEFAULT, null).execute(message.getBytes());
     }
 
     public void stop() {
@@ -225,7 +225,13 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
         clientSocket.close();
     }
 
+    public void sendDisconnect(ISendTaskFinished callback) {
+        new SendTask(clientSocket, comManager, configuration, Flags.REQUEST_FLAG, Commands.REQUEST_DISCONNECT, callback).execute(new byte[0]);
+    }
+
     private class SendTask extends AsyncTask<byte[], Void, Void> {
+
+        private final ISendTaskFinished callback;
 
         private final DatagramSocket clientSocket;
         private final CommunicationManager communicationManager;
@@ -233,10 +239,11 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
         private final int command;
         private final int flags;
 
-        protected SendTask(DatagramSocket clientSocket, CommunicationManager communicationManager, IConfiguration configuration, int flags, int command) {
+        protected SendTask(DatagramSocket clientSocket, CommunicationManager communicationManager, IConfiguration configuration, int flags, int command, ISendTaskFinished callback) {
             this.clientSocket = clientSocket;
             this.communicationManager = communicationManager;
             this.configuration = configuration;
+            this.callback = callback;
             this.command = command;
             this.flags = flags;
         }
@@ -253,6 +260,13 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
                 e.printStackTrace();
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (callback != null)
+                callback.onFinish();
         }
     }
 }

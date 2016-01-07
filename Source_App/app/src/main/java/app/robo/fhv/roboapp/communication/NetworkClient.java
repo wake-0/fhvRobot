@@ -1,5 +1,7 @@
 package app.robo.fhv.roboapp.communication;
 
+import android.os.AsyncTask;
+
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
@@ -27,4 +29,19 @@ public class NetworkClient {
         mediaStreaming.stop();
     }
 
+    public void disconnect() {
+        new AsyncTask<Void,Void,Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                getCommunicationClient().sendDisconnect(new CommunicationClient.ISendTaskFinished()
+                {
+                    @Override
+                    public void onFinish() {
+                        stop();
+                    }
+                });
+                return null;
+            }
+        }.execute();
+    }
 }

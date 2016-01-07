@@ -53,8 +53,9 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
     protected void onPause() {
         super.onPause();
         if (networkClient != null) {
-            networkClient.stop();
+            networkClient.disconnect();
         }
+        finish();
     }
 
     @Override
