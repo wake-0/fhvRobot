@@ -3,6 +3,7 @@ package controllers;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import communication.configurations.IConfiguration;
 import communication.heartbeat.HeartbeatManager;
@@ -12,15 +13,23 @@ import controllers.factory.IClientFactory;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import models.Client;
 import network.IClientProvider;
+
 
 public class ClientController<T extends IConfiguration>
 		implements IClientProvider<T>, IConfigurationManager, IHeartbeatHandler<T> {
 
+	public interface ICommandListener<T extends IConfiguration>
+	{
+		void commandReceived(T client, int command, byte[] payload);
+	}
+	
 	// Fields
 	private final ObservableList<T> clients;
 	private final IClientFactory<T> factory;
-
+	private final Map<Integer, List<ICommandListener<T>>> commandListeners;
+	
 	private final HashMap<T, HeartbeatManager<T>> clientTimers;
 
 	private T selectedClient;
@@ -29,6 +38,7 @@ public class ClientController<T extends IConfiguration>
 	public ClientController(IClientFactory<T> factory) {
 		this.clients = FXCollections.observableArrayList();
 		this.clientTimers = new HashMap<>();
+		this.commandListeners = new HashMap<>();
 		this.factory = factory;
 	}
 
@@ -93,5 +103,29 @@ public class ClientController<T extends IConfiguration>
 	@Override
 	public void handleHeartbeat(T client) {
 		client.cleanHeartBeatCount();
+	}
+	
+	public void addCommandListener(ICommandListener<T> commandListener, int command) {
+		List<ClientController.ICommandListener<T>> listeners = commandListeners.get(command);
+		
+		if(listeners == null) {
+			listeners = new ArrayList<>();
+			commandListeners.put(command, listeners);
+			
+		}
+		
+		listeners.add(commandListener);
+	}
+
+	public void handleCommandReceived(T client, int command, byte[] payload) {
+		List<ClientController.ICommandListener<T>> listeners = commandListeners.get(command);
+		
+		if(listeners != null) {
+			for(ClientController.ICommandListener<T> l:listeners)
+			{
+				l.commandReceived(client, command, payload);
+			}
+		}
+		
 	}
 }

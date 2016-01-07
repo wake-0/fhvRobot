@@ -4,6 +4,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import communication.commands.Commands;
+import controllers.ClientController.ICommandListener;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -69,6 +72,14 @@ public class AppTabPageController implements Initializable {
 			}
 		});
 		;
+		appController.addCommandListener(new ICommandListener<Client>() {
+			@Override
+			public void commandReceived(Client client, int command, byte[] payload) {
+				Platform.runLater(() -> {
+					tfReceive.appendText("[" + client.getName()+ "] " + new String(payload) + "\n");
+				});
+			}
+		}, Commands.GENERAL_MESSAGE);
 	}
 
 	// Methods
@@ -112,7 +123,7 @@ public class AppTabPageController implements Initializable {
 		tcAppRXCount.setCellValueFactory(cellData -> cellData.getValue().HeartBeatProperty());
 		tcAppIsOperator.setCellValueFactory(cellData -> cellData.getValue().IsOperatorProperty());
 
-		tfReceive.appendText("Chat Window:");
+		tfReceive.appendText("Chat Window:\n");
 		
 		tvAppClients.setItems(appController.getClients());
 		tvAppClients.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Client>() {
