@@ -76,6 +76,7 @@ bool Controller::Start(char* serverIp) {
 		{
 			connection->Disconnect();
 			robot.MotorStop(true);
+			CameraOff();
 			break;
 		}
 	}
