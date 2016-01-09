@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Windows.Input;
+using GameServer.Controllers;
 using GameServer.Utils;
 using PostSharp.Patterns.Model;
 
@@ -18,11 +14,15 @@ namespace GameServer.ViewModels
 
         private const string Text1 = "GameServer";
         private const string Text2 = "ChangedText";
+
+        private readonly NetworkServer server;
         #endregion
 
         #region ctor
         public MainViewModel()
         {
+            server = new NetworkServer();
+
             TestText = Text1;
             ChangeTextCommand = new DelegateCommand(ChangeText);
         }
@@ -30,6 +30,7 @@ namespace GameServer.ViewModels
         private void ChangeText(object obj)
         {
             TestText = TestText == Text1 ? Text2 : Text1;
+            server.Send("Test");
         }
 
         #endregion
