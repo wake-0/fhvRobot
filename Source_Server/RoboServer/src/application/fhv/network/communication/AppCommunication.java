@@ -5,8 +5,8 @@ import java.net.SocketException;
 
 import communication.managers.IAnswerHandler;
 import communication.pdu.ApplicationPDU;
-import controllers.ClientController;
 import models.Client;
+import network.IClientController;
 
 public class AppCommunication extends Communication {
 
@@ -14,7 +14,7 @@ public class AppCommunication extends Communication {
 	private final CommunicationDelegator delegator;
 
 	// Constructor
-	public AppCommunication(ClientController<Client> clientController, CommunicationDelegator delegator, int port)
+	public AppCommunication(IClientController<Client> clientController, CommunicationDelegator delegator, int port)
 			throws SocketException {
 		super(clientController, port);
 		this.delegator = delegator;

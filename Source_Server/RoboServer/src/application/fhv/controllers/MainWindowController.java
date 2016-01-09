@@ -18,6 +18,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import models.Client;
+import network.IClientController;
 import network.NetworkServer;
 
 public class MainWindowController implements Initializable {
@@ -25,14 +26,15 @@ public class MainWindowController implements Initializable {
 	// Fields
 	private NetworkServer server;
 
-	private ClientController<Client> roboController;
-	private ClientController<Client> appController;
+	private IClientController<Client> roboController;
+	private IClientController<Client> appController;
+	private IClientController<Client> gamingController;
 
 	@FXML
 	private AppTabPageController appViewController;
 	@FXML
 	private RoboTabPageController roboViewController;
-	
+
 	@FXML
 	private RobotViewController robotViewController;
 
@@ -45,8 +47,12 @@ public class MainWindowController implements Initializable {
 		try {
 			roboController = roboViewController.getRoboController();
 			appController = appViewController.getAppController();
-			
-			this.server = new NetworkServer(roboController, appController);
+
+			// Gaming client
+			Client client = new Client();
+			gamingController = new SingleClientController(client);
+
+			this.server = new NetworkServer(roboController, appController, gamingController);
 
 			roboViewController.setServer(server);
 			roboViewController.setRobotViewController(robotViewController);
@@ -65,7 +71,7 @@ public class MainWindowController implements Initializable {
 	public void shutdown() {
 		server.shutdown();
 	}
-	
+
 	public void postInitialize(Scene s) {
 		robotViewController.setupListeners(s);
 	}

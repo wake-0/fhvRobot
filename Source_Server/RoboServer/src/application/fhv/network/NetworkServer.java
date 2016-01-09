@@ -14,12 +14,12 @@ import java.net.SocketException;
 
 import communication.commands.Commands;
 import communication.flags.Flags;
-import controllers.ClientController;
 import controllers.OperatorManager;
 import models.Client;
 import network.communication.AppCommunication;
 import network.communication.Communication;
 import network.communication.CommunicationDelegator;
+import network.communication.GamingCommunication;
 import network.communication.RoboCommunication;
 
 public class NetworkServer {
@@ -27,17 +27,19 @@ public class NetworkServer {
 	// Fields
 	private final Communication roboCommunication;
 	private final Communication appCommunication;
+	private final Communication gamingCommunication;
 	private final CommunicationDelegator delegator;
 	private final OperatorManager operatorManager;
-	private final ClientController<Client> appController;
+	private final IClientController<Client> appController;
 
 	// Ports
 	private final int roboPort = 998;
 	private final int appPort = 997;
+	private final int gamingPort = 999;
 
 	// Constructor
-	public NetworkServer(ClientController<Client> roboController, ClientController<Client> appController)
-			throws SocketException {
+	public NetworkServer(IClientController<Client> roboController, IClientController<Client> appController,
+			IClientController<Client> gamingController) throws SocketException {
 
 		this.appController = appController;
 		this.delegator = new CommunicationDelegator(roboController, appController);
@@ -49,11 +51,16 @@ public class NetworkServer {
 		this.appCommunication = new AppCommunication(appController, delegator, appPort);
 		delegator.setChannelB(appCommunication);
 
+		// Gaming communication
+		this.gamingCommunication = new GamingCommunication(gamingController, gamingPort);
+
 		// This used for managing the current operator of the robo
 		this.operatorManager = new OperatorManager(appController, appCommunication);
 
 		new Thread(roboCommunication).start();
 		new Thread(appCommunication).start();
+		new Thread(gamingCommunication).start();
+
 		new Thread(operatorManager).start();
 
 	}
@@ -96,7 +103,7 @@ public class NetworkServer {
 		sendToRobo(client, Flags.REQUEST_FLAG, Commands.DISCONNECTED, new byte[] { 0 });
 	}
 
-	public ClientController<Client> getAppController() {
+	public IClientController<Client> getAppController() {
 		return appController;
 	}
 }

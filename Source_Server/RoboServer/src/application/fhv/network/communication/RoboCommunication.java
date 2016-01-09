@@ -5,13 +5,13 @@ import java.net.SocketException;
 
 import communication.managers.IAnswerHandler;
 import communication.pdu.ApplicationPDU;
-import controllers.ClientController;
 import models.Client;
+import network.IClientController;
 
 public class RoboCommunication extends Communication {
 
 	// Constructor
-	public RoboCommunication(ClientController<Client> clientController, int port) throws SocketException {
+	public RoboCommunication(IClientController<Client> clientController, int port) throws SocketException {
 		super(clientController, port);
 	}
 
@@ -23,8 +23,8 @@ public class RoboCommunication extends Communication {
 			byte[] payload = pdu.getPayload();
 
 			// Only for test purposes
-			//client.setSendData(new String(payload));
-			//sendToClient(client);
+			// client.setSendData(new String(payload));
+			// sendToClient(client);
 
 		} catch (Exception e) {
 			e.printStackTrace();

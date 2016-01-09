@@ -7,6 +7,7 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 
+import communication.managers.DatagramFactory;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import models.Client;
@@ -16,20 +17,16 @@ import network.sender.INetworkSender;
 import network.sender.LoggerNetworkSender;
 import network.sender.NetworkSender;
 
-import communication.managers.DatagramFactory;
-
-import controllers.ClientController;
-
 public class MediaStreaming implements Runnable {
-	
+
 	public interface IMediaStreamingFrameReceived {
 		public void frameReceived(Image image, Client client);
 	}
-	
-	public static final int APP_CLIENT_FORWARD_PORT	= 9000;
 
-	private static final int MAX_PACKET_SIZE	=	0xFFFF;
-	private static final int MAX_FRAME_SIZE		=	0xFFFFF;
+	public static final int APP_CLIENT_FORWARD_PORT = 9000;
+
+	private static final int MAX_PACKET_SIZE = 0xFFFF;
+	private static final int MAX_FRAME_SIZE = 0xFFFFF;
 
 	// Fields
 	private boolean isRunning;
@@ -37,15 +34,16 @@ public class MediaStreaming implements Runnable {
 	protected final INetworkReceiver receiver;
 	protected final INetworkSender sender;
 	protected final DatagramSocket socket;
-	
+
 	private ByteBuffer imageBuffer;
 	private Client client;
 	private IMediaStreamingFrameReceived callback;
-	private ClientController<Client> appController;
+	private IClientController<Client> appController;
 
 	private NetworkSender forwardSender;
 
-	public MediaStreaming(int mediaStreamingPort, ClientController<Client> appController, Client client, MediaStreaming.IMediaStreamingFrameReceived callback) throws SocketException {
+	public MediaStreaming(int mediaStreamingPort, IClientController<Client> appController, Client client,
+			MediaStreaming.IMediaStreamingFrameReceived callback) throws SocketException {
 		this.socket = new DatagramSocket(mediaStreamingPort);
 		this.receiver = new LoggerNetworkReceiver(socket);
 		this.sender = new LoggerNetworkSender(socket);
@@ -70,8 +68,9 @@ public class MediaStreaming implements Runnable {
 
 			byte[] data = receivePacket.getData();
 			int len = receivePacket.getLength();
-			
-			// Forward packet to all clients which are interested in streaming packets
+
+			// Forward packet to all clients which are interested in streaming
+			// packets
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
@@ -104,19 +103,20 @@ public class MediaStreaming implements Runnable {
 					System.out.println("WARNING: Dropped frame!");
 				}
 			}
-			
+
 		}
 	}
-	
+
 	private boolean isMPEGEndPacket(byte[] data, int len) {
-		if (data[len - 2] == (byte)0xFF && data[len - 1] == (byte)0xD9) {
+		if (data[len - 2] == (byte) 0xFF && data[len - 1] == (byte) 0xD9) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	private int findMPEGStart(byte[] data, int len) {
-		byte[] huf = new byte[] { (byte) 0xff, (byte) 0xc4, 0x00, 0x1f, 0x00, 0x00, 0x01, 0x05, 0x01, 0x01, 0x01, 0x01 };
+		byte[] huf = new byte[] { (byte) 0xff, (byte) 0xc4, 0x00, 0x1f, 0x00, 0x00, 0x01, 0x05, 0x01, 0x01, 0x01,
+				0x01 };
 		for (int i = 0; i < data.length; i++) {
 			boolean found = true;
 			for (int j = 0; j < huf.length && found == true; j++) {
@@ -124,11 +124,12 @@ public class MediaStreaming implements Runnable {
 					found = false;
 				}
 			}
-			if (found == true) return i;
+			if (found == true)
+				return i;
 		}
 		return -1;
 	}
-	
+
 	private Image deserializeImage(byte[] imageData) throws IOException {
 		ByteArrayInputStream in = new ByteArrayInputStream(imageData);
 		return new Image(in);

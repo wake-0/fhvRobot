@@ -9,12 +9,13 @@ import communication.flags.Flags;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import models.Client;
+import network.IClientController;
 import network.communication.Communication;
 
 public class OperatorManager implements Runnable {
 
 	// Fields
-	private final ClientController<Client> clientController;
+	private final IClientController<Client> clientController;
 	private final Communication appCommunication;
 	private Timer timer;
 
@@ -23,7 +24,7 @@ public class OperatorManager implements Runnable {
 	private static final long OPERATOR_TIME = 10 * 1000;
 
 	// Constructor
-	public OperatorManager(ClientController<Client> appClients, Communication appCommunication) {
+	public OperatorManager(IClientController<Client> appClients, Communication appCommunication) {
 		this.clientController = appClients;
 		this.appCommunication = appCommunication;
 	}
@@ -49,7 +50,7 @@ public class OperatorManager implements Runnable {
 	}
 
 	private void selectNextOperator(Client oldOperator) {
-		ObservableList<Client> clients = clientController.getClients();
+		List<Client> clients = clientController.getClients();
 
 		// Select new operator
 		int nextIndex = oldOperator == null ? 0 : clients.indexOf(oldOperator) + 1;
@@ -89,7 +90,7 @@ public class OperatorManager implements Runnable {
 	public void run() {
 		this.timer = createNewTimer();
 
-		this.clientController.getClients().addListener(new ListChangeListener<Client>() {
+		((ObservableList<Client>) this.clientController.getClients()).addListener(new ListChangeListener<Client>() {
 
 			@Override
 			public void onChanged(ListChangeListener.Change<? extends Client> client) {

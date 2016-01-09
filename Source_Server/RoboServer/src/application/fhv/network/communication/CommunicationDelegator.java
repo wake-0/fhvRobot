@@ -1,19 +1,20 @@
 package network.communication;
 
-import controllers.ClientController;
 import models.Client;
+import network.IClientController;
 
 public class CommunicationDelegator {
 
 	// Fields
 	private Communication channelA;
-	private final ClientController<Client> channelAClients;
+	private final IClientController<Client> channelAClients;
 
 	private Communication channelB;
-	private final ClientController<Client> channelBClients;
+	private final IClientController<Client> channelBClients;
 
 	// Constructor
-	public CommunicationDelegator(ClientController<Client> channelAClients, ClientController<Client> channelBClients) {
+	public CommunicationDelegator(IClientController<Client> channelAClients,
+			IClientController<Client> channelBClients) {
 		this.channelAClients = channelAClients;
 		this.channelBClients = channelBClients;
 	}
@@ -33,7 +34,7 @@ public class CommunicationDelegator {
 		}
 	}
 
-	private void sendToChannelClients(Communication channel, ClientController<Client> clientController, int flags,
+	private void sendToChannelClients(Communication channel, IClientController<Client> clientController, int flags,
 			int command, byte[] payload) {
 		for (Client c : clientController.getClients()) {
 			System.out.println("Send message [" + new String(payload) + "]");

@@ -22,8 +22,8 @@ import communication.managers.CommunicationManager;
 import communication.managers.IAnswerHandler;
 import communication.managers.IDataReceivedHandler;
 import communication.pdu.ApplicationPDU;
-import controllers.ClientController;
 import models.Client;
+import network.IClientController;
 import network.receiver.INetworkReceiver;
 import network.receiver.LoggerNetworkReceiver;
 import network.sender.INetworkSender;
@@ -39,11 +39,11 @@ public abstract class Communication
 	protected final INetworkSender sender;
 	protected final DatagramSocket socket;
 	protected final CommunicationManager manager;
-	protected final ClientController<Client> clientController;
+	protected final IClientController<Client> clientController;
 	protected final HeartbeatProvider heartbeatProvider;
 
 	// Constructors
-	public Communication(ClientController<Client> clientController, int port) throws SocketException {
+	public Communication(IClientController<Client> clientController, int port) throws SocketException {
 		this.clientController = clientController;
 		this.manager = new CommunicationManager(clientController);
 		this.socket = new DatagramSocket(port);
