@@ -1,6 +1,7 @@
 package app.robo.fhv.roboapp.views;
 
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -49,13 +50,17 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
     private ValueAnimator leftSnapBackAnimator;
     private ValueAnimator rightSnapBackAnimator;
 
+    private boolean reconnectActivityStarted;
+
     @Override
     protected void onPause() {
         super.onPause();
         if (networkClient != null) {
             networkClient.disconnect();
         }
-        finish();
+        if (!reconnectActivityStarted) {
+            finish();
+        }
     }
 
     @Override
@@ -242,7 +247,8 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(MainActivity.this, "Verbindung abgebrochen!", Toast.LENGTH_SHORT).show();
+                    if (!reconnectActivityStarted)
+                        Toast.makeText(MainActivity.this, "Verbindung abgebrochen!", Toast.LENGTH_SHORT).show();
                 }
             });
             try {
@@ -250,8 +256,13 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            finish();
-            return;
+            if (!reconnectActivityStarted) {
+                reconnectActivityStarted = true;
+                networkClient.disconnect();
+                Intent intent = new Intent(this, ReconnectActivity.class);
+                startActivityForResult(intent, ReconnectActivity.REQUEST_CODE);
+                return;
+            }
         }
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
@@ -283,13 +294,37 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
     @Override
     public void stopSteering() {
         new Handler(Looper.getMainLooper()).post(
-            new Runnable() {
-                @Override
-                public void run() {
-                    sbLeft.setVisibility(View.INVISIBLE);
-                    sbRight.setVisibility(View.INVISIBLE);
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        sbLeft.setVisibility(View.INVISIBLE);
+                        sbRight.setVisibility(View.INVISIBLE);
+                    }
                 }
-            }
         );
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case ReconnectActivity.REQUEST_CODE:
+                reconnectActivityStarted = false;
+                switch (resultCode) {
+                    case 0:
+                    case ReconnectActivity.RESULT_CODE_CANCEL_CONNECTION:
+                        finish();
+                        break;
+                    case ReconnectActivity.RESULT_CODE_RECONNECT:
+                        try {
+                            networkClient = new NetworkClient(this, this);
+                            networkClient.start();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Log.e(LOG_TAG, "Could not instantiate NetworkClient");
+                        }
+                        break;
+                }
+        }
     }
 }

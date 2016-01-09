@@ -25,5 +25,11 @@
         <activity android:name=".views.MainActivity"
             android:screenOrientation="landscape">
         </activity>
+        <activity
+            android:name=".views.ReconnectActivity"
+            android:label="Reconnect"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
+        </activity>
     </application>
 </manifest>
