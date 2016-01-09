@@ -4,6 +4,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:editTextStyle">@style/whiteEditText</item>
+        <item name="android:button">@android:style/Widget.Holo.Button</item>
     </style>
 
     <style name="whiteEditText" parent="@android:style/Widget.Holo.Light.ActionBar">
