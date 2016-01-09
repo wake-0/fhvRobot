@@ -22,6 +22,7 @@ import communication.managers.CommunicationManager;
 import communication.managers.IAnswerHandler;
 import communication.managers.IDataReceivedHandler;
 import communication.pdu.ApplicationPDU;
+import controllers.ClientNameController;
 import models.Client;
 import network.IClientController;
 import network.receiver.INetworkReceiver;
@@ -41,6 +42,7 @@ public abstract class Communication
 	protected final CommunicationManager manager;
 	protected final IClientController<Client> clientController;
 	protected final HeartbeatProvider heartbeatProvider;
+	protected final ClientNameController nameController;
 
 	// Constructors
 	public Communication(IClientController<Client> clientController, int port) throws SocketException {
@@ -50,6 +52,7 @@ public abstract class Communication
 
 		this.receiver = new LoggerNetworkReceiver(socket);
 		this.sender = new LoggerNetworkSender(socket);
+		this.nameController = new ClientNameController();
 
 		this.heartbeatProvider = new HeartbeatProvider(this);
 		this.heartbeatProvider.run();
@@ -85,10 +88,14 @@ public abstract class Communication
 		if (command == Commands.CHANGE_NAME) {
 
 			String name = new String(payload);
-			client.setName(name);
 
+			// check if name is duplicated
+			name = nameController.findSimilarName(name);
+			nameController.registerName(name);
+
+			client.setName(name);
 			DatagramPacket datagram = manager.createDatagramPacket(client, Flags.ANSWER_FLAG, Commands.CHANGE_NAME,
-					new byte[] { 1 });
+					name.getBytes());
 			sender.answer(datagram);
 			handled = true;
 
