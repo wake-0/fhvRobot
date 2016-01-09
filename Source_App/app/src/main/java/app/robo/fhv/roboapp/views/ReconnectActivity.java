@@ -13,8 +13,8 @@ import app.robo.fhv.roboapp.R;
 public class ReconnectActivity extends FragmentActivity {
 
     public static final int REQUEST_CODE = 1001;
-    public static final int RESULT_CODE_CANCEL_CONNECTION = 1001 + 1;
-    public static final int RESULT_CODE_RECONNECT = 1001 + 2;
+    public static final int RESULT_CODE_CANCEL_CONNECTION = REQUEST_CODE + 1;
+    public static final int RESULT_CODE_RECONNECT = REQUEST_CODE + 2;
 
     private TextView lblReconnectTimer;
     private CountDownTimer countDownTimer;
@@ -48,6 +48,13 @@ public class ReconnectActivity extends FragmentActivity {
     }
 
     public void cancelReconnect(View v) {
+        setResult(RESULT_CODE_CANCEL_CONNECTION);
+        finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
         setResult(RESULT_CODE_CANCEL_CONNECTION);
         finish();
     }

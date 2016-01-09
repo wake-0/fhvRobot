@@ -257,9 +257,9 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
                 e.printStackTrace();
             }
             if (!reconnectActivityStarted) {
+                reconnectActivityStarted = true;
                 networkClient.disconnect();
                 Intent intent = new Intent(this, ReconnectActivity.class);
-                reconnectActivityStarted = true;
                 startActivityForResult(intent, ReconnectActivity.REQUEST_CODE);
                 return;
             }
