@@ -51,11 +51,11 @@ public class NetworkServer {
 		this.appCommunication = new AppCommunication(appController, delegator, appPort);
 		delegator.setChannelB(appCommunication);
 
-		// Gaming communication
-		this.gamingCommunication = new GamingCommunication(gamingController, gamingPort);
-
 		// This used for managing the current operator of the robo
 		this.operatorManager = new OperatorManager(appController, appCommunication);
+		
+		// Gaming communication
+		this.gamingCommunication = new GamingCommunication(gamingController, gamingPort, operatorManager);
 
 		new Thread(roboCommunication).start();
 		new Thread(appCommunication).start();

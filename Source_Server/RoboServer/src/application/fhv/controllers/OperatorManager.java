@@ -18,6 +18,8 @@ public class OperatorManager implements Runnable {
 	private final IClientController<Client> clientController;
 	private final Communication appCommunication;
 	private Timer timer;
+	
+	private String operatorName;
 
 	// 2 min Operator time
 	// private static final long OPERATOR_TIME = 2 * 60 * 1000;
@@ -27,6 +29,7 @@ public class OperatorManager implements Runnable {
 	public OperatorManager(IClientController<Client> appClients, Communication appCommunication) {
 		this.clientController = appClients;
 		this.appCommunication = appCommunication;
+		this.operatorName = "";
 	}
 
 	private Client removeOldOperator(List<? extends Client> clients) {
@@ -58,6 +61,7 @@ public class OperatorManager implements Runnable {
 
 		if (clients == null || clients.size() == 0) {
 			nextOperator = null;
+			this.operatorName = "";
 		} else if (nextIndex < clients.size() && nextIndex > -1) {
 			nextOperator = clients.get(nextIndex);
 		} else {
@@ -66,6 +70,7 @@ public class OperatorManager implements Runnable {
 
 		if (nextOperator != null) {
 			nextOperator.setIsOperator(true);
+			this.operatorName = nextOperator.getName();
 			appCommunication.sendToClient(nextOperator, Flags.REQUEST_FLAG, Commands.ROBO_STEARING, new byte[] { 0 });
 		}
 	}
@@ -114,5 +119,9 @@ public class OperatorManager implements Runnable {
 
 			}
 		});
+	}
+
+	public String getOperatorName() {
+		return operatorName;
 	}
 }
