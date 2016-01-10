@@ -21,7 +21,7 @@
         <SolidColorBrush Color="White" x:Key="Foreground" />
 
         <!-- Opacity -->
-        <system:Double x:Key="Opacity">0.9</system:Double>
+        <system:Double x:Key="Opacity">0.95</system:Double>
 
         <!-- Font size -->
         <system:Double x:Key="WinnerFontSize">28</system:Double>
