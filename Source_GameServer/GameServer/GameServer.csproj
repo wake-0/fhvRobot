@@ -91,8 +91,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Controllers\NetworkReceiver.cs" />
-    <Compile Include="Controllers\NetworkSender.cs" />
+    <Compile Include="Controllers\NetworkCommunication.cs" />
     <Compile Include="Controllers\NetworkServer.cs" />
     <Compile Include="Controllers\NetworkSettings.cs" />
     <Compile Include="Controls\DigitalClockControl.xaml.cs">

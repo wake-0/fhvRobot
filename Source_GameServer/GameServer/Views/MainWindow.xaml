@@ -77,13 +77,15 @@
                     <ScaleTransform CenterX="50" ScaleX="1" />
                 </Viewbox.LayoutTransform>
 
-                <StackPanel TextElement.Foreground="{StaticResource Foreground}">
-                    <TextBlock Text="{Binding TestText}"  
+                <StackPanel TextElement.Foreground="{StaticResource Foreground}"
+                            Orientation="Horizontal">
+                    <!-- TODO: change TextBox to TextBlock -->
+                    <TextBox Text="{Binding Name}"  
                                HorizontalAlignment="Stretch" 
                                VerticalAlignment="Stretch" />
 
                     <!-- Test button -->
-                    <!--<Button Command="{Binding ChangeTextCommand}" />-->
+                    <Button Content="Send" Command="{Binding SendMessageCommand}" />
                 </StackPanel>
             </Viewbox>
         </Border>

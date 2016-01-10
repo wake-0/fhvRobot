@@ -10,37 +10,35 @@ namespace GameServer.ViewModels
     public class MainViewModel
     {
         #region properties
-        public string TestText { get; set; }
-        public ICommand ChangeTextCommand { get; set; }
-
-        private const string Text1 = "Player";
-        private const string Text2 = "ChangedText";
-
-        private readonly NetworkServer server;
+        public string Name { get; set; }
+        public ICommand SendMessageCommand { get; private set; }
         public TimerService TimerService { get; private set; }
+        #endregion
+
+        #region Fields
+        private readonly NetworkServer server;
         #endregion
 
         #region ctor
         public MainViewModel()
         {
-            this.TimerService = new TimerService();
+            TimerService = new TimerService();
+            // TODO: Discuss if the toggle start stop should be refactored
             TimerService.ToggleStartStop();
 
             server = new NetworkServer();
+            server.Start();
 
-            TestText = Text1;
-            ChangeTextCommand = new DelegateCommand(ChangeText);
+            Name = "Player";
+            SendMessageCommand = new DelegateCommand(SendMessage);
         }
 
-        private void ChangeText(object obj)
+        private void SendMessage(object obj)
         {
-            TestText = TestText == Text1 ? Text2 : Text1;
-            //server.Send("Test");
-
+            server.SendMessage(Name);
             TimerService.ToggleStartStop();
         }
 
         #endregion
-
     }
 }
