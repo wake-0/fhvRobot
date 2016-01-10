@@ -4,20 +4,51 @@
         xmlns:viewModels="clr-namespace:GameServer.ViewModels"
         xmlns:services="clr-namespace:GameServer.Images"
         xmlns:controls="clr-namespace:GameServer.Controls"
-        Title="MainWindow" Height="350" Width="525"
-            WindowStyle="None" ResizeMode="NoResize"  
-    WindowStartupLocation="CenterScreen" WindowState="Maximized">
-    
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        Title="MainWindow" 
+        Height="350" Width="525"
+        WindowStyle="None" 
+        ResizeMode="NoResize"  
+        WindowStartupLocation="CenterScreen" 
+        WindowState="Maximized">
+
+    <Window.Resources>
+        <!--https://color.adobe.com/de/elbe-color-theme-4194247/edit/?copy=true&base=2&rule=Custom&selected=3&name=Kopie%20von%20elbe&mode=rgb&rgbvalues=0,0.2,0.352941,0.0117647,0.321569,0.443137,0,0.490196,0.545098,0.839216,0.847059,0.752941,0.941176,0.913725,0.74902&swatchOrder=0,1,2,3,4-->
+        <!--https://color.adobe.com/de/Flat-Design-Colors-v2-color-theme-4341903/edit/?copy=true&base=1&rule=Custom&selected=2&name=Kopie%20von%20Flat%20Design%20Colors%20v2&mode=hsv&rgbvalues=0.199999888832,0.3019601682245372,0.360784,0.27058783795999997,0.698039,0.6156862591214024,0.937255,0.7882359903542551,0.2980395919599999,0.8862749999999999,0.4784316084130131,0.24705890527500002,0.8745100000000001,0.28627434654000006,0.28627434654000006&swatchOrder=0,1,2,3,4-->
+
+        <!-- Colors -->
+        <SolidColorBrush Color="#334D5C" x:Key="Background" />
+        <SolidColorBrush Color="White" x:Key="Foreground" />
+
+        <!-- Opacity -->
+        <system:Double x:Key="Opacity">0.9</system:Double>
+
+        <!-- Font size -->
+        <system:Double x:Key="WinnerFontSize">28</system:Double>
+        <system:Double x:Key="GeneralFontSize">24</system:Double>
+
+        <Style x:Key="WinnerTextBlock" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="{StaticResource WinnerFontSize}" />
+            <Setter Property="Margin" Value="10,5" />
+        </Style>
+
+        <Style x:Key="GeneralTextBlock" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="{StaticResource GeneralFontSize}" />
+            <Setter Property="Foreground" Value="{StaticResource Foreground}" />
+            <Setter Property="Margin" Value="5,2" />
+        </Style>
+
+    </Window.Resources>
+
     <Window.DataContext>
         <viewModels:MainViewModel />
     </Window.DataContext>
 
-    <!--https://color.adobe.com/de/elbe-color-theme-4194247/edit/?copy=true&base=2&rule=Custom&selected=3&name=Kopie%20von%20elbe&mode=rgb&rgbvalues=0,0.2,0.352941,0.0117647,0.321569,0.443137,0,0.490196,0.545098,0.839216,0.847059,0.752941,0.941176,0.913725,0.74902&swatchOrder=0,1,2,3,4-->
-    <!--https://color.adobe.com/de/Flat-Design-Colors-v2-color-theme-4341903/edit/?copy=true&base=1&rule=Custom&selected=2&name=Kopie%20von%20Flat%20Design%20Colors%20v2&mode=hsv&rgbvalues=0.199999888832,0.3019601682245372,0.360784,0.27058783795999997,0.698039,0.6156862591214024,0.937255,0.7882359903542551,0.2980395919599999,0.8862749999999999,0.4784316084130131,0.24705890527500002,0.8745100000000001,0.28627434654000006,0.28627434654000006&swatchOrder=0,1,2,3,4-->
-    
+
     <Grid>
         <Grid.Background>
-            <ImageBrush ImageSource="{x:Static services:ResourceService.FhvImageSource}" Opacity="0.7"/>
+            <ImageBrush ImageSource="{x:Static services:ResourceService.FhvImageSource}" 
+                        Opacity="{StaticResource Opacity}"/>
         </Grid.Background>
 
         <Grid.ColumnDefinitions>
@@ -25,7 +56,7 @@
             <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        
+
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="1.5*" />
@@ -33,85 +64,99 @@
             <RowDefinition Height="2*" />
         </Grid.RowDefinitions>
 
-        <Border Grid.Column="1" Margin="0,100,0,30"
-                 CornerRadius="10"
-                BorderThickness="3,3,3,3"
-                BorderBrush="#00335A"
-                Background="#E27A3F"
-                Opacity="0.8"
+        <Border Grid.Column="1" 
+                Margin="0,100,0,15"
+                CornerRadius="5"
+                Background="{StaticResource Background}"
+                Opacity="{StaticResource Opacity}"
                 VerticalAlignment="Stretch">
 
+            <!-- This Viewbox is used to automatically resize the font size -->
             <Viewbox>
                 <Viewbox.LayoutTransform>
                     <ScaleTransform CenterX="50" ScaleX="1" />
                 </Viewbox.LayoutTransform>
-                <StackPanel>
-                    <TextBlock Text="{Binding TestText}"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-                    <Button Command="{Binding ChangeTextCommand}" />
+
+                <StackPanel TextElement.Foreground="{StaticResource Foreground}">
+                    <TextBlock Text="{Binding TestText}"  
+                               HorizontalAlignment="Stretch" 
+                               VerticalAlignment="Stretch" />
+
+                    <!-- Test button -->
+                    <!--<Button Command="{Binding ChangeTextCommand}" />-->
                 </StackPanel>
             </Viewbox>
-
         </Border>
-        
-        
-       
+
         <controls:DigitalClockControl  
             Grid.Row="1" 
             Grid.Column="1" 
-            Opacity="0.8"
-            ClockBackground="#334D5C"
-            
-            Foreground="White"
+            Opacity="{StaticResource Opacity}"
+            ClockBackground="{StaticResource Background}"
+            DigitBrush="{StaticResource Foreground}"
+            DotBrush="{StaticResource Foreground}"
             CurrentTime="{Binding TimerService.CurrentSpan}" />
 
-        <Border Grid.Row="2" Grid.Column="1" 
-                Margin="0,30,0,0" 
-                CornerRadius="10,10,0,0"
-                BorderThickness="3,3,3,2"
-                Opacity="0.8"
-                BorderBrush="#00335A"
-                Background="White">
-            <StackPanel>
-                <Label Content="Test1" FontSize="24"/>
-                <Label Content="Test2" FontSize="24"/>
-                <Label Content="Test3" FontSize="24"/>
+        <Border Grid.Row="2" 
+                Grid.Column="1" 
+                Margin="0,70,0,0" 
+                CornerRadius="5,5,0,0"
+                Opacity="{StaticResource Opacity}"
+                Background="{StaticResource Background}">
+
+            <StackPanel TextElement.Foreground="{StaticResource Foreground}">
+                <TextBlock Text="Test1" Style="{StaticResource WinnerTextBlock}" />
+                <TextBlock Text="Test2" Style="{StaticResource WinnerTextBlock}" />
+                <TextBlock Text="Test3" Style="{StaticResource WinnerTextBlock}" />
             </StackPanel>
+
         </Border>
 
-        
-            <ListView Grid.Row="3" Grid.Column="1" Margin="0,0,0,100">
+        <ListView Grid.Row="3" 
+                  Grid.Column="1" 
+                  Margin="0,0,0,100">
             <ListView.Template>
                 <ControlTemplate>
 
-                    <Border x:Name="mask" CornerRadius="0,0,10,10" 
-                            BorderThickness="3,0,3,3" 
-                            Opacity="0.8"
-                            BorderBrush="#00335A" Background="White" Padding="2">
+                    <Border x:Name="mask" CornerRadius="0,0,5,5" 
+                            Opacity="{StaticResource Opacity}"
+                            Background="{StaticResource Background}">
+
                         <ScrollViewer>
-                            <ItemsPresenter />
+                            <ItemsPresenter TextElement.Foreground="{StaticResource Foreground}" />
                         </ScrollViewer>
 
                     </Border>
                 </ControlTemplate>
             </ListView.Template>
-            
+
             <ListViewItem>
-                <Label Content="{Binding TimerService.CurrentSpan}"></Label>
+                <TextBlock Text="{Binding TimerService.CurrentSpan}" Style="{StaticResource GeneralTextBlock}" />
             </ListViewItem>
-            <ListViewItem Content="Test" FontSize="18"/>
-            <ListViewItem Content="Test" FontSize="18"/>
-            <ListViewItem Content="Test" FontSize="18"/>
-            <ListViewItem Content="Test" FontSize="18"/>
-            <ListViewItem Content="Test" FontSize="18"/>
-            <ListViewItem Content="Test" FontSize="18"/>
-            <ListViewItem Content="Test" FontSize="18"/>
-            <ListViewItem Content="Test" FontSize="18"/>
-            <ListViewItem Content="Test" FontSize="18"/>
-            <ListViewItem Content="Test" FontSize="18"/>
-            <ListViewItem Content="Test" FontSize="18"/>
-            <ListViewItem Content="Test" FontSize="18"/>
-            <ListViewItem Content="Test" FontSize="18"/>
-            <ListViewItem Content="Test" FontSize="18"/>
+            <ListViewItem>
+                <TextBlock Text="Test" Style="{StaticResource GeneralTextBlock}" />
+            </ListViewItem>
+            <ListViewItem>
+                <TextBlock Text="Test" Style="{StaticResource GeneralTextBlock}" />
+            </ListViewItem>
+            <ListViewItem>
+                <TextBlock Text="Test" Style="{StaticResource GeneralTextBlock}" />
+            </ListViewItem>
+            <ListViewItem>
+                <TextBlock Text="Test" Style="{StaticResource GeneralTextBlock}" />
+            </ListViewItem>
+            <ListViewItem>
+                <TextBlock Text="Test" Style="{StaticResource GeneralTextBlock}" />
+            </ListViewItem>
+            <ListViewItem>
+                <TextBlock Text="Test" Style="{StaticResource GeneralTextBlock}" />
+            </ListViewItem>
+            <ListViewItem>
+                <TextBlock Text="Test" Style="{StaticResource GeneralTextBlock}" />
+            </ListViewItem>
+            <ListViewItem>
+                <TextBlock Text="Test" Style="{StaticResource GeneralTextBlock}" />
+            </ListViewItem>
         </ListView>
     </Grid>
 </Window>

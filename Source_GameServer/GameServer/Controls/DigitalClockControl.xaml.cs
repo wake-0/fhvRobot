@@ -57,7 +57,6 @@ namespace GameServer.Controls
              DependencyProperty.Register("CurrentTime", typeof(TimeSpan),
              typeof(DigitalClockControl), new FrameworkPropertyMetadata(new TimeSpan(), OnCurrentTimePropertyChanged));
 
-        [SafeForDependencyAnalysis]
         public TimeSpan CurrentTime
         {
             get { return (TimeSpan)GetValue(CurrentTimeProperty); }
