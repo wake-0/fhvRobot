@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using GameServer.Models;
 using PostSharp.Patterns.Model;
 
-namespace GameServer.ViewModels
+namespace GameServer.Managers
 {
     [NotifyPropertyChanged]
     public class ScoreManager
@@ -20,7 +21,7 @@ namespace GameServer.ViewModels
         public ScoreManager()
         {
             TopScores = new ObservableCollection<Score>();
-            Scores = new ObservableCollection<Score>();    
+            Scores = new ObservableCollection<Score>();
         }
         #endregion
 
@@ -33,7 +34,7 @@ namespace GameServer.ViewModels
             {
                 // Insert new top score
                 InsertScoreAtPosition(TopScores, score);
-            } 
+            }
             else if (TopScores.Any(s => s.Duration > score.Duration))
             {
                 // Take last entry
@@ -53,6 +54,32 @@ namespace GameServer.ViewModels
             }
         }
 
+        public IEnumerable<Score> GetAllScores()
+        {
+            var list = new List<Score>();
+            list.AddRange(TopScores);
+            list.AddRange(Scores);
+            return list;
+        }
+
+        public void SetAllScores(IEnumerable<Score> scores)
+        {
+            // Clear old scores
+            Clear();
+
+            // Add new scores
+            foreach (var score in scores)
+            {
+                Add(score);
+            }
+        }
+       
+        public void Clear()
+        {
+            TopScores.Clear();
+            Scores.Clear();
+        }
+
         private void InsertScoreAtPosition(ObservableCollection<Score> scores, Score score)
         {
             if (scores == null) throw new ArgumentNullException("scores");
@@ -68,5 +95,7 @@ namespace GameServer.ViewModels
             scores.Add(score);
         }
         #endregion
+
+
     }
 }

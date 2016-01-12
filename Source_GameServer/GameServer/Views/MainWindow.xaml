@@ -85,6 +85,9 @@
 
                     <!-- Test button -->
                     <Button Content="Send" Command="{Binding SendMessageCommand}" />
+                    <Button Content="Test" Command="{Binding TestCommand}" />
+                    <Button Content="Open" Command="{Binding OpenCommand}" />
+                    <Button Content="Save" Command="{Binding SaveCommand}" />
                 </StackPanel>
             </Viewbox>
         </Border>
