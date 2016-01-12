@@ -107,6 +107,7 @@
       <DependentUpon>DigitalClockElement.xaml</DependentUpon>
     </Compile>
     <Compile Include="Images\ResourceService.cs" />
+    <Compile Include="Models\Score.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -117,6 +118,7 @@
     <Compile Include="Services\TimeTrackedEventArgs.cs" />
     <Compile Include="Utils\DelegateCommand.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\ScoreManager.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -145,9 +147,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Images\FHV-Image.jpg" />
   </ItemGroup>

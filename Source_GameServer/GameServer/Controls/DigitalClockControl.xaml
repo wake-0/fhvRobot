@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:GameServer.Controls">
     
-    <Border BorderThickness="3" BorderBrush="Transparent" CornerRadius="5" x:Name="masterBorder" Padding="30">
+    <Border CornerRadius="5" x:Name="masterBorder" Padding="30">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />

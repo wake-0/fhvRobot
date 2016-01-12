@@ -10,7 +10,8 @@
         WindowStyle="None" 
         ResizeMode="NoResize"  
         WindowStartupLocation="CenterScreen" 
-        WindowState="Maximized">
+        WindowState="Maximized"
+        SnapsToDevicePixels="True">
 
     <Window.Resources>
         <!--https://color.adobe.com/de/elbe-color-theme-4194247/edit/?copy=true&base=2&rule=Custom&selected=3&name=Kopie%20von%20elbe&mode=rgb&rgbvalues=0,0.2,0.352941,0.0117647,0.321569,0.443137,0,0.490196,0.545098,0.839216,0.847059,0.752941,0.941176,0.913725,0.74902&swatchOrder=0,1,2,3,4-->
@@ -24,7 +25,7 @@
         <system:Double x:Key="Opacity">0.95</system:Double>
 
         <!-- Font size -->
-        <system:Double x:Key="WinnerFontSize">28</system:Double>
+        <system:Double x:Key="WinnerFontSize">32</system:Double>
         <system:Double x:Key="GeneralFontSize">24</system:Double>
 
         <Style x:Key="WinnerTextBlock" TargetType="TextBlock">
@@ -37,7 +38,6 @@
             <Setter Property="Foreground" Value="{StaticResource Foreground}" />
             <Setter Property="Margin" Value="5,2" />
         </Style>
-
     </Window.Resources>
 
     <Window.DataContext>
@@ -58,10 +58,9 @@
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
             <RowDefinition Height="1.5*" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="2*" />
+            <RowDefinition Height="4*" />
         </Grid.RowDefinitions>
 
         <Border Grid.Column="1" 
@@ -80,7 +79,7 @@
                 <StackPanel TextElement.Foreground="{StaticResource Foreground}"
                             Orientation="Horizontal">
                     <!-- TODO: change TextBox to TextBlock -->
-                    <TextBox Text="{Binding Name}"  
+                    <TextBox Text="{Binding CurrentScore.Name}"  
                                HorizontalAlignment="Stretch" 
                                VerticalAlignment="Stretch" />
 
@@ -101,64 +100,89 @@
 
         <Border Grid.Row="2" 
                 Grid.Column="1" 
-                Margin="0,70,0,0" 
-                CornerRadius="5,5,0,0"
+                Margin="0,15,0,100" 
+                CornerRadius="5,5,5,5"
                 Opacity="{StaticResource Opacity}"
                 Background="{StaticResource Background}">
 
-            <StackPanel TextElement.Foreground="{StaticResource Foreground}">
-                <TextBlock Text="Test1" Style="{StaticResource WinnerTextBlock}" />
-                <TextBlock Text="Test2" Style="{StaticResource WinnerTextBlock}" />
-                <TextBlock Text="Test3" Style="{StaticResource WinnerTextBlock}" />
-            </StackPanel>
+            <Grid Margin="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />    
+                </Grid.RowDefinitions>
+                
+                <ListView
+                  ItemsSource="{Binding ScoreManager.TopScores}">
+                    <ListView.Template>
+                        <ControlTemplate>
 
-        </Border>
-
-        <ListView Grid.Row="3" 
-                  Grid.Column="1" 
-                  Margin="0,0,0,100">
-            <ListView.Template>
-                <ControlTemplate>
-
-                    <Border x:Name="mask" CornerRadius="0,0,5,5" 
+                            <Border x:Name="mask" CornerRadius="0,0,5,5" 
                             Opacity="{StaticResource Opacity}"
                             Background="{StaticResource Background}">
 
-                        <ScrollViewer>
-                            <ItemsPresenter TextElement.Foreground="{StaticResource Foreground}" />
-                        </ScrollViewer>
+                                <ScrollViewer>
+                                    <ItemsPresenter TextElement.Foreground="{StaticResource Foreground}" />
+                                </ScrollViewer>
 
-                    </Border>
-                </ControlTemplate>
-            </ListView.Template>
+                            </Border>
+                        </ControlTemplate>
+                    </ListView.Template>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid HorizontalAlignment="Stretch" Margin="20,0,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
 
-            <ListViewItem>
-                <TextBlock Text="{Binding TimerService.CurrentSpan}" Style="{StaticResource GeneralTextBlock}" />
-            </ListViewItem>
-            <ListViewItem>
-                <TextBlock Text="Test" Style="{StaticResource GeneralTextBlock}" />
-            </ListViewItem>
-            <ListViewItem>
-                <TextBlock Text="Test" Style="{StaticResource GeneralTextBlock}" />
-            </ListViewItem>
-            <ListViewItem>
-                <TextBlock Text="Test" Style="{StaticResource GeneralTextBlock}" />
-            </ListViewItem>
-            <ListViewItem>
-                <TextBlock Text="Test" Style="{StaticResource GeneralTextBlock}" />
-            </ListViewItem>
-            <ListViewItem>
-                <TextBlock Text="Test" Style="{StaticResource GeneralTextBlock}" />
-            </ListViewItem>
-            <ListViewItem>
-                <TextBlock Text="Test" Style="{StaticResource GeneralTextBlock}" />
-            </ListViewItem>
-            <ListViewItem>
-                <TextBlock Text="Test" Style="{StaticResource GeneralTextBlock}" />
-            </ListViewItem>
-            <ListViewItem>
-                <TextBlock Text="Test" Style="{StaticResource GeneralTextBlock}" />
-            </ListViewItem>
-        </ListView>
+                                <TextBlock Text="{Binding Name}" Style="{StaticResource WinnerTextBlock}" HorizontalAlignment="Stretch" />
+                                <TextBlock Grid.Column="1" Text="{Binding Duration}" Style="{StaticResource WinnerTextBlock}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+
+                <ListView Grid.Row="1" 
+                  ItemsSource="{Binding ScoreManager.Scores}">
+                    <ListView.Template>
+                        <ControlTemplate>
+
+                            <Border x:Name="mask" CornerRadius="0,0,5,5" 
+                            Opacity="{StaticResource Opacity}"
+                            Background="{StaticResource Background}">
+
+                                <ScrollViewer>
+                                    <ItemsPresenter TextElement.Foreground="{StaticResource Foreground}" />
+                                </ScrollViewer>
+
+                            </Border>
+                        </ControlTemplate>
+                    </ListView.Template>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid HorizontalAlignment="Stretch" Margin="20,0,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="{Binding Name}" Style="{StaticResource GeneralTextBlock}" HorizontalAlignment="Stretch" />
+                                <TextBlock Grid.Column="1" Text="{Binding Duration}" Style="{StaticResource GeneralTextBlock}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+            </Grid>
+        </Border>
     </Grid>
 </Window>
