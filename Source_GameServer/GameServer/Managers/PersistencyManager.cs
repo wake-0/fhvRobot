@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
 using System.Xml;
-using System.Xml.Serialization;
 using GameServer.Models;
 using PostSharp.Patterns.Model;
 
@@ -36,35 +33,31 @@ namespace GameServer.Managers
         {
             var scores = new List<Score>();
 
-            using (XmlReader reader = XmlReader.Create(fileName))
+            using (var reader = XmlReader.Create(fileName))
             {
                 while (reader.Read())
                 {
                     // Only detect start elements.
-                    if (reader.IsStartElement())
+                    if (!reader.IsStartElement()) continue;
+
+                    // Get element name and switch on it.
+                    if (reader.Name == "Score")
                     {
-                        // Get element name and switch on it.
-                        switch (reader.Name)
+                        var score = new Score();
+
+                        var nameAttribute = reader["Name"];
+                        if (nameAttribute != null)
                         {
-                            case "Score":
-                                var score = new Score();
-
-                                var nameAttribute = reader["Name"];
-                                if (nameAttribute != null)
-                                {
-                                    score.Name = nameAttribute;
-                                }
-
-                                var durationAttribute = reader["Duration"];
-                                if (durationAttribute != null)
-                                {
-                                    score.Duration = TimeSpan.Parse(durationAttribute);
-                                }
-                            
-                                scores.Add(score);
-
-                                break;
+                            score.Name = nameAttribute;
                         }
+
+                        var durationAttribute = reader["Duration"];
+                        if (durationAttribute != null)
+                        {
+                            score.Duration = TimeSpan.Parse(durationAttribute);
+                        }
+
+                        scores.Add(score);
                     }
                 }
             }
