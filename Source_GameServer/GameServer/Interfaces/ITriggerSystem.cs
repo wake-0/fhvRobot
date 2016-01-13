@@ -2,10 +2,10 @@
 
 namespace GameServer.Interfaces
 {
-    public interface ITimeMeasurement
+    public interface ITriggerSystem
     {
         bool IsSystemActive { get; }
-        event EventHandler<TimeSpan> TimeMeasured;
+        event EventHandler TriggerRaised;
  
         bool ActivateSystem();
         bool DeactivateSystem();
