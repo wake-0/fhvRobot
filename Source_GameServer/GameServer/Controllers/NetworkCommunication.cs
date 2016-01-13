@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using GameServer.Utils;
 
 namespace GameServer.Controllers
 {
@@ -55,10 +57,9 @@ namespace GameServer.Controllers
         {
             byte[] payload = Encoding.ASCII.GetBytes(message);
 
-            bool isExtendedPayloadSize = payload.Length > 255;
-
             // Size of send data: flag, session id, flag, flag, command id, length, payload
-            int headerSize = 6;
+            bool isExtendedPayloadSize = payload.Length > 255;
+            int headerSize = isExtendedPayloadSize ? 7 : 6;
             int sizeOfSendData = headerSize + payload.Length;
             byte[] sendData = new byte[sizeOfSendData];
 
@@ -68,7 +69,12 @@ namespace GameServer.Controllers
             sendData[2] = 0; // Flags
             sendData[3] = isExtendedPayloadSize ? (byte)2 : (byte)0; // Flags
             sendData[4] = 2; // General message command
-            sendData[5] = (byte)payload.Length;
+
+            byte[] lengthAsByteArr = LengthConverter.ConvertLength(payload.Length);
+            for (int i = 5; i < headerSize; i++)
+            {
+                sendData[i] = lengthAsByteArr[i - 5];
+            }
 
             // Set payload
             for (var i = headerSize; i < sizeOfSendData; i++)
