@@ -18,7 +18,7 @@ namespace GameServer.Controllers
         public NetworkServer()
         {
             communication = new NetworkCommunication();
-            communication.NewPlayerReceived += OnNewPlayerReceived;
+            communication.MessageReceived += OnMessageReceived;
             networkThread = new Thread(communication.Run);
         }
         #endregion
@@ -40,12 +40,19 @@ namespace GameServer.Controllers
             networkThread.Join();
         }
 
-        private void OnNewPlayerReceived(object sender, string value)
+        private void OnMessageReceived(object sender, byte[] message)
         {
-            if (NewPlayerReceived != null)
+            // Check get operator command and answer bit set
+            if (message[4] == Commands.GET_OPERATOR && ((message[3] & 1) != 0))
             {
-                NewPlayerReceived.Invoke(sender, value);
+                var name = "Test";
+                if (NewPlayerReceived != null)
+                {
+                    NewPlayerReceived.Invoke(sender, name);
+                }
             }
+
+            
         }
         #endregion
     }

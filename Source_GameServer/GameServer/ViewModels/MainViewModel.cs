@@ -68,8 +68,9 @@ namespace GameServer.ViewModels
 
         private void SendMessage(object obj)
         {
-            server.SendMessage(CurrentScore.Name);
-            TimerService.ToggleStartStop();
+            ScoreManager.Add(new Score() {Name = "Test", Duration = new TimeSpan()});
+            //server.SendMessage(CurrentScore.Name);
+            //TimerService.ToggleStartStop();
         }
 
         private void SaveScore()
