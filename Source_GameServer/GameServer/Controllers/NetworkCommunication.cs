@@ -52,7 +52,7 @@ namespace GameServer.Controllers
             }
         }
 
-        public void SendMessage(string message)
+        public void SendCommand(int command, string message)
         {
             var payload = Encoding.ASCII.GetBytes(message);
             var isExtendedPayloadSize = payload.Length > 255;
@@ -67,9 +67,9 @@ namespace GameServer.Controllers
             sendData[1] = sessionId;                // Session id [Session]
             sendData[2] = 0;                        // Flags [Presentation]
             sendData[3] = isExtendedPayloadSize     // Flags with extended payload [Application]
-                ? (byte)2 
-                : (byte)0; 
-            sendData[4] = 2;                        // General message command [Application]
+                ? (byte)2
+                : (byte)0;
+            sendData[4] = (byte)command;            // General message command [Application]
 
             // Set payload length
             var lengthAsByteArr = LengthConverter.ConvertLength(payload.Length);
@@ -86,6 +86,11 @@ namespace GameServer.Controllers
             }
 
             serverSocket.SendTo(sendData, sizeOfSendData, SocketFlags.None, ipEndPoint);
+        }
+
+        public void SendMessage(string message)
+        {
+            SendCommand(Commands.GENERAL_MESSAGE, message);
         }
 
         public void Stop()
