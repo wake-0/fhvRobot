@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
+using System.Xml;
 using GameServer.Models;
 using PostSharp.Patterns.Model;
 
@@ -73,7 +75,30 @@ namespace GameServer.Managers
                 Add(score);
             }
         }
-       
+
+        public string GetScoresAsXmlString()
+        {
+            var builder = new StringBuilder();
+            using (var writer = XmlWriter.Create(builder))
+            {
+                writer.WriteStartDocument();
+                writer.WriteStartElement("Scores");
+
+                foreach (var score in GetAllScores())
+                {
+                    writer.WriteStartElement("Score");
+                    writer.WriteAttributeString("Name", score.Name);
+                    writer.WriteAttributeString("Duration", score.Duration.ToString());
+                    writer.WriteEndElement();
+                }
+
+                writer.WriteEndElement();
+                writer.WriteEndDocument();
+            }
+
+            return builder.ToString();
+        }
+
         public void Clear()
         {
             TopScores.Clear();
@@ -95,7 +120,5 @@ namespace GameServer.Managers
             scores.Add(score);
         }
         #endregion
-
-
     }
 }
