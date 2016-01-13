@@ -38,15 +38,18 @@ namespace GameServer.ViewModels
             // TODO: Discuss if the toggle start stop should be refactored
             TimerService = new TimerService();
             TimerService.ToggleStartStop();
-            
+
             SendMessageCommand = new DelegateCommand(SendMessage);
             TestCommand = new DelegateCommand(o => SetTestData());
             OpenCommand = new DelegateCommand(o => LoadScore());
             SaveCommand = new DelegateCommand(o => SaveScore());
 
             server = new NetworkServer();
+            server.NewPlayerReceived += NewPlayerReceived;
             //server.Start();
         }
+
+
         #endregion
 
         #region Methods
@@ -68,7 +71,7 @@ namespace GameServer.ViewModels
 
         private void SendMessage(object obj)
         {
-            ScoreManager.Add(new Score() {Name = "Test", Duration = new TimeSpan()});
+            ScoreManager.Add(new Score() { Name = "Test", Duration = new TimeSpan() });
             //server.SendMessage(CurrentScore.Name);
             //TimerService.ToggleStartStop();
         }
@@ -110,6 +113,10 @@ namespace GameServer.ViewModels
             }
         }
 
+        private void NewPlayerReceived(object sender, string playerName)
+        {
+            CurrentScore = new Score { Name = playerName, Duration = new TimeSpan() };
+        }
         #endregion
     }
 }

@@ -40,6 +40,11 @@ namespace GameServer.Controllers
             networkThread.Join();
         }
 
+        public void RequestOperator()
+        {
+            communication.SendCommand(Commands.GET_OPERATOR, "");
+        }
+
         private void OnMessageReceived(object sender, byte[] message)
         {
             // Check get operator command and answer bit set
@@ -51,8 +56,6 @@ namespace GameServer.Controllers
                     NewPlayerReceived.Invoke(sender, name);
                 }
             }
-
-            
         }
         #endregion
     }
