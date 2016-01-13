@@ -16,6 +16,8 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
+    <SkipPostSharp>True</SkipPostSharp>
+    <PostSharpIgnoredPackages>PostSharp.Patterns.Model</PostSharpIgnoredPackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -54,7 +56,12 @@
     <Compile Include="PersistencyManagerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\GameServer\GameServer.csproj">
+      <Project>{3D339368-434D-4D7F-8A18-A51823BD15F6}</Project>
+      <Name>GameServer</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="TestData\test.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

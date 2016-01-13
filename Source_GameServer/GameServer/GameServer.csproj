@@ -120,6 +120,7 @@
     <Compile Include="Services\TimerState.cs" />
     <Compile Include="Services\TimeTrackedEventArgs.cs" />
     <Compile Include="Utils\DelegateCommand.cs" />
+    <Compile Include="Utils\LengthConverter.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

@@ -1,4 +1,5 @@
 ﻿using System;
+using GameServer.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GameServer.Test
@@ -49,6 +50,23 @@ namespace GameServer.Test
             Assert.AreEqual(0, byteArr[2]);
             Assert.AreEqual(0, byteArr[3]);
 
+        }
+
+        [TestMethod]
+        public void LengthConverterConvertLength()
+        {
+            var arr = LengthConverter.ConvertLength(35);
+            Assert.AreEqual(1, arr.Length);
+            Assert.AreEqual(35, arr[0]);
+
+            arr = LengthConverter.ConvertLength(255);
+            Assert.AreEqual(1, arr.Length);
+            Assert.AreEqual(255, arr[0]);
+
+            arr = LengthConverter.ConvertLength(17777);
+            Assert.AreEqual(2, arr.Length);
+            Assert.AreEqual(0x45, arr[0]);
+            Assert.AreEqual(0x71, arr[1]);
         }
     }
 }
