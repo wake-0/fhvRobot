@@ -110,6 +110,7 @@
     </Compile>
     <Compile Include="Converters\IndexConverter.cs" />
     <Compile Include="Images\ResourceService.cs" />
+    <Compile Include="Interfaces\ITriggerSystem.cs" />
     <Compile Include="Managers\PersistencyManager.cs" />
     <Compile Include="Managers\ScoreManager.cs" />
     <Compile Include="Models\Score.cs" />
