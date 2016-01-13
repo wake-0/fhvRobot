@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 
 namespace GameServer.Controllers
 {
@@ -9,10 +10,15 @@ namespace GameServer.Controllers
         private readonly Thread networkThread;
         #endregion
 
+        #region Events
+        public event EventHandler<string> NewPlayerReceived;
+        #endregion
+
         #region ctor
         public NetworkServer()
         {
             communication = new NetworkCommunication();
+            communication.NewPlayerReceived += OnNewPlayerReceived;
             networkThread = new Thread(communication.Run);
         }
         #endregion
@@ -32,6 +38,14 @@ namespace GameServer.Controllers
         {
             communication.Stop();
             networkThread.Join();
+        }
+
+        private void OnNewPlayerReceived(object sender, string value)
+        {
+            if (NewPlayerReceived != null)
+            {
+                NewPlayerReceived.Invoke(sender, value);
+            }
         }
         #endregion
     }

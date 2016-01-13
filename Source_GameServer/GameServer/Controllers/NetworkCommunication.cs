@@ -18,6 +18,10 @@ namespace GameServer.Controllers
         private static readonly int BUFFER_SIZE = 4096;
         #endregion
 
+        #region Events
+        public event EventHandler<string> NewPlayerReceived;
+        #endregion
+
         #region ctor
         public NetworkCommunication()
         {
@@ -46,9 +50,23 @@ namespace GameServer.Controllers
                 // The received message is a heartbeat or another not allowed message
                 if (buffer.Length <= 5 || buffer[4] == 0) continue;
 
+                // Check get operator command and answer bit set
+                if (buffer[4] == Commands.GET_OPERATOR && ((buffer[3] & 1) != 0))
+                {
+                    OnNewPlayerReceived("test");
+                }
+
                 // Print received message
                 Console.WriteLine(@"return [" + value + @"]");
                 Console.WriteLine(BitConverter.ToString(buffer));
+            }
+        }
+
+        private void OnNewPlayerReceived(string name)
+        {
+            if (NewPlayerReceived != null)
+            {
+                NewPlayerReceived.Invoke(this, name);
             }
         }
 
