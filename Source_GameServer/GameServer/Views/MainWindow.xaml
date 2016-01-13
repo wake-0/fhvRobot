@@ -5,6 +5,7 @@
         xmlns:services="clr-namespace:GameServer.Images"
         xmlns:controls="clr-namespace:GameServer.Controls"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:converters="clr-namespace:GameServer.Converters"
         Title="MainWindow" 
         Height="350" Width="525"
         WindowStyle="None" 
@@ -38,6 +39,10 @@
             <Setter Property="Foreground" Value="{StaticResource Foreground}" />
             <Setter Property="Margin" Value="5,2" />
         </Style>
+        
+        <!-- Converters -->
+        <converters:IndexConverter x:Key="IndexConverter" />
+        
     </Window.Resources>
 
     <Window.DataContext>
@@ -111,9 +116,9 @@
             <Grid Margin="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />    
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                
+
                 <ListView
                   ItemsSource="{Binding ScoreManager.TopScores}">
                     <ListView.Template>
@@ -132,14 +137,19 @@
                     </ListView.Template>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Grid HorizontalAlignment="Stretch" Margin="20,0,0,0">
+                            <Grid HorizontalAlignment="Stretch" Margin="10,0,0,0">
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock Text="{Binding Name}" Style="{StaticResource WinnerTextBlock}" HorizontalAlignment="Stretch" />
-                                <TextBlock Grid.Column="1" Text="{Binding Duration}" Style="{StaticResource WinnerTextBlock}" />
+                                <TextBlock Text="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                                    AncestorType={x:Type ListViewItem}}, 
+                                                    Converter={StaticResource IndexConverter}, ConverterParameter=1}" 
+                                           Style="{StaticResource WinnerTextBlock}" />
+                                <TextBlock Grid.Column="1"  Text="{Binding Name}" Style="{StaticResource WinnerTextBlock}" HorizontalAlignment="Stretch" />
+                                <TextBlock Grid.Column="2" Text="{Binding Duration}" Style="{StaticResource WinnerTextBlock}" />
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -168,14 +178,18 @@
                     </ListView.Template>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Grid HorizontalAlignment="Stretch" Margin="20,0,0,0">
+                            <Grid HorizontalAlignment="Stretch" Margin="40,0,10,0">
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-
-                                <TextBlock Text="{Binding Name}" Style="{StaticResource GeneralTextBlock}" HorizontalAlignment="Stretch" />
-                                <TextBlock Grid.Column="1" Text="{Binding Duration}" Style="{StaticResource GeneralTextBlock}" />
+                                <TextBlock Text="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                                    AncestorType={x:Type ListViewItem}}, 
+                                                    Converter={StaticResource IndexConverter}, ConverterParameter=4}" 
+                                           Style="{StaticResource GeneralTextBlock}" />
+                                <TextBlock Grid.Column="1" Text="{Binding Name}" Style="{StaticResource GeneralTextBlock}" HorizontalAlignment="Stretch" />
+                                <TextBlock Grid.Column="2" Text="{Binding Duration}" Style="{StaticResource GeneralTextBlock}" />
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>

@@ -92,6 +92,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controllers\Commands.cs" />
     <Compile Include="Controllers\NetworkCommunication.cs" />
     <Compile Include="Controllers\NetworkServer.cs" />
     <Compile Include="Controllers\NetworkSettings.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Controls\DigitalClockElement.xaml.cs">
       <DependentUpon>DigitalClockElement.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\IndexConverter.cs" />
     <Compile Include="Images\ResourceService.cs" />
     <Compile Include="Managers\PersistencyManager.cs" />
     <Compile Include="Managers\ScoreManager.cs" />
