@@ -19,7 +19,7 @@ namespace GameServer.Controllers
         #endregion
 
         #region Events
-        public event EventHandler<string> NewPlayerReceived;
+        public event EventHandler<byte[]> MessageReceived;
         #endregion
 
         #region ctor
@@ -50,11 +50,9 @@ namespace GameServer.Controllers
                 // The received message is a heartbeat or another not allowed message
                 if (buffer.Length <= 5 || buffer[4] == 0) continue;
 
-                // Check get operator command and answer bit set
-                if (buffer[4] == Commands.GET_OPERATOR && ((buffer[3] & 1) != 0))
-                {
-                    OnNewPlayerReceived("test");
-                }
+                OnMessageReceived(buffer);
+
+               
 
                 // Print received message
                 Console.WriteLine(@"return [" + value + @"]");
@@ -62,11 +60,11 @@ namespace GameServer.Controllers
             }
         }
 
-        private void OnNewPlayerReceived(string name)
+        private void OnMessageReceived(byte[] message)
         {
-            if (NewPlayerReceived != null)
+            if (MessageReceived != null)
             {
-                NewPlayerReceived.Invoke(this, name);
+                MessageReceived.Invoke(this, message);
             }
         }
 
