@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -55,25 +54,29 @@ namespace GameServer.Controllers
 
         public void SendMessage(string message)
         {
-            byte[] payload = Encoding.ASCII.GetBytes(message);
+            var payload = Encoding.ASCII.GetBytes(message);
+            var isExtendedPayloadSize = payload.Length > 255;
 
             // Size of send data: flag, session id, flag, flag, command id, length, payload
-            bool isExtendedPayloadSize = payload.Length > 255;
-            int headerSize = isExtendedPayloadSize ? 7 : 6;
-            int sizeOfSendData = headerSize + payload.Length;
-            byte[] sendData = new byte[sizeOfSendData];
+            var headerSize = isExtendedPayloadSize ? 7 : 6;
+            var sizeOfSendData = headerSize + payload.Length;
+            var sendData = new byte[sizeOfSendData];
 
-            // Set sendData
-            sendData[0] = 0; // Flags
-            sendData[1] = sessionId;
-            sendData[2] = 0; // Flags
-            sendData[3] = isExtendedPayloadSize ? (byte)2 : (byte)0; // Flags
-            sendData[4] = 2; // General message command
+            // Set headers from the below layers
+            sendData[0] = 0;                        // Flags [Network]
+            sendData[1] = sessionId;                // Session id [Session]
+            sendData[2] = 0;                        // Flags [Presentation]
+            sendData[3] = isExtendedPayloadSize     // Flags with extended payload [Application]
+                ? (byte)2 
+                : (byte)0; 
+            sendData[4] = 2;                        // General message command [Application]
 
-            byte[] lengthAsByteArr = LengthConverter.ConvertLength(payload.Length);
-            for (int i = 5; i < headerSize; i++)
+            // Set payload length
+            var lengthAsByteArr = LengthConverter.ConvertLength(payload.Length);
+            const int lengthHeaderStart = 5;
+            for (var i = lengthHeaderStart; i < headerSize; i++)
             {
-                sendData[i] = lengthAsByteArr[i - 5];
+                sendData[i] = lengthAsByteArr[i - lengthHeaderStart];
             }
 
             // Set payload
