@@ -54,23 +54,26 @@ namespace GameServer.Controllers
         public void SendMessage(string message)
         {
             byte[] payload = Encoding.ASCII.GetBytes(message);
-            
+
+            bool isExtendedPayloadSize = payload.Length > 255;
+
             // Size of send data: flag, session id, flag, flag, command id, length, payload
-            int sizeOfSendData = 6 + payload.Length;
+            int headerSize = 6;
+            int sizeOfSendData = headerSize + payload.Length;
             byte[] sendData = new byte[sizeOfSendData];
 
             // Set sendData
             sendData[0] = 0; // Flags
             sendData[1] = sessionId;
             sendData[2] = 0; // Flags
-            sendData[3] = 0; // Flags
+            sendData[3] = isExtendedPayloadSize ? (byte)2 : (byte)0; // Flags
             sendData[4] = 2; // General message command
             sendData[5] = (byte)payload.Length;
 
             // Set payload
-            for (var i = 6; i < sizeOfSendData; i++)
+            for (var i = headerSize; i < sizeOfSendData; i++)
             {
-                sendData[i] = payload[i - 6];
+                sendData[i] = payload[i - headerSize];
             }
 
             serverSocket.SendTo(sendData, sizeOfSendData, SocketFlags.None, ipEndPoint);
