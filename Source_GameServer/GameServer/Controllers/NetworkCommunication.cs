@@ -68,7 +68,7 @@ namespace GameServer.Controllers
             }
         }
 
-        public void SendCommand(int command, string message)
+        public void SendCommand(int command, string message, bool isAnswer = false)
         {
             var payload = Encoding.ASCII.GetBytes(message);
             var isExtendedPayloadSize = payload.Length > 255;
@@ -85,7 +85,10 @@ namespace GameServer.Controllers
             sendData[3] = isExtendedPayloadSize     // Flags with extended payload [Application]
                 ? (byte)2
                 : (byte)0;
+            sendData[3] |= isAnswer ? (byte)0 : (byte)1; // Set answer bit
             sendData[4] = (byte)command;            // General message command [Application]
+
+
 
             // Set payload length
             var lengthAsByteArr = LengthConverter.ConvertLength(payload.Length);
