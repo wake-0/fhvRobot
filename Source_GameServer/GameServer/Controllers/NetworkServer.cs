@@ -74,7 +74,7 @@ namespace GameServer.Controllers
             }
             else if (MessageHelper.IsRequestHighScore(message))
             {
-                communication.SendCommand(Commands.PERSIST_DATA, scoreManager.GetScoresAsXmlString(), true);            
+                communication.SendCommand(Commands.REQUEST_PERSIST_DATA, scoreManager.GetScoresAsXmlString(), true);            
             }
         }
         #endregion
