@@ -11,5 +11,10 @@
         {
             return message[4] == Commands.GET_OPERATOR && ((message[3] & 1) == 1);
         }
+
+        public static bool IsRequestHighScore(byte[] message)
+        {
+            return message[4] == Commands.REQUEST_PERSIST_DATA;
+        }
     }
 }

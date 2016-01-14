@@ -72,6 +72,10 @@ namespace GameServer.Controllers
                     NewPlayerReceived.Invoke(sender, name);
                 }
             }
+            else if (MessageHelper.IsRequestHighScore(message))
+            {
+                communication.SendCommand(Commands.PERSIST_DATA, scoreManager.GetScoresAsXmlString(), true);            
+            }
         }
         #endregion
     }
