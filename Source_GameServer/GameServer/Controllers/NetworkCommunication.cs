@@ -46,7 +46,7 @@ namespace GameServer.Controllers
             {
                 var buffer = new byte[BUFFER_SIZE];
                 var value = serverSocket.Receive(buffer);
-
+                
                 // The received message is a heartbeat or another not allowed message
                 if (buffer.Length <= 5 || buffer[4] == 0) continue;
 

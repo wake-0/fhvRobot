@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Text;
 using System.Threading;
+using GameServer.Controllers.MessageHandlers;
 using GameServer.Managers;
 
 namespace GameServer.Controllers
@@ -57,10 +59,14 @@ namespace GameServer.Controllers
 
         private void OnMessageReceived(object sender, byte[] message)
         {
+            var isExtendedMessage = MessageHelper.IsExtendedMessage(message);
+            var handler = isExtendedMessage ? ExtendedMessageHandler.Instance : MessageHandler.Instance;
+            var handledMessage = handler.Handle(message);
+
             // Check get operator command and answer bit set
-            if (message[4] == Commands.GET_OPERATOR && ((message[3] & 1) != 0))
+            if (MessageHelper.IsReceivedOperatorMessage(message))
             {
-                var name = "Test";
+                var name = Encoding.UTF8.GetString(handledMessage);
                 if (NewPlayerReceived != null)
                 {
                     NewPlayerReceived.Invoke(sender, name);

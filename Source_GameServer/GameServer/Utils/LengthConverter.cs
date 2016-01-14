@@ -19,5 +19,11 @@ namespace GameServer.Utils
             return newArray;
         }
 
+        public static int ConvertLength(byte[] length)
+        {
+            if (length == null || length.Length > 4) throw new ArgumentNullException("length");
+
+            return BitConverter.ToInt32(length, 0);
+        }
     }
 }

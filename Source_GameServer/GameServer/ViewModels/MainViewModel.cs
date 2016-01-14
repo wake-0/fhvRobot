@@ -51,7 +51,7 @@ namespace GameServer.ViewModels
 
             server = new NetworkServer(ScoreManager);
             server.NewPlayerReceived += NewPlayerReceived;
-            //server.Start();
+            server.Start();
         }
         #endregion
 
