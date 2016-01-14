@@ -17,6 +17,8 @@ namespace GameServer.ViewModels
         #region Properties
         public Score CurrentScore { get; private set; }
         public ScoreManager ScoreManager { get; private set; }
+        public ICommand SendHighscoreCommand { get; private set; }
+        public ICommand SendOperatorCommand { get; private set; }
         public ICommand SendMessageCommand { get; private set; }
         public ICommand TestCommand { get; private set; }
         public ICommand OpenCommand { get; private set; }
@@ -40,16 +42,17 @@ namespace GameServer.ViewModels
             TimerService.ToggleStartStop();
 
             SendMessageCommand = new DelegateCommand(SendMessage);
+            SendHighscoreCommand = new DelegateCommand(SendHighscore);
+            SendOperatorCommand = new DelegateCommand(SendOperator);
+
             TestCommand = new DelegateCommand(o => SetTestData());
             OpenCommand = new DelegateCommand(o => LoadScore());
             SaveCommand = new DelegateCommand(o => SaveScore());
 
-            server = new NetworkServer();
+            server = new NetworkServer(ScoreManager);
             server.NewPlayerReceived += NewPlayerReceived;
             //server.Start();
         }
-
-
         #endregion
 
         #region Methods
@@ -71,9 +74,19 @@ namespace GameServer.ViewModels
 
         private void SendMessage(object obj)
         {
-            ScoreManager.Add(new Score() { Name = "Test", Duration = new TimeSpan() });
+            ScoreManager.Add(new Score { Name = "Test", Duration = new TimeSpan() });
             //server.SendMessage(CurrentScore.Name);
             //TimerService.ToggleStartStop();
+        }
+
+        private void SendOperator(object obj)
+        {
+            server.RequestOperator();
+        }
+
+        private void SendHighscore(object obj)
+        {
+            server.SendHighScore();
         }
 
         private void SaveScore()

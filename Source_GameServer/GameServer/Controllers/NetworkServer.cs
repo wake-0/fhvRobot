@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using GameServer.Managers;
 
 namespace GameServer.Controllers
 {
@@ -8,6 +9,7 @@ namespace GameServer.Controllers
         #region Fields
         private readonly NetworkCommunication communication;
         private readonly Thread networkThread;
+        private readonly ScoreManager scoreManager;
         #endregion
 
         #region Events
@@ -15,11 +17,14 @@ namespace GameServer.Controllers
         #endregion
 
         #region ctor
-        public NetworkServer()
+        public NetworkServer(ScoreManager scoreManager)
         {
+            this.scoreManager = scoreManager;
+
             communication = new NetworkCommunication();
-            communication.MessageReceived += OnMessageReceived;
             networkThread = new Thread(communication.Run);
+
+            communication.MessageReceived += OnMessageReceived;
         }
         #endregion
 
@@ -43,6 +48,11 @@ namespace GameServer.Controllers
         public void RequestOperator()
         {
             communication.SendCommand(Commands.GET_OPERATOR, "");
+        }
+
+        public void SendHighScore()
+        {
+            communication.SendCommand(Commands.PERSIST_DATA, scoreManager.GetScoresAsXmlString());            
         }
 
         private void OnMessageReceived(object sender, byte[] message)
