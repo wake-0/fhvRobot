@@ -21,4 +21,7 @@ public class Commands {
 	public static final int CAMERA_OFF = 21;
 
 	public static final int REQUEST_OPERATOR = 30;
+	
+	public static final int PERSIST_DATA = 60;
+	public static final int REQUEST_PERSISTED_DATA = 61;
 }
