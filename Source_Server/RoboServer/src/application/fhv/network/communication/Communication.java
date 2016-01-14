@@ -83,6 +83,7 @@ public abstract class Communication
 		byte[] payload = pdu.getPayload();
 		int command = pdu.getCommand();
 		boolean handled = false;
+		
 
 		// This means register name
 		if (command == Commands.CHANGE_NAME) {
