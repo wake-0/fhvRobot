@@ -9,11 +9,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
+import android.text.Layout;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,11 +24,16 @@ import android.widget.Toast;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+
 import app.robo.fhv.roboapp.R;
 import app.robo.fhv.roboapp.communication.CommunicationClient;
 import app.robo.fhv.roboapp.communication.MediaStreaming;
 import app.robo.fhv.roboapp.communication.NetworkClient;
 import app.robo.fhv.roboapp.communication.SignalStrength;
+import app.robo.fhv.roboapp.domain.Score;
+import app.robo.fhv.roboapp.utils.ScoreArrayAdapter;
 import app.robo.fhv.roboapp.views.welcome.WelcomeActivity;
 
 public class MainActivity extends FragmentActivity implements CommunicationClient.ICommunicationCallback, MediaStreaming.IFrameReceived {
@@ -42,6 +50,10 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
 
     private ImageView camCanvas;
     private ImageView signalStrength;
+    private ImageView highScores;
+
+    private View lytHighscore;
+    private ListView listHighscore;
 
     private TextView statusText;
 
@@ -72,10 +84,15 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
 
         camCanvas = (ImageView) findViewById(R.id.imgCamCanvas);
         signalStrength = (ImageView) findViewById(R.id.imgSignalStrength);
+        highScores = (ImageView) findViewById(R.id.imgHighScores);
         statusText = (TextView) findViewById(R.id.lblStatusText);
 
         sbLeft = (SeekBar) findViewById(R.id.sbLeft);
         sbRight = (SeekBar) findViewById(R.id.sbRight);
+
+        lytHighscore = findViewById(R.id.lytHighscoreLayout);
+
+
 
         sbLeft.setProgress(MOTOR_SEEK_BAR_ZERO_VALUE);
         sbRight.setProgress(MOTOR_SEEK_BAR_ZERO_VALUE);
@@ -171,8 +188,60 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
             }
         });
 
+        highScores.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (lytHighscore.getVisibility() == View.VISIBLE) {
+                    lytHighscore.setVisibility(View.GONE);
+                } else {
+                    lytHighscore.setVisibility(View.VISIBLE);
+                    listHighscore = (ListView) lytHighscore.findViewById(R.id.listHighscore);
+
+                    Score[] scores = new Score[]
+                            {
+                                    new Score("Max", "10:00:01"),
+                                    new Score("Peter", "10:00:02"),
+                                    new Score("Klaus", "10:00:03"),
+                                    new Score("Max", "10:00:01"),
+                                    new Score("Peter", "10:00:02"),
+                                    new Score("Klaus", "10:00:03"),
+                                    new Score("Max", "10:00:01"),
+                                    new Score("Peter", "10:00:02"),
+                                    new Score("Klaus", "10:00:03"),
+                                    new Score("Max", "10:00:01"),
+                                    new Score("Peter", "10:00:02"),
+                                    new Score("Max", "10:00:01"),
+                                    new Score("Peter", "10:00:02"),
+                                    new Score("Klaus", "10:00:03"),
+                                    new Score("Max", "10:00:01"),
+                                    new Score("Peter", "10:00:02"),
+                                    new Score("Max", "10:00:01"),
+                                    new Score("Peter", "10:00:02"),
+                                    new Score("Klaus", "10:00:03"),
+                                    new Score("Max", "10:00:01"),
+                                    new Score("Peter", "10:00:02")
+                            };
+
+                    listHighscore.setAdapter(new ScoreArrayAdapter(v.getContext(), scores));
+                }
+                return false;
+            }
+        });
+
+
+
         playerName = getIntent().getExtras().getString(WelcomeActivity.PLAYER_NAME_TAG);
         Log.d(LOG_TAG, "Using player name " + playerName);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (lytHighscore.getVisibility() == View.VISIBLE) {
+            lytHighscore.setVisibility(View.GONE);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void initSignalStrengthHashMap() {

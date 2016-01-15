@@ -5,6 +5,7 @@ package app.robo.fhv.roboapp.communication;
  */
 public class GlobalSettings
 {
+    public static final int MEDIA_STREAMING_INPUT_PORT = 1000;
     public static int RECEIVE_PACKET_SIZE = 256;
     public static int SERVER_PORT = 997;
     public static String SERVER_ADDRESS = "83.212.127.13";
