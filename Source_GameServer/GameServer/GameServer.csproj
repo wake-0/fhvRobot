@@ -116,6 +116,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Controllers\Commands.cs" />
+    <Compile Include="Controllers\MessageHandlers\ExtendedMessageHandler.cs" />
+    <Compile Include="Controllers\MessageHandlers\IMessageHandler.cs" />
+    <Compile Include="Controllers\MessageHandlers\MessageHelper.cs" />
+    <Compile Include="Controllers\MessageHandlers\MessageHandler.cs" />
     <Compile Include="Controllers\NetworkCommunication.cs" />
     <Compile Include="Controllers\NetworkServer.cs" />
     <Compile Include="Controllers\NetworkSettings.cs" />
@@ -134,6 +138,7 @@
     <Compile Include="Converters\BitmapSourceConverter.cs" />
     <Compile Include="Converters\IndexConverter.cs" />
     <Compile Include="Images\ResourceService.cs" />
+    <Compile Include="Interfaces\ITriggerSystem.cs" />
     <Compile Include="Managers\PersistencyManager.cs" />
     <Compile Include="Managers\ScoreManager.cs" />
     <Compile Include="Models\Score.cs" />

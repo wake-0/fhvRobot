@@ -19,7 +19,7 @@ namespace GameServer.Controllers
         #endregion
 
         #region Events
-        public event EventHandler<string> NewPlayerReceived;
+        public event EventHandler<byte[]> MessageReceived;
         #endregion
 
         #region ctor
@@ -46,15 +46,13 @@ namespace GameServer.Controllers
             {
                 var buffer = new byte[BUFFER_SIZE];
                 var value = serverSocket.Receive(buffer);
-
+                
                 // The received message is a heartbeat or another not allowed message
                 if (buffer.Length <= 5 || buffer[4] == 0) continue;
 
-                // Check get operator command and answer bit set
-                if (buffer[4] == Commands.GET_OPERATOR && ((buffer[3] & 1) != 0))
-                {
-                    OnNewPlayerReceived("test");
-                }
+                OnMessageReceived(buffer);
+
+               
 
                 // Print received message
                 Console.WriteLine(@"return [" + value + @"]");
@@ -62,15 +60,15 @@ namespace GameServer.Controllers
             }
         }
 
-        private void OnNewPlayerReceived(string name)
+        private void OnMessageReceived(byte[] message)
         {
-            if (NewPlayerReceived != null)
+            if (MessageReceived != null)
             {
-                NewPlayerReceived.Invoke(this, name);
+                MessageReceived.Invoke(this, message);
             }
         }
 
-        public void SendCommand(int command, string message)
+        public void SendCommand(int command, string message, bool isAnswer = false)
         {
             var payload = Encoding.ASCII.GetBytes(message);
             var isExtendedPayloadSize = payload.Length > 255;
@@ -87,7 +85,10 @@ namespace GameServer.Controllers
             sendData[3] = isExtendedPayloadSize     // Flags with extended payload [Application]
                 ? (byte)2
                 : (byte)0;
+            sendData[3] |= isAnswer ? (byte)0 : (byte)1; // Set answer bit
             sendData[4] = (byte)command;            // General message command [Application]
+
+
 
             // Set payload length
             var lengthAsByteArr = LengthConverter.ConvertLength(payload.Length);

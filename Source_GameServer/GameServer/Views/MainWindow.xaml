@@ -93,6 +93,8 @@
                     <Button Content="Test" Command="{Binding TestCommand}" />
                     <Button Content="Open" Command="{Binding OpenCommand}" />
                     <Button Content="Save" Command="{Binding SaveCommand}" />
+                    <Button Content="HighScore" Command="{Binding SendHighscoreCommand}" />
+                    <Button Content="Operator" Command="{Binding SendOperatorCommand}" />
                 </StackPanel>
             </Viewbox>
         </Border>

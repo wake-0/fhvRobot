@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Text;
 using System.Threading;
+using GameServer.Controllers.MessageHandlers;
+using GameServer.Managers;
 
 namespace GameServer.Controllers
 {
@@ -8,6 +11,7 @@ namespace GameServer.Controllers
         #region Fields
         private readonly NetworkCommunication communication;
         private readonly Thread networkThread;
+        private readonly ScoreManager scoreManager;
         #endregion
 
         #region Events
@@ -15,11 +19,14 @@ namespace GameServer.Controllers
         #endregion
 
         #region ctor
-        public NetworkServer()
+        public NetworkServer(ScoreManager scoreManager)
         {
+            this.scoreManager = scoreManager;
+
             communication = new NetworkCommunication();
-            communication.MessageReceived += OnMessageReceived;
             networkThread = new Thread(communication.Run);
+
+            communication.MessageReceived += OnMessageReceived;
         }
         #endregion
 
@@ -45,16 +52,29 @@ namespace GameServer.Controllers
             communication.SendCommand(Commands.GET_OPERATOR, "");
         }
 
+        public void SendHighScore()
+        {
+            communication.SendCommand(Commands.PERSIST_DATA, scoreManager.GetScoresAsXmlString());            
+        }
+
         private void OnMessageReceived(object sender, byte[] message)
         {
+            var isExtendedMessage = MessageHelper.IsExtendedMessage(message);
+            var handler = isExtendedMessage ? ExtendedMessageHandler.Instance : MessageHandler.Instance;
+            var handledMessage = handler.Handle(message);
+
             // Check get operator command and answer bit set
-            if (message[4] == Commands.GET_OPERATOR && ((message[3] & 1) != 0))
+            if (MessageHelper.IsReceivedOperatorMessage(message))
             {
-                var name = "Test";
+                var name = Encoding.UTF8.GetString(handledMessage);
                 if (NewPlayerReceived != null)
                 {
                     NewPlayerReceived.Invoke(sender, name);
                 }
+            }
+            else if (MessageHelper.IsRequestHighScore(message))
+            {
+                communication.SendCommand(Commands.REQUEST_PERSIST_DATA, scoreManager.GetScoresAsXmlString(), true);            
             }
         }
         #endregion
