@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.text.Layout;
 import android.util.Log;
@@ -91,8 +92,6 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
         sbRight = (SeekBar) findViewById(R.id.sbRight);
 
         lytHighscore = findViewById(R.id.lytHighscoreLayout);
-
-
 
         sbLeft.setProgress(MOTOR_SEEK_BAR_ZERO_VALUE);
         sbRight.setProgress(MOTOR_SEEK_BAR_ZERO_VALUE);
@@ -191,39 +190,12 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
         highScores.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public boolean onTouch(View view, MotionEvent event) {
                 if (lytHighscore.getVisibility() == View.VISIBLE) {
                     lytHighscore.setVisibility(View.GONE);
                 } else {
                     lytHighscore.setVisibility(View.VISIBLE);
-                    listHighscore = (ListView) lytHighscore.findViewById(R.id.listHighscore);
-
-                    Score[] scores = new Score[]
-                            {
-                                    new Score("Max", "10:00:01"),
-                                    new Score("Peter", "10:00:02"),
-                                    new Score("Klaus", "10:00:03"),
-                                    new Score("Max", "10:00:01"),
-                                    new Score("Peter", "10:00:02"),
-                                    new Score("Klaus", "10:00:03"),
-                                    new Score("Max", "10:00:01"),
-                                    new Score("Peter", "10:00:02"),
-                                    new Score("Klaus", "10:00:03"),
-                                    new Score("Max", "10:00:01"),
-                                    new Score("Peter", "10:00:02"),
-                                    new Score("Max", "10:00:01"),
-                                    new Score("Peter", "10:00:02"),
-                                    new Score("Klaus", "10:00:03"),
-                                    new Score("Max", "10:00:01"),
-                                    new Score("Peter", "10:00:02"),
-                                    new Score("Max", "10:00:01"),
-                                    new Score("Peter", "10:00:02"),
-                                    new Score("Klaus", "10:00:03"),
-                                    new Score("Max", "10:00:01"),
-                                    new Score("Peter", "10:00:02")
-                            };
-
-                    listHighscore.setAdapter(new ScoreArrayAdapter(v.getContext(), scores));
+                    updateScores(view);
                 }
                 return false;
             }
@@ -233,6 +205,40 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
 
         playerName = getIntent().getExtras().getString(WelcomeActivity.PLAYER_NAME_TAG);
         Log.d(LOG_TAG, "Using player name " + playerName);
+    }
+
+    private void updateScores(View view) {
+        Score[] scores = requestScores();
+        listHighscore = (ListView) lytHighscore.findViewById(R.id.listHighscore);
+        listHighscore.setAdapter(new ScoreArrayAdapter(view.getContext(), scores));
+    }
+
+    @NonNull
+    private Score[] requestScores() {
+        return new Score[]
+                {
+                        new Score("Max", "10:00:01"),
+                        new Score("Peter", "10:00:02"),
+                        new Score("Klaus", "10:00:03"),
+                        new Score("Max", "10:00:01"),
+                        new Score("Peter", "10:00:02"),
+                        new Score("Klaus", "10:00:03"),
+                        new Score("Max", "10:00:01"),
+                        new Score("Peter", "10:00:02"),
+                        new Score("Klaus", "10:00:03"),
+                        new Score("Max", "10:00:01"),
+                        new Score("Peter", "10:00:02"),
+                        new Score("Max", "10:00:01"),
+                        new Score("Peter", "10:00:02"),
+                        new Score("Klaus", "10:00:03"),
+                        new Score("Max", "10:00:01"),
+                        new Score("Peter", "10:00:02"),
+                        new Score("Max", "10:00:01"),
+                        new Score("Peter", "10:00:02"),
+                        new Score("Klaus", "10:00:03"),
+                        new Score("Max", "10:00:01"),
+                        new Score("Peter", "10:00:02")
+                };
     }
 
     @Override
@@ -254,7 +260,6 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
         signalStrengthMap.put(SignalStrength.NO_SIGNAL, getResources().getDrawable(R.drawable.ss_dead));
         signalStrengthMap.put(SignalStrength.DEAD_SIGNAL, getResources().getDrawable(R.drawable.ss_dead));
     }
-
 
     @Override
     public void frameReceived(Bitmap i) {
