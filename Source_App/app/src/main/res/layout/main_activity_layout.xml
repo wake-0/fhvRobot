@@ -112,7 +112,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/txtSpecatatorWelcome"
-        android:text="Zuschauermodus"
         android:textSize="50sp"
         android:textColor="#FFFFFF"
         android:shadowColor="#000000"

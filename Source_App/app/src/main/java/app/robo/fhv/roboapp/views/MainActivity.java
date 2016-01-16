@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -53,6 +54,8 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
 
     private Map<SignalStrength, Drawable> signalStrengthMap;
 
+    private boolean isOperator = false;
+
     private String playerName;
     private SeekBar sbLeft;
     private SeekBar sbRight;
@@ -65,6 +68,7 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
     private ListView listHighscore;
 
     private TextView statusText;
+    private TextView spectatorText;
 
     private int stepSize = 10;
     private NetworkClient networkClient;
@@ -95,6 +99,8 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
         signalStrength = (ImageView) findViewById(R.id.imgSignalStrength);
         highScores = (ImageView) findViewById(R.id.imgHighScores);
         statusText = (TextView) findViewById(R.id.lblStatusText);
+        spectatorText = (TextView) findViewById(R.id.txtSpecatatorWelcome);
+        setSpectatorText("Zuschauermodus");
 
         sbLeft = (SeekBar) findViewById(R.id.sbLeft);
         sbRight = (SeekBar) findViewById(R.id.sbRight);
@@ -211,6 +217,10 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
 
         playerName = getIntent().getExtras().getString(WelcomeActivity.PLAYER_NAME_TAG);
         Log.d(LOG_TAG, "Using player name " + playerName);
+    }
+
+    private void setSpectatorText(String value) {
+        spectatorText.setText(value);
     }
 
     @Override
@@ -335,25 +345,64 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
 
     @Override
     public void startSteering() {
+
+        if(isOperator) {
+            return;
+        }
+
+        isOperator = true;
+
         new Handler(Looper.getMainLooper()).post(
             new Runnable() {
                 @Override
                 public void run() {
+                        CountDownTimer countDownTimer = new CountDownTimer(5000, 1000) {
+                            @Override
+                            public void onTick(long millis) {
+                                if(!isOperator) {
+                                    return;
+                                }
+
+                                if(millis > 5000) {
+                                    setSpectatorText("Bereit machen!");
+                                } else if(millis > 4000) {
+                                    setSpectatorText("3");
+                                } else if(millis > 3000) {
+                                    setSpectatorText("2");
+                                } else if(millis > 2000) {
+                                    setSpectatorText("1");
+                                } else if(millis > 1000){
+                                    setSpectatorText("LOS!");
+                                }
+                            }
+
+                            @Override
+                            public void onFinish() {
+                                if(isOperator) {
+                                    setSpectatorText("");
                     sbLeft.setVisibility(View.VISIBLE);
                     sbRight.setVisibility(View.VISIBLE);
                 }
+                                this.cancel();
+                            }
+                        };
+                        countDownTimer.start();
+                    }
             }
         );
     }
 
     @Override
     public void stopSteering() {
+        isOperator = false;
+
         new Handler(Looper.getMainLooper()).post(
                 new Runnable() {
                     @Override
                     public void run() {
                         sbLeft.setVisibility(View.INVISIBLE);
                         sbRight.setVisibility(View.INVISIBLE);
+                        setSpectatorText("Zuschauermodus");
                     }
                 }
         );
