@@ -5,6 +5,6 @@ namespace GameServer.Controllers
     public static class NetworkSettings
     {
         public static readonly int SERVER_PORT = 999;
-        public static readonly IPAddress SERVER_ADDRESS = IPAddress.Parse("127.0.0.1");
+        public static IPAddress SERVER_ADDRESS = IPAddress.Parse("127.0.0.1");
     }
 }

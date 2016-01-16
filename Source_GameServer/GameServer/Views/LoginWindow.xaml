@@ -1,0 +1,11 @@
+﻿<Window x:Class="GameServer.Views.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="LoginWindow" Height="150" Width="200"
+        ResizeMode="NoResize">
+    
+    <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+        <TextBox Text="{Binding Text, FallbackValue=127.0.0.1}" Margin="10" TextAlignment="Center" />
+        <Button Content="Login" HorizontalAlignment="Center" Command="{Binding LoginCommand}" Padding="10,2"/>
+    </StackPanel>
+</Window>
