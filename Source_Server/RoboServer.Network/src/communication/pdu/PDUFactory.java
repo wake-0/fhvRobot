@@ -72,19 +72,15 @@ public class PDUFactory {
 
 		int flags = NumberParser.intToByte(data[0]);
 		int command = NumberParser.intToByte(data[1]);
-		//int length = NumberParser.intToByte(data[2]);
-		
+
 		byte[] newData;
-		
 		int extendedLength = flags & 0x02;
-		
-		if(extendedLength == 2) {
+		if (extendedLength == 2) {
 			newData = Arrays.copyOfRange(data, 4, data.length);
 		} else {
 			newData = Arrays.copyOfRange(data, 3, data.length);
 		}
-		
-		//byte[] newData = Arrays.copyOfRange(data, 3, data.length);
+
 		return new ApplicationPDU(flags, command, new PDU(newData));
 	}
 }
