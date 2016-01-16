@@ -108,5 +108,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </include>
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtSpecatatorWelcome"
+        android:text="Zuschauermodus"
+        android:textSize="50sp"
+        android:textColor="#FFFFFF"
+        android:shadowColor="#000000"
+        android:shadowDx="0.0"
+        android:shadowDy="0.0"
+        android:shadowRadius="2.0"
+        android:textStyle="bold"
+        android:background="#CC334D5C"
+        android:layout_centerInParent="true"
+        android:padding="10dp"/>
 </RelativeLayout>
