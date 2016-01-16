@@ -47,7 +47,8 @@ public abstract class Communication
 	protected final PersistencyController persistencyController;
 
 	// Constructors
-	public Communication(IClientController<Client> clientController, int port) throws SocketException {
+	public Communication(IClientController<Client> clientController, int port,
+			PersistencyController persistencyController) throws SocketException {
 		this.clientController = clientController;
 		this.manager = new CommunicationManager(clientController);
 		this.socket = new DatagramSocket(port);
@@ -58,8 +59,8 @@ public abstract class Communication
 
 		this.heartbeatProvider = new HeartbeatProvider(this);
 		this.heartbeatProvider.run();
-		
-		this.persistencyController = new PersistencyController();
+
+		this.persistencyController = persistencyController;
 	}
 
 	// Methods
@@ -87,7 +88,6 @@ public abstract class Communication
 		byte[] payload = pdu.getPayload();
 		int command = pdu.getCommand();
 		boolean handled = false;
-		
 
 		// This means register name
 		if (command == Commands.CHANGE_NAME) {
@@ -109,15 +109,16 @@ public abstract class Communication
 			clientController.removeClient(client);
 			handled = true;
 
-		} else if(command == Commands.PERSIST_DATA) {
+		} else if (command == Commands.PERSIST_DATA) {
 			// TODO: handle the case data is received from game server
 			persistencyController.setPersistentData(payload);
 			handled = true;
-			
-		} else if(command == Commands.REQUEST_PERSISTED_DATA) {
-			// TODO: handle the case data has to be sent to app, answer flag to 1
-			DatagramPacket datagram = manager.createDatagramPacket(client, Flags.ANSWER_FLAG, Commands.CHANGE_NAME,
-					persistencyController.getPersistentData());
+
+		} else if (command == Commands.REQUEST_PERSISTED_DATA) {
+			// TODO: handle the case data has to be sent to app, answer flag to
+			// 1
+			DatagramPacket datagram = manager.createDatagramPacket(client, Flags.ANSWER_FLAG,
+					Commands.REQUEST_PERSISTED_DATA, persistencyController.getPersistentData());
 			sender.answer(datagram);
 			handled = true;
 		}
