@@ -23,6 +23,7 @@ import communication.managers.IAnswerHandler;
 import communication.managers.IDataReceivedHandler;
 import communication.pdu.ApplicationPDU;
 import controllers.ClientNameController;
+import controllers.PersistencyController;
 import models.Client;
 import network.IClientController;
 import network.receiver.INetworkReceiver;
@@ -43,6 +44,7 @@ public abstract class Communication
 	protected final IClientController<Client> clientController;
 	protected final HeartbeatProvider heartbeatProvider;
 	protected final ClientNameController nameController;
+	protected final PersistencyController persistencyController;
 
 	// Constructors
 	public Communication(IClientController<Client> clientController, int port) throws SocketException {
@@ -56,6 +58,8 @@ public abstract class Communication
 
 		this.heartbeatProvider = new HeartbeatProvider(this);
 		this.heartbeatProvider.run();
+		
+		this.persistencyController = new PersistencyController();
 	}
 
 	// Methods
@@ -105,6 +109,17 @@ public abstract class Communication
 			clientController.removeClient(client);
 			handled = true;
 
+		} else if(command == Commands.PERSIST_DATA) {
+			// TODO: handle the case data is received from game server
+			persistencyController.setPersistentData(payload);
+			handled = true;
+			
+		} else if(command == Commands.REQUEST_PERSISTED_DATA) {
+			// TODO: handle the case data has to be sent to app, answer flag to 1
+			DatagramPacket datagram = manager.createDatagramPacket(client, Flags.ANSWER_FLAG, Commands.CHANGE_NAME,
+					persistencyController.getPersistentData());
+			sender.answer(datagram);
+			handled = true;
 		}
 
 		if (!handled) {

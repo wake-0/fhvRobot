@@ -33,6 +33,8 @@ public class AppCommunication extends Communication {
 			client.setSendData(new String(payload));
 			clientController.handleCommandReceived(client, command, payload);
 
+			
+			
 			// This delegator is used to communicate with the robos
 			if (delegator != null && client.getIsOperator()) {
 				delegator.DelegateMessage(this, flags, command, payload);
