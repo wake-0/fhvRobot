@@ -122,4 +122,11 @@
         android:background="#CC334D5C"
         android:layout_centerInParent="true"
         android:padding="10dp"/>
+    <app.robo.fhv.roboapp.views.custom.CompassView
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true"
+        />
+
 </RelativeLayout>
+
