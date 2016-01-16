@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
-import android.text.Layout;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,11 +22,19 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import app.robo.fhv.roboapp.R;
 import app.robo.fhv.roboapp.communication.CommunicationClient;
@@ -36,9 +43,10 @@ import app.robo.fhv.roboapp.communication.NetworkClient;
 import app.robo.fhv.roboapp.communication.SignalStrength;
 import app.robo.fhv.roboapp.domain.Score;
 import app.robo.fhv.roboapp.utils.ScoreArrayAdapter;
+import app.robo.fhv.roboapp.utils.XmlHelper;
 import app.robo.fhv.roboapp.views.welcome.WelcomeActivity;
 
-public class MainActivity extends FragmentActivity implements CommunicationClient.ICommunicationCallback, MediaStreaming.IFrameReceived {
+public class MainActivity extends FragmentActivity implements CommunicationClient.ICommunicationCallback, MediaStreaming.IFrameReceived, IHighScoreManager {
 
     private static final String LOG_TAG = "MainActivity";
     private static final long SNAP_BACK_TIME_MS = 300;
@@ -103,7 +111,7 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
         sbRight.setProgress(MOTOR_SEEK_BAR_ZERO_VALUE);
 
         try {
-            networkClient = new NetworkClient(this, this);
+            networkClient = new NetworkClient(this, this, this);
             networkClient.start();
         } catch (Exception e) {
             e.printStackTrace();
@@ -201,13 +209,11 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
                     lytHighscore.setVisibility(View.GONE);
                 } else {
                     lytHighscore.setVisibility(View.VISIBLE);
-                    updateScores(view);
+                    networkClient.getCommunicationClient().sendHighScoreRequest();
                 }
                 return false;
             }
         });
-
-
 
         playerName = getIntent().getExtras().getString(WelcomeActivity.PLAYER_NAME_TAG);
         Log.d(LOG_TAG, "Using player name " + playerName);
@@ -217,38 +223,13 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
         spectatorText.setText(value);
     }
 
-    private void updateScores(View view) {
-        Score[] scores = requestScores();
-        listHighscore = (ListView) lytHighscore.findViewById(R.id.listHighscore);
-        listHighscore.setAdapter(new ScoreArrayAdapter(view.getContext(), scores));
-    }
+    @Override
+    public void updateScores(String highScore) {
+        Log.d(LOG_TAG, "Received highScore: " + highScore);
 
-    @NonNull
-    private Score[] requestScores() {
-        return new Score[]
-                {
-                        new Score("Max", "10:00:01"),
-                        new Score("Peter", "10:00:02"),
-                        new Score("Klaus", "10:00:03"),
-                        new Score("Max", "10:00:01"),
-                        new Score("Peter", "10:00:02"),
-                        new Score("Klaus", "10:00:03"),
-                        new Score("Max", "10:00:01"),
-                        new Score("Peter", "10:00:02"),
-                        new Score("Klaus", "10:00:03"),
-                        new Score("Max", "10:00:01"),
-                        new Score("Peter", "10:00:02"),
-                        new Score("Max", "10:00:01"),
-                        new Score("Peter", "10:00:02"),
-                        new Score("Klaus", "10:00:03"),
-                        new Score("Max", "10:00:01"),
-                        new Score("Peter", "10:00:02"),
-                        new Score("Max", "10:00:01"),
-                        new Score("Peter", "10:00:02"),
-                        new Score("Klaus", "10:00:03"),
-                        new Score("Max", "10:00:01"),
-                        new Score("Peter", "10:00:02")
-                };
+        Score[] scores = XmlHelper.parseHighScoreString(highScore);
+        listHighscore = (ListView) lytHighscore.findViewById(R.id.listHighscore);
+        listHighscore.setAdapter(new ScoreArrayAdapter(lytHighscore.getContext(), scores));
     }
 
     @Override
@@ -372,9 +353,9 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
         isOperator = true;
 
         new Handler(Looper.getMainLooper()).post(
-                new Runnable() {
-                    @Override
-                    public void run() {
+            new Runnable() {
+                @Override
+                public void run() {
                         CountDownTimer countDownTimer = new CountDownTimer(5000, 1000) {
                             @Override
                             public void onTick(long millis) {
@@ -399,15 +380,15 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
                             public void onFinish() {
                                 if(isOperator) {
                                     setSpectatorText("");
-                                    sbLeft.setVisibility(View.VISIBLE);
-                                    sbRight.setVisibility(View.VISIBLE);
-                                }
+                    sbLeft.setVisibility(View.VISIBLE);
+                    sbRight.setVisibility(View.VISIBLE);
+                }
                                 this.cancel();
                             }
                         };
                         countDownTimer.start();
                     }
-                }
+            }
         );
     }
 
@@ -440,7 +421,7 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
                         break;
                     case ReconnectActivity.RESULT_CODE_RECONNECT:
                         try {
-                            networkClient = new NetworkClient(this, this);
+                            networkClient = new NetworkClient(this, this, this);
                             networkClient.start();
                         } catch (Exception e) {
                             e.printStackTrace();

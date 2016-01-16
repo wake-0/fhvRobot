@@ -5,13 +5,15 @@ import android.os.AsyncTask;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import app.robo.fhv.roboapp.views.IHighScoreManager;
+
 public class NetworkClient {
 
     private final MediaStreaming mediaStreaming;
     private CommunicationClient communicationClient;
 
-    public NetworkClient(CommunicationClient.ICommunicationCallback commCallback, MediaStreaming.IFrameReceived frameCallback) throws SocketException, UnknownHostException {
-        communicationClient = new CommunicationClient(commCallback);
+    public NetworkClient(CommunicationClient.ICommunicationCallback commCallback, MediaStreaming.IFrameReceived frameCallback, IHighScoreManager highScoreManager) throws SocketException, UnknownHostException {
+        communicationClient = new CommunicationClient(commCallback, highScoreManager);
         mediaStreaming = new MediaStreaming(GlobalSettings.MEDIA_STREAMING_INPUT_PORT, frameCallback);
     }
 

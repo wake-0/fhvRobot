@@ -22,6 +22,9 @@ public class ApplicationPDU extends PDUDecorator {
 	private byte command;
 	private byte length;
 
+	private byte answerBit = 0x01;
+	private byte extendedBit = 0x02;
+
 	// Constructors
 	public ApplicationPDU(PDU data) {
 		this(ConfigurationSettings.DEFAULT_APPLICATION_FLAGS, ConfigurationSettings.DEFAULT_APPLICATION_COMMAND, data);
@@ -72,5 +75,13 @@ public class ApplicationPDU extends PDUDecorator {
 	@Override
 	protected byte[] getInnerDataCore(PDU packet) {
 		return packet.getInnerData();
+	}
+
+	public boolean isExtendedPayload() {
+		return (flags & extendedBit) == extendedBit;
+	}
+
+	public boolean isAnswer() {
+		return (flags & answerBit) == answerBit;
 	}
 }

@@ -12,6 +12,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import app.robo.fhv.roboapp.utils.ProgressMapper;
+import app.robo.fhv.roboapp.views.IHighScoreManager;
 import communication.commands.Commands;
 import communication.configurations.IConfiguration;
 import communication.flags.Flags;
@@ -61,11 +62,13 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
     private final CommunicationManager comManager;
     private final IConfiguration configuration;
 
+    private IHighScoreManager highScoreManager;
     private final HeartbeatManager<IConfiguration> heartbeatManager;
     private static final int HEARTBEAT_TIME = 1 * 1000;
 
     // Constructor
-    public CommunicationClient(ICommunicationCallback callback) throws SocketException, UnknownHostException {
+    public CommunicationClient(ICommunicationCallback callback, IHighScoreManager highScoreManager) throws SocketException, UnknownHostException {
+        this.highScoreManager = highScoreManager;
         this.clientSocket = new DatagramSocket();
         this.callback = callback;
         this.configManager = new ConfigurationManager();
@@ -83,6 +86,10 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
     public void sendChangeName(String message) {
         callback.registering();
         new SendTask(clientSocket, comManager, configuration, Flags.REQUEST_FLAG, Commands.CHANGE_NAME, null).execute(message.getBytes());
+    }
+
+    public void sendHighScoreRequest() {
+        new SendTask(clientSocket, comManager, configuration, Flags.REQUEST_FLAG, Commands.REQUEST_PERSISTED_DATA, null).execute("0".getBytes());
     }
 
     public void driveLeft(int leftValue) {
@@ -194,6 +201,10 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
             case Commands.ROBO_NOT_STEARING:
                 callback.stopSteering();
                 break;
+            case Commands.REQUEST_PERSISTED_DATA:
+                if (applicationPDU.isAnswer()) {
+                    highScoreManager.updateScores(new String(applicationPDU.getPayload()));
+                }
             default:
                 break;
         }
