@@ -76,4 +76,13 @@ public class SingleClientController implements IClientController<Client> {
 
 	}
 
+	@Override
+	public List<Client> getOperators() {
+		List<Client> operators = new ArrayList<>();
+		if (client.getIsOperator()) {
+			operators.add(client);
+		}
+		return operators;
+	}
+
 }

@@ -11,7 +11,6 @@ package models;
 
 import java.net.SocketAddress;
 
-import communication.configurations.IConfiguration;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -19,7 +18,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Client implements Comparable<Client>, IConfiguration {
+public class Client implements Comparable<Client>, IExtendedConfiguration {
 
 	// Fields
 	private IntegerProperty id;
@@ -188,7 +187,8 @@ public class Client implements Comparable<Client>, IConfiguration {
 	}
 
 	public boolean requiresStreamForwarding(Client robotClient) {
-		// TODO: We can change this to specific logic to distinguish between clients which get a stream from a specific robot
+		// TODO: We can change this to specific logic to distinguish between
+		// clients which get a stream from a specific robot
 		return true;
 	}
 }

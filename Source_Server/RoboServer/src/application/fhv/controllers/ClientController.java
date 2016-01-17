@@ -12,11 +12,12 @@ import controllers.factory.IClientFactory;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import models.IExtendedConfiguration;
 import network.IClientController;
 
-public class ClientController<T extends IConfiguration> implements IClientController<T>, IHeartbeatHandler<T> {
+public class ClientController<T extends IExtendedConfiguration> implements IClientController<T>, IHeartbeatHandler<T> {
 
-	public interface ICommandListener<T extends IConfiguration> {
+	public interface ICommandListener<T extends IExtendedConfiguration> {
 		void commandReceived(T client, int command, byte[] payload);
 	}
 
@@ -35,6 +36,19 @@ public class ClientController<T extends IConfiguration> implements IClientContro
 		this.clientTimers = new HashMap<>();
 		this.commandListeners = new HashMap<>();
 		this.factory = factory;
+	}
+
+	// Methods
+	public List<T> getOperators() {
+		List<T> operators = new ArrayList<>();
+
+		for (T client : clients) {
+			if (client.getIsOperator()) {
+				operators.add(client);
+			}
+		}
+
+		return operators;
 	}
 
 	@Override
@@ -68,7 +82,7 @@ public class ClientController<T extends IConfiguration> implements IClientContro
 	}
 
 	@Override
-	public IConfiguration createConfiguration() {
+	public IExtendedConfiguration createConfiguration() {
 		T client = factory.create();
 		addClient(client);
 		return client;
@@ -120,6 +134,5 @@ public class ClientController<T extends IConfiguration> implements IClientContro
 				l.commandReceived(client, command, payload);
 			}
 		}
-
 	}
 }

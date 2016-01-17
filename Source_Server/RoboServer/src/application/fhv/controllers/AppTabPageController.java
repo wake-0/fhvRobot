@@ -16,8 +16,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.util.Callback;
 import models.Client;
 import models.ClientFactory;
@@ -45,12 +45,18 @@ public class AppTabPageController implements Initializable {
 
 	@FXML
 	private TextArea tfReceive;
-	
+
 	// App details
 	@FXML
 	private TextField tfSend;
 	@FXML
 	private Button btnSend;
+	@FXML
+	private Button btnSetOperator;
+	@FXML
+	private Button btnReleaseOperator;
+	@FXML
+	private Button btnKill;
 
 	private NetworkServer server;
 
@@ -76,7 +82,7 @@ public class AppTabPageController implements Initializable {
 			@Override
 			public void commandReceived(Client client, int command, byte[] payload) {
 				Platform.runLater(() -> {
-					tfReceive.appendText("[<-" + client.getName()+ "] " + new String(payload) + "\n");
+					tfReceive.appendText("[<-" + client.getName() + "] " + new String(payload) + "\n");
 				});
 			}
 		}, Commands.GENERAL_MESSAGE);
@@ -95,21 +101,24 @@ public class AppTabPageController implements Initializable {
 	}
 
 	@FXML
-	private void handleUpClick() {
-		System.out.println("button up clicked.");
+	private void handleSetOperatorClick() {
+		// Only allow one operator
+		List<Client> operators = appController.getOperators();
+		operators.stream().forEach(o -> o.setIsOperator(false));
+		appController.getSelectedClient().setIsOperator(true);
 	}
 
 	@FXML
-	private void handleDownClick() {
-		System.out.println("button down clicked.");
+	private void handleReleaseOperatorClick() {
+		appController.getSelectedClient().setIsOperator(false);
 	}
 
 	@FXML
 	private void handleSendClick() {
 		Client selectedClient = appController.getSelectedClient();
 		selectedClient.setSendData(tfSend.getText());
-		
-		tfReceive.appendText("[->" + selectedClient.getName()+ "] " + tfSend.getText() + "\n");
+
+		tfReceive.appendText("[->" + selectedClient.getName() + "] " + tfSend.getText() + "\n");
 
 		if (selectedClient != null) {
 			server.sendToApp(selectedClient);
@@ -126,7 +135,7 @@ public class AppTabPageController implements Initializable {
 		tcAppIsOperator.setCellValueFactory(cellData -> cellData.getValue().IsOperatorProperty());
 
 		tfReceive.appendText("Chat Window:\n");
-		
+
 		tvAppClients.setItems(appController.getClients());
 		tvAppClients.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Client>() {
 			@Override
@@ -152,6 +161,9 @@ public class AppTabPageController implements Initializable {
 		});
 
 		btnSend.disableProperty().bind(tvAppClients.getSelectionModel().selectedItemProperty().isNull());
+		btnKill.disableProperty().bind(tvAppClients.getSelectionModel().selectedItemProperty().isNull());
+		btnSetOperator.disableProperty().bind(tvAppClients.getSelectionModel().selectedItemProperty().isNull());
+		btnReleaseOperator.disableProperty().bind(tvAppClients.getSelectionModel().selectedItemProperty().isNull());
 	}
 
 	public ClientController<Client> getAppController() {

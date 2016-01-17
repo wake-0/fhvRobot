@@ -1,9 +1,13 @@
 package network;
 
-import communication.configurations.IConfiguration;
-import communication.managers.IConfigurationManager;
+import java.util.List;
 
-public interface IClientController<T extends IConfiguration> extends IConfigurationManager, IClientProvider<T> {
+import communication.managers.IConfigurationManager;
+import models.IExtendedConfiguration;
+
+public interface IClientController<T extends IExtendedConfiguration> extends IConfigurationManager, IClientProvider<T> {
 
 	void handleCommandReceived(T client, int command, byte[] payload);
+
+	List<T> getOperators();
 }
