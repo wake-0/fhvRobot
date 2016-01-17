@@ -41,7 +41,6 @@ public class RoboTabPageController implements Initializable {
 	@FXML
 	private TableColumn<Client, Number> tcRoboRXCount;
 
-	
 	// Robo details
 	@FXML
 	private TextField tfSend;
@@ -52,8 +51,13 @@ public class RoboTabPageController implements Initializable {
 
 	@FXML
 	private Button btnSend;
+	@FXML
+	private Button btnKill;
+	@FXML
+	private Button btnView;
+
 	private RobotViewController robotViewController;
-	
+
 	// Constructor
 	public RoboTabPageController() {
 		roboController = new ClientController<>(new ClientFactory());
@@ -84,7 +88,7 @@ public class RoboTabPageController implements Initializable {
 			clearDetails();
 		}
 	}
-	
+
 	@FXML
 	private void handleViewClick() {
 		Client selectedClient = roboController.getSelectedClient();
@@ -118,28 +122,26 @@ public class RoboTabPageController implements Initializable {
 				roboController.setSelectedClient(newValue);
 			}
 		});
-		
-		tcRoboRXCount.setCellFactory(new Callback<TableColumn<Client, Number>, TableCell<Client, Number>>()
-        {
-            public TableCell<Client, Number> call(TableColumn<Client, Number> column)
-            {
-                final FlashingLabel label = new FlashingLabel();
-                TableCell<Client, Number> cell = new TableCell<Client, Number>()
-                {
-                    protected void updateItem(Number value, boolean empty)
-                    {
-                        super.updateItem(value, empty);
-                        if (value != null)
-                        	label.setText(value.toString());
-                    }
-                };
-                cell.setGraphic(label);
-                cell.setStyle("-fx-alignment: CENTER;");
-                return cell;
-            }
-        });
+
+		tcRoboRXCount.setCellFactory(new Callback<TableColumn<Client, Number>, TableCell<Client, Number>>() {
+			public TableCell<Client, Number> call(TableColumn<Client, Number> column) {
+				final FlashingLabel label = new FlashingLabel();
+				TableCell<Client, Number> cell = new TableCell<Client, Number>() {
+					protected void updateItem(Number value, boolean empty) {
+						super.updateItem(value, empty);
+						if (value != null)
+							label.setText(value.toString());
+					}
+				};
+				cell.setGraphic(label);
+				cell.setStyle("-fx-alignment: CENTER;");
+				return cell;
+			}
+		});
 
 		btnSend.disableProperty().bind(tvRoboClients.getSelectionModel().selectedItemProperty().isNull());
+		btnKill.disableProperty().bind(tvRoboClients.getSelectionModel().selectedItemProperty().isNull());
+		btnView.disableProperty().bind(tvRoboClients.getSelectionModel().selectedItemProperty().isNull());
 	}
 
 	public ClientController<Client> getRoboController() {
@@ -159,5 +161,4 @@ public class RoboTabPageController implements Initializable {
 	public void setRobotViewController(RobotViewController robotViewController) {
 		this.robotViewController = robotViewController;
 	}
-
 }
