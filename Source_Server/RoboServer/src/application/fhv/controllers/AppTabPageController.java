@@ -23,6 +23,7 @@ import models.Client;
 import models.ClientFactory;
 import network.NetworkServer;
 import views.FlashingLabel;
+import views.OperatorLabel;
 
 public class AppTabPageController implements Initializable {
 
@@ -152,6 +153,28 @@ public class AppTabPageController implements Initializable {
 						super.updateItem(value, empty);
 						if (value != null)
 							label.setText(value.toString());
+					}
+				};
+				cell.setGraphic(label);
+				cell.setStyle("-fx-alignment: CENTER;");
+				return cell;
+			}
+		});
+
+		tcAppIsOperator.setCellFactory(new Callback<TableColumn<Client, Boolean>, TableCell<Client, Boolean>>() {
+
+			public TableCell<Client, Boolean> call(TableColumn<Client, Boolean> column) {
+				final OperatorLabel label = new OperatorLabel();
+
+				TableCell<Client, Boolean> cell = new TableCell<Client, Boolean>() {
+					@Override
+					protected void updateItem(Boolean item, boolean empty) {
+						super.updateItem(item, empty);
+
+						if (item != null) {
+							label.setText(item.toString());
+						}
+
 					}
 				};
 				cell.setGraphic(label);
