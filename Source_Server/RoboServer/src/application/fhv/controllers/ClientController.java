@@ -21,6 +21,10 @@ public class ClientController<T extends IExtendedConfiguration> implements IClie
 		void commandReceived(T client, int command, byte[] payload);
 	}
 
+	public interface IOperatorChangedListener<T extends IExtendedConfiguration> {
+		void handleOperatorChanged(T operator);
+	}
+
 	// Fields
 	private final ObservableList<T> clients;
 	private final IClientFactory<T> factory;
@@ -29,16 +33,45 @@ public class ClientController<T extends IExtendedConfiguration> implements IClie
 	private final HashMap<T, HeartbeatManager<T>> clientTimers;
 
 	private T selectedClient;
+	private List<IOperatorChangedListener<T>> operatorListeners;
 
 	// Constructor
 	public ClientController(IClientFactory<T> factory) {
 		this.clients = FXCollections.observableArrayList();
 		this.clientTimers = new HashMap<>();
 		this.commandListeners = new HashMap<>();
+		this.operatorListeners = new ArrayList<>();
 		this.factory = factory;
 	}
 
 	// Methods
+	public void setOperator(T operator) {
+		if (operator == null) {
+			return;
+		}
+
+		operator.setIsOperator(true);
+		handleOperatorChanged(operator);
+	}
+
+	public void releaseOperator(T operator) {
+		if (operator == null) {
+			return;
+		}
+
+		operator.setIsOperator(false);
+		handleOperatorChanged(operator);
+	}
+
+	public void releaseAllOperators() {
+		for (T operator : clients) {
+			if (operator.getIsOperator()) {
+				operator.setIsOperator(false);
+				handleOperatorChanged(operator);
+			}
+		}
+	}
+
 	public List<T> getOperators() {
 		List<T> operators = new ArrayList<>();
 
@@ -114,13 +147,22 @@ public class ClientController<T extends IExtendedConfiguration> implements IClie
 		client.cleanHeartBeatCount();
 	}
 
+	public void addOperatorChangedListener(IOperatorChangedListener<T> operatorListener) {
+		if (operatorListener != null) {
+			operatorListeners.add(operatorListener);
+		}
+	}
+
+	public void handleOperatorChanged(T operator) {
+		operatorListeners.forEach(listener -> listener.handleOperatorChanged(operator));
+	}
+
 	public void addCommandListener(ICommandListener<T> commandListener, int command) {
 		List<ClientController.ICommandListener<T>> listeners = commandListeners.get(command);
 
 		if (listeners == null) {
 			listeners = new ArrayList<>();
 			commandListeners.put(command, listeners);
-
 		}
 
 		listeners.add(commandListener);

@@ -55,6 +55,9 @@ public class NetworkServer {
 		// Gaming communication
 		this.gamingCommunication = new GamingCommunication(gamingController, gamingPort, persistencyController);
 
+		// Add operator changed controller
+		appController.addOperatorChangedListener(appCommunication);
+
 		new Thread(roboCommunication).start();
 		new Thread(appCommunication).start();
 		new Thread(gamingCommunication).start();

@@ -22,6 +22,7 @@ import communication.managers.CommunicationManager;
 import communication.managers.IAnswerHandler;
 import communication.managers.IDataReceivedHandler;
 import communication.pdu.ApplicationPDU;
+import controllers.ClientController.IOperatorChangedListener;
 import controllers.ClientNameController;
 import controllers.PersistencyController;
 import models.Client;
@@ -31,8 +32,8 @@ import network.receiver.LoggerNetworkReceiver;
 import network.sender.INetworkSender;
 import network.sender.LoggerNetworkSender;
 
-public abstract class Communication
-		implements Runnable, IDataReceivedHandler<ApplicationPDU>, IAnswerHandler, IHeartbeatCreator {
+public abstract class Communication implements Runnable, IDataReceivedHandler<ApplicationPDU>, IAnswerHandler,
+		IHeartbeatCreator, IOperatorChangedListener<Client> {
 
 	// Field
 	private boolean isRunning;
@@ -171,5 +172,14 @@ public abstract class Communication
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void handleOperatorChanged(Client operator) {
+		if (operator == null) {
+			return;
+		}
+
+		int command = operator.getIsOperator() ? Commands.ROBO_STEARING : Commands.ROBO_NOT_STEARING;
+		sendToClient(operator, Flags.REQUEST_FLAG, command, new byte[] { 0 });
 	}
 }

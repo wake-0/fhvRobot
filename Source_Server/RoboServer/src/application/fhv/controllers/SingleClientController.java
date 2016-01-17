@@ -7,6 +7,7 @@ import java.util.Map;
 
 import communication.configurations.IConfiguration;
 import controllers.ClientController.ICommandListener;
+import controllers.ClientController.IOperatorChangedListener;
 import models.Client;
 import network.IClientController;
 
@@ -77,6 +78,17 @@ public class SingleClientController implements IClientController<Client> {
 	}
 
 	@Override
+	public void setOperator(Client operator) {
+		// TODO: add callback for operator changed
+		operator.setIsOperator(true);
+	}
+
+	@Override
+	public void releaseOperator(Client operator) {
+		operator.setIsOperator(false);
+	}
+
+	@Override
 	public List<Client> getOperators() {
 		List<Client> operators = new ArrayList<>();
 		if (client.getIsOperator()) {
@@ -85,4 +97,9 @@ public class SingleClientController implements IClientController<Client> {
 		return operators;
 	}
 
+	@Override
+	public void addOperatorChangedListener(IOperatorChangedListener<Client> operatorListener) {
+		// TODO Auto-generated method stub
+
+	}
 }

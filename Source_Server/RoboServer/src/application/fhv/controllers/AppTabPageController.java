@@ -104,14 +104,13 @@ public class AppTabPageController implements Initializable {
 	@FXML
 	private void handleSetOperatorClick() {
 		// Only allow one operator
-		List<Client> operators = appController.getOperators();
-		operators.stream().forEach(o -> o.setIsOperator(false));
-		appController.getSelectedClient().setIsOperator(true);
+		appController.releaseAllOperators();
+		appController.setOperator(appController.getSelectedClient());
 	}
 
 	@FXML
 	private void handleReleaseOperatorClick() {
-		appController.getSelectedClient().setIsOperator(false);
+		appController.releaseOperator(appController.getSelectedClient());
 	}
 
 	@FXML
