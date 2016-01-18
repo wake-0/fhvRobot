@@ -12,6 +12,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import app.robo.fhv.roboapp.R;
@@ -30,7 +31,8 @@ public class CompassView extends View {
     public static final int DEFAULT_MINOR_TICKS = 5;
     public static final int DEFAULT_LABEL_TEXT_SIZE_DP = 12;
     public static final int COMPASS_MAX_VALUE = 360;
-    public static final int ANGLE_RANGE = 60;
+    public static final float ANGLE_RANGE = 60.0f;
+    public static final int FULL_ROTATION_ANGLE = 360;
 
     private double angle = 0;
     private int defaultColor = Color.rgb(180, 180, 180);
@@ -222,14 +224,29 @@ public class CompassView extends View {
     }
 
     private void drawTicks(Canvas canvas) {
-        int half = canvas.getWidth()/2;
-        int startTick = (int)(angle - 30);
+        angle %= FULL_ROTATION_ANGLE;           // ensures angle is within range 0°..359°
+        //angle = 147;  only for testing the line compass
 
-        startTick -= (startTick % minorTicks);
-        int tickWidth = ANGLE_RANGE /minorTicks;
+        float startTick = (float)angle  - 30;
+        float tickWidthInDegree = ANGLE_RANGE /minorTicks; // minorTicks = 5, ANGLE_RANGE = 60
+        float degreeWidthOnCanvas = canvas.getWidth()/ANGLE_RANGE;
+        float tickOffsetOnCanvas;
 
-        for(int i = 0; i < tickWidth; i++) {
-            float x = (canvas.getWidth()/tickWidth)*i;
+        if(startTick < 0) {
+            tickOffsetOnCanvas = (Math.abs(startTick) % minorTicks) * degreeWidthOnCanvas;
+        } else {
+            tickOffsetOnCanvas = ((startTick*(-1)) % minorTicks) * degreeWidthOnCanvas;
+        }
+
+        Paint paint = new Paint();
+        paint.setColor(Color.WHITE);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setTextSize(10);
+
+        // draw minorticks
+        for(int i = 0; i <= tickWidthInDegree; i++) {
+            float x = (canvas.getWidth()/tickWidthInDegree)*i + tickOffsetOnCanvas;
+
             canvas.drawLine(
                     (float) (x),
                     (float) (0),
@@ -239,18 +256,32 @@ public class CompassView extends View {
             );
         }
 
-        tickWidth = ANGLE_RANGE /(int)majorTickStep;
+        // draw majorticks
+        tickWidthInDegree = ANGLE_RANGE /(int)majorTickStep; // = 60 / 5 = 12
+        if(startTick < 0) {
+            tickOffsetOnCanvas = (float) ((Math.abs(startTick) % majorTickStep) * degreeWidthOnCanvas);
+        } else {
+            tickOffsetOnCanvas = (float) ((startTick*(-1) % majorTickStep) * degreeWidthOnCanvas);
+        }
 
-        for(int i = 0; i < tickWidth; i++) {
-            float x = (canvas.getWidth()/tickWidth)*i;
+        for(int i = 0; i <= tickWidthInDegree; i++) {
+            float x = (canvas.getWidth()/tickWidthInDegree)*i + tickOffsetOnCanvas;
             canvas.drawLine(
                     (float) (x),
                     (float) (0),
                     (float) (x),
-                    (float) (canvas.getHeight()/2),
+                    (float) (canvas.getHeight() / 2),
                     ticksPaint
             );
+
+            // label major scale values
+            startTick -= (startTick % majorTickStep);
+            int scaleAngle = ((int)startTick + 10 * i) % FULL_ROTATION_ANGLE;
+            canvas.drawText(Integer.toString(scaleAngle), x - 10, canvas.getHeight() * 0.8f, paint);
         }
+
+        // label actual middle angle
+        canvas.drawText(Integer.toString((int)angle), canvas.getWidth()/2-10, canvas.getHeight()*0.8f, paint);
     }
 
 
