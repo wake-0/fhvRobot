@@ -13,8 +13,10 @@ import java.net.SocketAddress;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -31,6 +33,7 @@ public class Client implements Comparable<Client>, IExtendedConfiguration {
 	private IntegerProperty heartBeatCount;
 	private SocketAddress socketAddress;
 	private BooleanProperty isOperator;
+	private ObjectProperty<Orientation3D> orientation;
 
 	// Constructor
 	public Client() {
@@ -43,7 +46,7 @@ public class Client implements Comparable<Client>, IExtendedConfiguration {
 		sessionId = new SimpleIntegerProperty();
 		heartBeatCount = new SimpleIntegerProperty();
 		isOperator = new SimpleBooleanProperty(false);
-
+		orientation = new SimpleObjectProperty<>(new Orientation3D(0, 0, 0));
 		setName("Anonymous");
 	}
 
@@ -155,6 +158,18 @@ public class Client implements Comparable<Client>, IExtendedConfiguration {
 
 	public IntegerProperty HeartBeatProperty() {
 		return heartBeatCount;
+	}
+	
+	public ObjectProperty<Orientation3D> OrientationProperty() {
+		return orientation;
+	}
+	
+	public void setOrientation(Orientation3D orientation) {
+		this.orientation.set(orientation);
+	}
+	
+	public Orientation3D getOrientation() {
+		return orientation.get();
 	}
 
 	@Override
