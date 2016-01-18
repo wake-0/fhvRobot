@@ -277,12 +277,12 @@ public class CompassView extends View {
             // label major scale values
             startTick -= (startTick % majorTickStep);
             int scaleAngle = ((int)startTick + 10 * i) % FULL_ROTATION_ANGLE;
-            canvas.drawText(Integer.toString(scaleAngle), x-5, canvas.getHeight() * 0.8f, paint);
+            canvas.drawText(Integer.toString(scaleAngle)+"°", x-5, canvas.getHeight() * 0.8f, paint);
         }
 
         // label actual middle angle
         paint.setTextSize(12);
-        canvas.drawText(Integer.toString((int)angle), canvas.getWidth()/2-5, canvas.getHeight()*0.8f, paint);
+        canvas.drawText(Integer.toString((int)angle)+"°", canvas.getWidth()/2-5, canvas.getHeight()*0.8f, paint);
     }
 
 
