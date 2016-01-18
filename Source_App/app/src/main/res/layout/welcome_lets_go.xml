@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_weight="10"
-    android:background="@color/handsOn4"
+    android:background="@color/businessMcBlue4"
     android:orientation="vertical">
 
     <TextView
@@ -33,7 +33,7 @@
             android:textColor="@android:color/white"
             android:textSize="30sp"
             android:gravity="center"
-            android:text="Sag mir dein Name"/>
+            android:text="Sag mir deinen Namen"/>
         <ImageView
             android:id="@+id/imgArrowDown"
             android:layout_width="80dp"

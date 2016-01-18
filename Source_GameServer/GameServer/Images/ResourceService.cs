@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using GameServer.Properties;
 using FontFamily = System.Windows.Media.FontFamily;
 
 namespace GameServer.Images
@@ -15,7 +14,7 @@ namespace GameServer.Images
             get
             {
                 return Imaging.CreateBitmapSourceFromHBitmap(
-                          Resources.FHV_Image.GetHbitmap(),
+                          Properties.Resources.FHV_Image.GetHbitmap(),
                           IntPtr.Zero,
                           Int32Rect.Empty,
                           BitmapSizeOptions.FromEmptyOptions());

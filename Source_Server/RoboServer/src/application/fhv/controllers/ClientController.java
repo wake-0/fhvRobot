@@ -12,12 +12,17 @@ import controllers.factory.IClientFactory;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import models.IExtendedConfiguration;
 import network.IClientController;
 
-public class ClientController<T extends IConfiguration> implements IClientController<T>, IHeartbeatHandler<T> {
+public class ClientController<T extends IExtendedConfiguration> implements IClientController<T>, IHeartbeatHandler<T> {
 
-	public interface ICommandListener<T extends IConfiguration> {
+	public interface ICommandListener<T extends IExtendedConfiguration> {
 		void commandReceived(T client, int command, byte[] payload);
+	}
+
+	public interface IOperatorChangedListener<T extends IExtendedConfiguration> {
+		void handleOperatorChanged(T operator);
 	}
 
 	// Fields
@@ -28,13 +33,55 @@ public class ClientController<T extends IConfiguration> implements IClientContro
 	private final HashMap<T, HeartbeatManager<T>> clientTimers;
 
 	private T selectedClient;
+	private List<IOperatorChangedListener<T>> operatorListeners;
 
 	// Constructor
 	public ClientController(IClientFactory<T> factory) {
 		this.clients = FXCollections.observableArrayList();
 		this.clientTimers = new HashMap<>();
 		this.commandListeners = new HashMap<>();
+		this.operatorListeners = new ArrayList<>();
 		this.factory = factory;
+	}
+
+	// Methods
+	public void setOperator(T operator) {
+		if (operator == null) {
+			return;
+		}
+
+		operator.setIsOperator(true);
+		handleOperatorChanged(operator);
+	}
+
+	public void releaseOperator(T operator) {
+		if (operator == null) {
+			return;
+		}
+
+		operator.setIsOperator(false);
+		handleOperatorChanged(operator);
+	}
+
+	public void releaseAllOperators() {
+		for (T operator : clients) {
+			if (operator.getIsOperator()) {
+				operator.setIsOperator(false);
+				handleOperatorChanged(operator);
+			}
+		}
+	}
+
+	public List<T> getOperators() {
+		List<T> operators = new ArrayList<>();
+
+		for (T client : clients) {
+			if (client.getIsOperator()) {
+				operators.add(client);
+			}
+		}
+
+		return operators;
 	}
 
 	@Override
@@ -68,7 +115,7 @@ public class ClientController<T extends IConfiguration> implements IClientContro
 	}
 
 	@Override
-	public IConfiguration createConfiguration() {
+	public IExtendedConfiguration createConfiguration() {
 		T client = factory.create();
 		addClient(client);
 		return client;
@@ -100,13 +147,22 @@ public class ClientController<T extends IConfiguration> implements IClientContro
 		client.cleanHeartBeatCount();
 	}
 
+	public void addOperatorChangedListener(IOperatorChangedListener<T> operatorListener) {
+		if (operatorListener != null) {
+			operatorListeners.add(operatorListener);
+		}
+	}
+
+	public void handleOperatorChanged(T operator) {
+		operatorListeners.forEach(listener -> listener.handleOperatorChanged(operator));
+	}
+
 	public void addCommandListener(ICommandListener<T> commandListener, int command) {
 		List<ClientController.ICommandListener<T>> listeners = commandListeners.get(command);
 
 		if (listeners == null) {
 			listeners = new ArrayList<>();
 			commandListeners.put(command, listeners);
-
 		}
 
 		listeners.add(commandListener);
@@ -120,6 +176,5 @@ public class ClientController<T extends IConfiguration> implements IClientContro
 				l.commandReceived(client, command, payload);
 			}
 		}
-
 	}
 }

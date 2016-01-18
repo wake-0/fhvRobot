@@ -18,4 +18,11 @@
     <color name="breakdown3">#FF9900</color>
     <color name="breakdown4">#FF0000</color>
 
+    <!-- Color Palette from https://color.adobe.com/de/Business-MC-Blue-color-theme-1160943/-->
+    <color name="businessMcBlue1">#404040</color>
+    <color name="businessMcBlue2">#32658D</color>
+    <color name="businessMcBlue3">#3D79A8</color>
+    <color name="businessMcBlue4">#488FC7</color>
+    <color name="businessMcBlue5">#51A2E0</color>
+    
 </resources>

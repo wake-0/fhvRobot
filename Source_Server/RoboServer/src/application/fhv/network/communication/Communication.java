@@ -22,7 +22,9 @@ import communication.managers.CommunicationManager;
 import communication.managers.IAnswerHandler;
 import communication.managers.IDataReceivedHandler;
 import communication.pdu.ApplicationPDU;
+import controllers.ClientController.IOperatorChangedListener;
 import controllers.ClientNameController;
+import controllers.PersistencyController;
 import models.Client;
 import network.IClientController;
 import network.receiver.INetworkReceiver;
@@ -30,8 +32,8 @@ import network.receiver.LoggerNetworkReceiver;
 import network.sender.INetworkSender;
 import network.sender.LoggerNetworkSender;
 
-public abstract class Communication
-		implements Runnable, IDataReceivedHandler<ApplicationPDU>, IAnswerHandler, IHeartbeatCreator {
+public abstract class Communication implements Runnable, IDataReceivedHandler<ApplicationPDU>, IAnswerHandler,
+		IHeartbeatCreator, IOperatorChangedListener<Client> {
 
 	// Field
 	private boolean isRunning;
@@ -43,9 +45,11 @@ public abstract class Communication
 	protected final IClientController<Client> clientController;
 	protected final HeartbeatProvider heartbeatProvider;
 	protected final ClientNameController nameController;
+	protected final PersistencyController persistencyController;
 
 	// Constructors
-	public Communication(IClientController<Client> clientController, int port) throws SocketException {
+	public Communication(IClientController<Client> clientController, int port,
+			PersistencyController persistencyController) throws SocketException {
 		this.clientController = clientController;
 		this.manager = new CommunicationManager(clientController);
 		this.socket = new DatagramSocket(port);
@@ -56,6 +60,8 @@ public abstract class Communication
 
 		this.heartbeatProvider = new HeartbeatProvider(this);
 		this.heartbeatProvider.run();
+
+		this.persistencyController = persistencyController;
 	}
 
 	// Methods
@@ -83,7 +89,6 @@ public abstract class Communication
 		byte[] payload = pdu.getPayload();
 		int command = pdu.getCommand();
 		boolean handled = false;
-		
 
 		// This means register name
 		if (command == Commands.CHANGE_NAME) {
@@ -105,6 +110,18 @@ public abstract class Communication
 			clientController.removeClient(client);
 			handled = true;
 
+		} else if (command == Commands.PERSIST_DATA) {
+			// TODO: handle the case data is received from game server
+			persistencyController.setPersistentData(payload);
+			handled = true;
+
+		} else if (command == Commands.REQUEST_PERSISTED_DATA) {
+			// TODO: handle the case data has to be sent to app, answer flag to
+			// 1
+			DatagramPacket datagram = manager.createDatagramPacket(client, Flags.ANSWER_FLAG,
+					Commands.REQUEST_PERSISTED_DATA, persistencyController.getPersistentData());
+			sender.answer(datagram);
+			handled = true;
 		}
 
 		if (!handled) {
@@ -155,5 +172,14 @@ public abstract class Communication
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void handleOperatorChanged(Client operator) {
+		if (operator == null) {
+			return;
+		}
+
+		int command = operator.getIsOperator() ? Commands.ROBO_STEARING : Commands.ROBO_NOT_STEARING;
+		sendToClient(operator, Flags.REQUEST_FLAG, command, new byte[] { 0 });
 	}
 }
