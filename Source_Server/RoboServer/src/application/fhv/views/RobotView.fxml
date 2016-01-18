@@ -20,6 +20,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.Node?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.Pane?>
 
 <GridPane stylesheets="theme.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="controllers.RobotViewController">
 	<columnConstraints>
@@ -37,6 +38,9 @@
 			<ScrollPane prefWidth="10000" prefHeight="10000" fx:id="scrollPaneCam">
 				<ImageView fx:id="camCanvas"/>
 			</ScrollPane>
+			<AnchorPane>
+				<Pane fx:id="robot3DView" prefHeight="200" prefWidth="200"/>
+			</AnchorPane>
 		</StackPane>
 		<Slider GridPane.rowIndex="0" showTickMarks="true" showTickLabels="true" fx:id="sldRightMotor" value="0" min="-100" max="100" orientation="VERTICAL" GridPane.columnIndex="2"></Slider>
 		<HBox GridPane.rowIndex="1" GridPane.columnSpan="3">
