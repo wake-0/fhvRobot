@@ -26,6 +26,7 @@ import controllers.ClientController.IOperatorChangedListener;
 import controllers.ClientNameController;
 import controllers.PersistencyController;
 import models.Client;
+import models.Orientation3D;
 import network.IClientController;
 import network.receiver.INetworkReceiver;
 import network.receiver.LoggerNetworkReceiver;
@@ -122,6 +123,13 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 					Commands.REQUEST_PERSISTED_DATA, persistencyController.getPersistentData());
 			sender.answer(datagram);
 			handled = true;
+		} else if (command == Commands.ORIENTATION_DATA) {
+			if (payload.length == 6) {
+				short roll = (short) ((payload[0] << 8) | payload[1]);
+				short pitch = (short) ((payload[2] << 8) | payload[3]);
+				short yaw = (short) ((payload[4] << 8) | payload[5]);
+				client.setOrientation(new Orientation3D(roll, pitch, yaw));
+			}
 		}
 
 		if (!handled) {
