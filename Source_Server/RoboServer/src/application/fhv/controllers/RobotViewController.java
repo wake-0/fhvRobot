@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -30,6 +31,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import models.Client;
+import models.Orientation3D;
 import network.MediaStreaming.IMediaStreamingFrameReceived;
 import views.robot3d.Robot3DViewFactory;
 import views.robot3d.Xform;
@@ -68,6 +70,7 @@ public class RobotViewController implements Initializable, IMediaStreamingFrameR
 	
 	private BooleanProperty robotControlledProperty;
 	private Xform world;
+	private Xform robot;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -133,7 +136,7 @@ public class RobotViewController implements Initializable, IMediaStreamingFrameR
     private void createWorld() {
     	world = new Xform();
     	world.getChildren().add(createAxis());
-    	world.getChildren().add(createRobot());
+    	world.getChildren().add((robot = createRobot()));
     	world.rx.setAngle(45);
     }
 
@@ -214,16 +217,22 @@ public class RobotViewController implements Initializable, IMediaStreamingFrameR
 
 	public void setRobotView(Client selectedClient,
 			DriveController driveController, CameraController cameraController) {
+		if (this.selectedClient != null) {
+			this.selectedClient.OrientationProperty().removeListener(listener);
+		}
 		this.selectedClient = selectedClient;
 		this.driveController = driveController;
 		this.cameraController = cameraController;
 		sldLeftMotor.setValue(0);
 		sldRightMotor.setValue(0);
 		robotControlledProperty.set(true);
+		this.selectedClient.OrientationProperty().addListener(listener);
 	}
 	
 	public void unbindRobotFromControl() {
 		robotControlledProperty.set(false);
+		setRobotOrientation(new Orientation3D(0,0,0));
+		this.selectedClient.OrientationProperty().removeListener(listener);
 		this.selectedClient = null;
 		this.driveController = null;
 	}
@@ -246,4 +255,21 @@ public class RobotViewController implements Initializable, IMediaStreamingFrameR
 		}
 	}
 
+	private ChangeListener<Orientation3D> listener = new ChangeListener<Orientation3D>() {
+		@Override
+		public void changed(
+				ObservableValue<? extends Orientation3D> observable,
+				Orientation3D oldValue, Orientation3D newValue) {
+			setRobotOrientation(newValue);
+		}
+	};
+	private void setRobotOrientation(Orientation3D newValue) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				robot.reset();
+				robot.setRotate(newValue.pitch, newValue.yaw, newValue.roll);
+			}
+		});
+	}
 }
