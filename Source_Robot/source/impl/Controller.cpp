@@ -21,7 +21,7 @@ namespace FhvRobot {
 
 static std::string exec(char* cmd);
 
-Controller::Controller() {
+Controller::Controller(MPU9150* mpu, FusionFilter* filter) : robot(mpu, filter) {
 	connection = NULL;
 	running = false;
 }
@@ -46,6 +46,8 @@ bool Controller::Start(char* serverIp) {
 	pres.SetCallback(&app);
 	app.SetCallback(connection);
 
+	short roll, pitch, yaw;
+
 	strcpy(serverAddress, serverIp);
 
 	connection->SetConnection(&app);
@@ -64,9 +66,12 @@ bool Controller::Start(char* serverIp) {
 	running = true;
 	while(running)
 	{
+		for (int i = 0; i < 30; i++) {
+			robot.GetOrientation(&roll, &pitch, &yaw);
+			connection->SendOrientation(roll, pitch, yaw);
+			usleep(1000000 / 30);
+		}
 		connection->SendHeartBeat();
-
-		usleep(1000000);
 
 		// Check if we have received a heartbeat (or any other message) within a given timespan
 		struct timeval tp;

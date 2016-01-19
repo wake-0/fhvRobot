@@ -10,6 +10,9 @@
 
 #include "ConnectionAPI.h"
 #include "Robot.h"
+#include "sensors/I2C.h"
+#include "sensors/FusionFilter.h"
+#include "sensors/MPU9150.h"
 
 namespace FhvRobot {
 
@@ -20,7 +23,7 @@ private:
 	bool running;
 	char serverAddress[255];
 public:
-	Controller();
+	Controller(MPU9150* mpu, FusionFilter* filter);
 	virtual ~Controller();
 
 	void Init();

@@ -17,6 +17,7 @@
 #define TYPE_BYTE					(0b00000000)
 #define COMMAND_REGISTER			(1)
 #define COMMAND_HEARTBEAT			(0)
+#define COMMAND_ORIENTATION			(72)
 #define COMMAND_KILL				(78)
 #define COMMAND_CAMERA_ON			(20)
 #define COMMAND_CAMERA_OFF			(21)
@@ -132,6 +133,22 @@ bool ConnectionAPI::SendHeartBeat()
 	msg[1] = 0;
 
 	return connection->Send(msg, 2);
+}
+
+bool ConnectionAPI::SendOrientation(short roll, short pitch, short yaw)
+{
+	Debugger(ERROR) << "Sending orientation: roll=" << roll << ", pitch=" << pitch << ", yaw=" << yaw << "\n";
+	char msg[8];
+	msg[0] = COMMAND_ORIENTATION;
+	msg[1] = 6;
+	msg[2] = ((roll & 0xFF00) >> 8);
+	msg[3] = ((roll & 0xFF));
+	msg[4] = ((pitch & 0xFF00) >> 8);
+	msg[5] = ((pitch & 0xFF));
+	msg[6] = ((yaw & 0xFF00) >> 8);
+	msg[7] = ((yaw & 0xFF));
+
+	return connection->Send(msg, 8);
 }
 
 int getMotorValue(signed char command_value)

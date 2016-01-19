@@ -18,6 +18,9 @@
 
 #include "../include/Controller.h"
 #include "../include/Debugger.h"
+#include "../include/sensors/FusionFilter.h"
+#include "../include/sensors/MPU9150.h"
+#include "../include/sensors/I2C.h"
 #include <unistd.h>
 
 using namespace FhvRobot;
@@ -36,7 +39,10 @@ int main(int argc, char** argv)
 	{
 		memcpy(serverIp, DEFAULT_SERVER_IP, strlen(DEFAULT_SERVER_IP));
 	}
-	Controller controller;
+	FusionFilter filter;
+	I2C i2c(I2C_2);
+	MPU9150 mpu(&i2c);
+	Controller controller(&mpu, &filter);
 	controller.Init();
 	bool running = true;
 	while (running)

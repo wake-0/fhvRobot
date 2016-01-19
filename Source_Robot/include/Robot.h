@@ -9,6 +9,8 @@
 #define ROBOT_H_
 
 #include "Debugger.h"
+#include "sensors/MPU9150.h"
+#include "sensors/FusionFilter.h"
 
 #define MOTOR_LEFT				(1)
 #define MOTOR_RIGHT				(2)
@@ -22,6 +24,9 @@ private:
 	int motorLeftValue;
 	int motorRightValue;
     pthread_t motorControlThread;
+    MPU9150* mpu;
+    FusionFilter* filter;
+    float calib[3];
 
     void* MotorControlLoop();
     static void *MotorControlLoopHelper(void* context)
@@ -30,12 +35,14 @@ private:
         return ((Robot*)context)->MotorControlLoop();
     }
 public:
-	Robot();
+	Robot(MPU9150* mpu, FusionFilter* filter);
 	virtual ~Robot();
 
 	bool MotorStop(bool forceAction);
 	bool MotorLeft(int percent, bool forceAction);
 	bool MotorRight(int percent, bool forceAction);
+
+	bool GetOrientation(short* roll, short* pitch, short* yaw);
 };
 
 }
