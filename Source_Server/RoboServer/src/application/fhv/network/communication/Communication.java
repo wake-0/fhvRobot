@@ -112,13 +112,10 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 			handled = true;
 
 		} else if (command == Commands.PERSIST_DATA) {
-			// TODO: handle the case data is received from game server
 			persistencyController.setPersistentData(payload);
 			handled = true;
 
 		} else if (command == Commands.REQUEST_PERSISTED_DATA) {
-			// TODO: handle the case data has to be sent to app, answer flag to
-			// 1
 			DatagramPacket datagram = manager.createDatagramPacket(client, Flags.ANSWER_FLAG,
 					Commands.REQUEST_PERSISTED_DATA, persistencyController.getPersistentData());
 			sender.answer(datagram);
