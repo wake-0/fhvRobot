@@ -11,9 +11,10 @@ package communication.managers;
 
 import java.net.DatagramPacket;
 
+import communication.configurations.IConfiguration;
 import communication.pdu.PDU;
 
-public interface IDataReceivedHandler<T extends PDU> {
+public interface IDataReceivedHandler<T extends PDU, E extends IConfiguration> {
 
-	public boolean handleDataReceived(DatagramPacket packet, T pdu, IAnswerHandler sender);
+	public boolean handleDataReceived(DatagramPacket packet, T pdu, E configuration, IAnswerHandler sender);
 }

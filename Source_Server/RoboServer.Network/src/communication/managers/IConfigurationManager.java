@@ -13,9 +13,9 @@ import java.util.List;
 
 import communication.configurations.IConfiguration;
 
-public interface IConfigurationManager {
+public interface IConfigurationManager<T extends IConfiguration> {
 
-	public IConfiguration createConfiguration();
+	public T createConfiguration();
 
-	public List<IConfiguration> getConfigurations();
+	public List<T> getConfigurations();
 }

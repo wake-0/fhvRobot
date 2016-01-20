@@ -6,7 +6,8 @@ import communication.managers.IConfigurationManager;
 import controllers.ClientController.IOperatorChangedListener;
 import models.IExtendedConfiguration;
 
-public interface IClientController<T extends IExtendedConfiguration> extends IConfigurationManager, IClientProvider<T> {
+public interface IClientController<T extends IExtendedConfiguration>
+		extends IConfigurationManager<T>, IClientProvider<T> {
 
 	void handleCommandReceived(T client, int command, byte[] payload);
 

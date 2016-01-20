@@ -30,8 +30,8 @@ import communication.managers.IConfigurationManager;
 import communication.managers.IDataReceivedHandler;
 import communication.pdu.ApplicationPDU;
 
-public class UDPClient implements Runnable, IDataReceivedHandler<ApplicationPDU>, IAnswerHandler, IConfigurationManager,
-		IHeartbeatHandler<IConfiguration> {
+public class UDPClient implements Runnable, IDataReceivedHandler<ApplicationPDU, IConfiguration>, IAnswerHandler,
+		IConfigurationManager, IHeartbeatHandler<IConfiguration> {
 
 	private DatagramSocket clientSocket;
 	private int sessionId = ConfigurationSettings.DEFAULT_SESSION_ID;
@@ -100,7 +100,6 @@ public class UDPClient implements Runnable, IDataReceivedHandler<ApplicationPDU>
 				manager.readDatagramPacket(receivePacket, this, this);
 
 				// use new configuration because session id is set correct
-				configuration = manager.getCurrentConfiguration();
 
 				flow++;
 			} catch (Exception ex) {
@@ -116,7 +115,8 @@ public class UDPClient implements Runnable, IDataReceivedHandler<ApplicationPDU>
 	}
 
 	@Override
-	public boolean handleDataReceived(DatagramPacket packet, ApplicationPDU pdu, IAnswerHandler sender) {
+	public boolean handleDataReceived(DatagramPacket packet, ApplicationPDU pdu, IConfiguration configuration,
+			IAnswerHandler sender) {
 
 		byte[] payload = pdu.getPayload();
 		String name = new String(payload);

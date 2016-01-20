@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import communication.configurations.IConfiguration;
 import controllers.ClientController.ICommandListener;
 import controllers.ClientController.IOperatorChangedListener;
 import models.Client;
@@ -25,13 +24,13 @@ public class SingleClientController implements IClientController<Client> {
 
 	// Methods
 	@Override
-	public IConfiguration createConfiguration() {
+	public Client createConfiguration() {
 		return client;
 	}
 
 	@Override
-	public List<IConfiguration> getConfigurations() {
-		List<IConfiguration> clientList = new ArrayList<>();
+	public List<Client> getConfigurations() {
+		List<Client> clientList = new ArrayList<>();
 		clientList.add(client);
 		return clientList;
 	}

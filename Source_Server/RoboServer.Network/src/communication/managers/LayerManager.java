@@ -9,16 +9,17 @@
  */
 package communication.managers;
 
+import communication.configurations.IConfiguration;
 import communication.pdu.PDU;
 
-public abstract class LayerManager<T extends PDU> implements IDataReceivedHandler<T> {
+public abstract class LayerManager<T extends PDU, E extends IConfiguration> implements IDataReceivedHandler<T, E> {
 
 	// Fields
-	protected IConfigurationManager manager;
-	protected CurrentConfigurationService currentConfigurationService;
+	protected IConfigurationManager<E> manager;
+	protected TempConfigurationsService currentConfigurationService;
 
 	// Constructor
-	public LayerManager(IConfigurationManager manager, CurrentConfigurationService currentConfigurationService) {
+	public LayerManager(IConfigurationManager<E> manager, TempConfigurationsService currentConfigurationService) {
 		this.manager = manager;
 		this.currentConfigurationService = currentConfigurationService;
 	}

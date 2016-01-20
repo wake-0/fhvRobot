@@ -19,20 +19,20 @@ import communication.configurations.ConfigurationSettings;
 import communication.configurations.IConfiguration;
 import communication.pdu.SessionPDU;
 
-public class SessionManager extends LayerManager<SessionPDU> {
+public class SessionManager<T extends IConfiguration> extends LayerManager<SessionPDU, T> {
 
 	// Fields
 	private final int maxIterations = 200;
 
 	// Constructor
-	public SessionManager(IConfigurationManager manager, CurrentConfigurationService currentClientService) {
-		super(manager, currentClientService);
+	public SessionManager(IConfigurationManager<T> clientManager, TempConfigurationsService currentClientService) {
+		super(clientManager, currentClientService);
 	}
 
 	// Methods
 	@Override
-	public boolean handleDataReceived(DatagramPacket packet, SessionPDU pdu, IAnswerHandler sender) {
-		IConfiguration configuration = currentConfigurationService.getConfiguration();
+	public boolean handleDataReceived(DatagramPacket packet, SessionPDU pdu, IConfiguration configuration,
+			IAnswerHandler sender) {
 
 		boolean handled = false;
 
@@ -91,7 +91,7 @@ public class SessionManager extends LayerManager<SessionPDU> {
 		int numberOfIterations = 0;
 		do {
 			// Create new session number between min and max
-			newSession = (int)((Math.random() * (maxSession - minSession)) + minSession);
+			newSession = (int) ((Math.random() * (maxSession - minSession)) + minSession);
 
 			// Break condition
 			numberOfIterations++;
@@ -104,7 +104,8 @@ public class SessionManager extends LayerManager<SessionPDU> {
 	private List<Integer> getAlreadyUsedSessionIds() {
 		List<Integer> alreadyUsedSessions = new ArrayList<>();
 
-		for (IConfiguration configuration : manager.getConfigurations()) {
+		List<T> configurations = manager.getConfigurations();
+		for (IConfiguration configuration : configurations) {
 			alreadyUsedSessions.add(configuration.getSessionId());
 		}
 

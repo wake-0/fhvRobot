@@ -11,18 +11,20 @@ package communication.managers;
 
 import java.net.DatagramPacket;
 
+import communication.configurations.IConfiguration;
 import communication.pdu.PresentationPDU;
 
-public class PresentationManager extends LayerManager<PresentationPDU> {
+public class PresentationManager<T extends IConfiguration> extends LayerManager<PresentationPDU, T> {
 
 	// Constructor
-	public PresentationManager(IConfigurationManager manager, CurrentConfigurationService currentClientService) {
-		super(manager, currentClientService);
+	public PresentationManager(IConfigurationManager<T> clientManager, TempConfigurationsService currentClientService) {
+		super(clientManager, currentClientService);
 	}
 
 	// Methods
 	@Override
-	public boolean handleDataReceived(DatagramPacket packet, PresentationPDU pdu, IAnswerHandler sender) {
+	public boolean handleDataReceived(DatagramPacket packet, PresentationPDU pdu, IConfiguration configuration,
+			IAnswerHandler sender) {
 		return false;
 	}
 }

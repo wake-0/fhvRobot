@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import communication.configurations.IConfiguration;
 import communication.heartbeat.HeartbeatManager;
 import communication.heartbeat.IHeartbeatHandler;
 import controllers.factory.IClientFactory;
@@ -115,14 +114,14 @@ public class ClientController<T extends IExtendedConfiguration> implements IClie
 	}
 
 	@Override
-	public IExtendedConfiguration createConfiguration() {
+	public T createConfiguration() {
 		T client = factory.create();
 		addClient(client);
 		return client;
 	}
 
 	@Override
-	public List<IConfiguration> getConfigurations() {
+	public List<T> getConfigurations() {
 		return new ArrayList<>(clients);
 	}
 

@@ -14,20 +14,20 @@ import java.net.DatagramPacket;
 import communication.configurations.IConfiguration;
 import communication.pdu.TransportPDU;
 
-public class TransportManager extends LayerManager<TransportPDU> {
+public class TransportManager<T extends IConfiguration> extends LayerManager<TransportPDU, T> {
 
 	// Constructor
-	public TransportManager(IConfigurationManager manager, CurrentConfigurationService currentClientService) {
-		super(manager, currentClientService);
+	public TransportManager(IConfigurationManager<T> clientManager, TempConfigurationsService currentClientService) {
+		super(clientManager, currentClientService);
 	}
 
 	// Methods
 	@Override
-	public boolean handleDataReceived(DatagramPacket packet, TransportPDU pdu, IAnswerHandler sender) {
+	public boolean handleDataReceived(DatagramPacket packet, TransportPDU pdu, IConfiguration configuration,
+			IAnswerHandler sender) {
 
-		IConfiguration client = currentConfigurationService.getConfiguration();
 		int port = packet.getPort();
-		client.setPort(port);
+		configuration.setPort(port);
 
 		return false;
 	}

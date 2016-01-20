@@ -21,7 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import communication.configurations.IConfiguration;
-import communication.managers.CurrentConfigurationService;
+import communication.managers.TempConfigurationsService;
 import communication.managers.IConfigurationManager;
 import communication.managers.SessionManager;
 import mocks.ConfigurationMock;
@@ -42,7 +42,7 @@ public class SessionManagerTest {
 			public IConfiguration createConfiguration() {
 				return new ConfigurationMock();
 			}
-		}, new CurrentConfigurationService());
+		}, new TempConfigurationsService());
 	}
 
 	@Test

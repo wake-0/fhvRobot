@@ -43,7 +43,7 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 	protected final INetworkReceiver receiver;
 	protected final INetworkSender sender;
 	protected final DatagramSocket socket;
-	protected final CommunicationManager manager;
+	protected final CommunicationManager<Client> manager;
 	protected final IClientController<Client> clientController;
 	protected final HeartbeatProvider heartbeatProvider;
 	protected final ClientNameController nameController;
@@ -53,7 +53,7 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 	public Communication(IClientController<Client> clientController, int port,
 			PersistencyController persistencyController) throws SocketException {
 		this.clientController = clientController;
-		this.manager = new CommunicationManager(clientController);
+		this.manager = new CommunicationManager<Client>(clientController);
 		this.socket = new DatagramSocket(port);
 
 		this.receiver = new LoggerNetworkReceiver(socket);
