@@ -19,6 +19,7 @@ import communication.flags.Flags;
 import communication.heartbeat.HeartbeatManager;
 import communication.heartbeat.IHeartbeatHandler;
 import communication.managers.CommunicationManager;
+import communication.managers.DatagramFactory;
 import communication.managers.IAnswerHandler;
 import communication.managers.IDataReceivedHandler;
 import communication.pdu.ApplicationPDU;
@@ -121,7 +122,7 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
                 // Open connection
                 if (!isConnectionOpened) {
                     callback.startSession();
-                    DatagramPacket openPacket = comManager.createOpenConnectionDatagramPacket(configuration);
+                    DatagramPacket openPacket = DatagramFactory.createOpenConnectionDatagramPacket(configuration);
                     clientSocket.send(openPacket);
                     DatagramPacket receiveSessionPacket = new DatagramPacket(receiveData, receiveData.length);
                     clientSocket.receive(receiveSessionPacket);
@@ -261,7 +262,7 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
 
         @Override
         protected Void doInBackground(final byte[] ... message) {
-            final DatagramPacket sendPacket = communicationManager.createDatagramPacket(configuration, flags, command, message[0]);
+            final DatagramPacket sendPacket = DatagramFactory.createDatagramPacket(configuration, flags, command, message[0]);
 
             Log.d(LOG_TAG, "output: payload[" + message[0] + "], command[" + command + "]");
 
