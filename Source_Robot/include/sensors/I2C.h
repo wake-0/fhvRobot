@@ -25,8 +25,19 @@ public:
 	virtual ~I2C();
 
 	bool SetSlave(char slave_address);
-	char ReadByte(char byte);
+	unsigned char ReadByte(char byte);
+	unsigned char ReadByte(char devAddress, char byte);
+	void ReadByte(char devAddress, char byte, char* buf);
 	bool WriteByte(char byte, char value);
+	bool WriteByte(char devAddress, char byte, char value);
+
+	char ReadBits(char devAddr, char regAddr, char bitStart, char length, char *data);
+	bool WriteBits(char devAddr, char regAddr, char bitStart, char length, char data);
+
+	char ReadBit(char devAddr, char regAddr, char bitNum, char *data);
+	bool WriteBit(char devAddr, char regAddr, char bitNum, char data);
+
+	bool WriteWord(char devAddr, char regAddr, short data);
 };
 
 } /* namespace FhvRobot */

@@ -24,4 +24,6 @@ public class Commands {
 	
 	public static final int PERSIST_DATA = 60;
 	public static final int REQUEST_PERSISTED_DATA = 61;
+
+	public static final int ORIENTATION_DATA = 72; 
 }

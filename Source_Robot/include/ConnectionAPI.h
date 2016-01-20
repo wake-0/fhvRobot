@@ -37,6 +37,7 @@ public:
 	bool Connect(const char* robotName, const char* hostname, int port);
 	void Disconnect() { connection->CloseConnection(); }
 	bool SendHeartBeat();
+	bool SendOrientation(short roll, short pitch, short yaw);
 
 	void MessageReceived(const char* msg, unsigned int len);
 	long GetLastMessageTime() { return lastMessageTime; }

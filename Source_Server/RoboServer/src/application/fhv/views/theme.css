@@ -40,6 +40,10 @@
     -fx-padding: 10px 30px 10px 10px;
 }
 
+#robot3DView {
+	-fx-padding: 40px;
+}
+
 .text-field {
    	-fx-padding: 10px;
     -fx-border-insets: 5px;

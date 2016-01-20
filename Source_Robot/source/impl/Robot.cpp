@@ -19,7 +19,7 @@
 
 namespace FhvRobot {
 
-Robot::Robot() {
+Robot::Robot(MPU9150* __mpu, FusionFilter* __filter) {
 	// Open session of DMCC library
 	session = DMCCstart(0);
 	if (session < 0)
@@ -40,6 +40,14 @@ Robot::Robot() {
 	{
 		Debugger(VERBOSE) << "Receive thread started succesfully\n";
 	}
+
+	mpu = __mpu;
+	if (mpu != NULL)
+	{
+		mpu->Sleep(false);
+		mpu->GetCompassCalibration(calib);
+	}
+	filter = __filter;
 }
 
 Robot::~Robot() {
@@ -89,6 +97,43 @@ bool Robot::MotorRight(int percent, bool forceAction) {
 	}
 	motorRightValue = percent;
 	return true;
+}
+
+bool Robot::GetOrientation(short* roll, short* pitch, short* yaw) {
+    float accel_x = mpu->GetAccelerometerX() / 16384.0; // * G; // * A_GAIN;
+    float accel_y = mpu->GetAccelerometerY() / 16384.0; // * G; // * A_GAIN;
+    float accel_z = mpu->GetAccelerometerZ() / 16384.0; // * G; // * A_GAIN;
+
+    float gyro_x = mpu->GetGyroscopeX() / 131.0;
+    float gyro_y = mpu->GetGyroscopeY() / 131.0;
+    float gyro_z = mpu->GetGyroscopeZ() / 131.0;
+
+    short comp_x, comp_y, comp_z;
+    float mx, my, mz;
+    if (mpu->GetCompass(&comp_x, &comp_y, &comp_z))
+    {
+        mx = (float)comp_x*mpu->getMRes()*calib[0];
+        my = (float)comp_y*mpu->getMRes()*calib[1];
+        mz = (float)comp_z*mpu->getMRes()*calib[2];
+
+        filter->UpdateValues(accel_x, accel_y, accel_z, gyro_x*PI/180.0f, gyro_y*PI/180.0f, gyro_z*PI/180.0f, my, mx, mz);
+        float r, p, y;
+        filter->ReadValues(&r, &p, &y);
+
+    	Debugger(ERROR) << "Got orientation values: roll=" << r << ", pitch=" << p << ", yaw=" << y << "\n";
+
+    	/*
+        if (r < 0) r=(360+r);
+        if (p < 0) p=(360+p);
+        */
+        if (y < 0) y=(360+y);
+
+        *roll = static_cast<float>(r);
+        *pitch = static_cast<float>(p);
+        *yaw = static_cast<float>(y);
+        return true;
+    }
+    return false;
 }
 
 } /* namespace FhvRobot */

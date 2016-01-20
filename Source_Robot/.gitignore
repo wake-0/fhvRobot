@@ -2,6 +2,7 @@
 
 fhvrobot
 fhvrobot_test
+fhvrobot_test_sensors
 
 # eclipse specific git ignore
 *.pydevproject
