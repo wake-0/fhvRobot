@@ -15,7 +15,6 @@ import java.util.Arrays;
 import communication.configurations.IConfiguration;
 import communication.pdu.ApplicationPDU;
 import communication.pdu.NetworkPDU;
-import communication.pdu.PDU;
 import communication.pdu.PDUFactory;
 import communication.pdu.PresentationPDU;
 import communication.pdu.SessionPDU;
@@ -24,8 +23,6 @@ import communication.pdu.TransportPDU;
 public class CommunicationManager {
 
 	// Fields
-	private final ReconnectionService reconnectionService;
-
 	private final NetworkManager networkManager;
 	private final TransportManager transportManager;
 	private final SessionManager sessionManager;
@@ -35,7 +32,6 @@ public class CommunicationManager {
 	// Constructor
 	public CommunicationManager(IConfigurationManager clientManager) {
 		this.currentConfigurationService = new CurrentConfigurationService();
-		this.reconnectionService = new ReconnectionService(this);
 
 		// Add a manager foreach layer
 		this.networkManager = new NetworkManager(clientManager, currentConfigurationService);
@@ -49,30 +45,10 @@ public class CommunicationManager {
 		return currentConfigurationService.getConfiguration();
 	}
 
-	public DatagramPacket createOpenConnectionDatagramPacket(IConfiguration configuration) {
-		PDU pdu = PDUFactory.createOpenConnectionPDU();
-		return DatagramFactory.createPacketFromPDU(configuration, pdu);
-	}
-
-	public DatagramPacket createHeartbeatDatagramPacket(IConfiguration configuration) {
-		PDU pdu = PDUFactory.createHeartbeatPDU(configuration);
-		return DatagramFactory.createPacketFromPDU(configuration, pdu);
-	}
-
-	public DatagramPacket createDatagramPacket(IConfiguration configuration, int flag, int command, byte[] payload) {
-		PDU pdu = PDUFactory.createApplicationPDU(configuration, flag, command, payload);
-		return DatagramFactory.createPacketFromPDU(configuration, pdu);
-	}
-
 	public void readDatagramPacket(DatagramPacket packet, IDataReceivedHandler<ApplicationPDU> applicationHandler,
 			IAnswerHandler answerHandler) {
 
 		byte[] data = Arrays.copyOfRange(packet.getData(), 0, packet.getLength());
-
-		// Check reconnection should be called
-		if (data == null || reconnectionService.handleDataReceived(packet, new PDU(data), answerHandler)) {
-			return;
-		}
 
 		// Otherwise check network stack
 		NetworkPDU network = PDUFactory.createNetworkPDU(data);

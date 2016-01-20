@@ -6,6 +6,7 @@ import java.util.List;
 
 import communication.commands.Commands;
 import communication.flags.Flags;
+import communication.managers.DatagramFactory;
 import communication.managers.IAnswerHandler;
 import communication.pdu.ApplicationPDU;
 import controllers.PersistencyController;
@@ -38,7 +39,7 @@ public class GamingCommunication extends Communication {
 					name = operators.get(0).getName();
 				}
 
-				DatagramPacket datagram = manager.createDatagramPacket(client, Flags.ANSWER_FLAG,
+				DatagramPacket datagram = DatagramFactory.createDatagramPacket(client, Flags.ANSWER_FLAG,
 						Commands.REQUEST_OPERATOR, name.getBytes());
 				sender.answer(datagram);
 				break;

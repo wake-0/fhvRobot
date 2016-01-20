@@ -8,9 +8,26 @@ import java.net.UnknownHostException;
 import communication.configurations.ConfigurationSettings;
 import communication.configurations.IConfiguration;
 import communication.pdu.PDU;
+import communication.pdu.PDUFactory;
 import communication.utils.NumberParser;
 
 public class DatagramFactory {
+
+	public static DatagramPacket createOpenConnectionDatagramPacket(IConfiguration configuration) {
+		PDU pdu = PDUFactory.createOpenConnectionPDU();
+		return createPacketFromPDU(configuration, pdu);
+	}
+
+	public static DatagramPacket createHeartbeatDatagramPacket(IConfiguration configuration) {
+		PDU pdu = PDUFactory.createHeartbeatPDU(configuration);
+		return createPacketFromPDU(configuration, pdu);
+	}
+
+	public static DatagramPacket createDatagramPacket(IConfiguration configuration, int flag, int command,
+			byte[] payload) {
+		PDU pdu = PDUFactory.createApplicationPDU(configuration, flag, command, payload);
+		return createPacketFromPDU(configuration, pdu);
+	}
 
 	public static DatagramPacket createNoFreeSlotPacket(IConfiguration configuration) {
 		byte answerFlags = NumberParser.intToByte(ConfigurationSettings.NO_FREE_SESSION_FLAGS);
@@ -50,7 +67,7 @@ public class DatagramFactory {
 
 		return new DatagramPacket(data, length, ipAddress, configuration.getPort());
 	}
-	
+
 	public static DatagramPacket createRawBytePacket(IConfiguration configuration, byte[] data, int len) {
 		return createPacket(configuration, data, len);
 	}
@@ -58,7 +75,7 @@ public class DatagramFactory {
 	private static DatagramPacket createPacket(IConfiguration configuration, byte[] data) {
 		return createPacket(configuration, data, data.length);
 	}
-	
+
 	private static DatagramPacket createPacket(IConfiguration configuration, byte[] data, int len) {
 		if (configuration.getSocketAddress() != null) {
 			try {

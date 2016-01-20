@@ -24,6 +24,7 @@ import communication.flags.Flags;
 import communication.heartbeat.HeartbeatManager;
 import communication.heartbeat.IHeartbeatHandler;
 import communication.managers.CommunicationManager;
+import communication.managers.DatagramFactory;
 import communication.managers.IAnswerHandler;
 import communication.managers.IConfigurationManager;
 import communication.managers.IDataReceivedHandler;
@@ -77,14 +78,14 @@ public class UDPClient implements Runnable, IDataReceivedHandler<ApplicationPDU>
 
 				if (flow == 0) {
 					System.out.println("Open connection called.");
-					sendPacket = manager.createOpenConnectionDatagramPacket(configuration);
+					sendPacket = DatagramFactory.createOpenConnectionDatagramPacket(configuration);
 					this.heartBeatManager.run();
 				} else if (flow == 1) {
 					System.out.println("Change name called.");
-					sendPacket = manager.createDatagramPacket(configuration, Flags.REQUEST_FLAG, Commands.CHANGE_NAME,
-							sentence.getBytes());
+					sendPacket = DatagramFactory.createDatagramPacket(configuration, Flags.REQUEST_FLAG,
+							Commands.CHANGE_NAME, sentence.getBytes());
 				} else {
-					sendPacket = manager.createDatagramPacket(configuration, Flags.REQUEST_FLAG,
+					sendPacket = DatagramFactory.createDatagramPacket(configuration, Flags.REQUEST_FLAG,
 							Commands.GENERAL_MESSAGE, sentence.getBytes());
 				}
 				System.out.println("Enhanced send message:" + new String(sendPacket.getData()));
@@ -145,8 +146,8 @@ public class UDPClient implements Runnable, IDataReceivedHandler<ApplicationPDU>
 	}
 
 	private void heartBeat() {
-		DatagramPacket sendPacket = manager.createDatagramPacket(configuration, Flags.REQUEST_FLAG, Commands.DEFAULT,
-				"0".getBytes());
+		DatagramPacket sendPacket = DatagramFactory.createDatagramPacket(configuration, Flags.REQUEST_FLAG,
+				Commands.DEFAULT, "0".getBytes());
 		try {
 			clientSocket.send(sendPacket);
 		} catch (IOException e) {

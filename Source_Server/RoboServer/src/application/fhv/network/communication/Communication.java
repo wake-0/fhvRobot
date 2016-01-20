@@ -19,6 +19,7 @@ import communication.flags.Flags;
 import communication.heartbeat.HeartbeatProvider;
 import communication.heartbeat.IHeartbeatCreator;
 import communication.managers.CommunicationManager;
+import communication.managers.DatagramFactory;
 import communication.managers.IAnswerHandler;
 import communication.managers.IDataReceivedHandler;
 import communication.pdu.ApplicationPDU;
@@ -100,8 +101,8 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 			nameController.registerName(name);
 
 			client.setName(name);
-			DatagramPacket datagram = manager.createDatagramPacket(client, Flags.ANSWER_FLAG, Commands.CHANGE_NAME,
-					name.getBytes());
+			DatagramPacket datagram = DatagramFactory.createDatagramPacket(client, Flags.ANSWER_FLAG,
+					Commands.CHANGE_NAME, name.getBytes());
 			sender.answer(datagram);
 			handled = true;
 
@@ -118,7 +119,7 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 		} else if (command == Commands.REQUEST_PERSISTED_DATA) {
 			// TODO: handle the case data has to be sent to app, answer flag to
 			// 1
-			DatagramPacket datagram = manager.createDatagramPacket(client, Flags.ANSWER_FLAG,
+			DatagramPacket datagram = DatagramFactory.createDatagramPacket(client, Flags.ANSWER_FLAG,
 					Commands.REQUEST_PERSISTED_DATA, persistencyController.getPersistentData());
 			sender.answer(datagram);
 			handled = true;
@@ -142,7 +143,7 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 			return;
 		}
 
-		DatagramPacket sendPacket = manager.createDatagramPacket(client, flags, command, payload);
+		DatagramPacket sendPacket = DatagramFactory.createDatagramPacket(client, flags, command, payload);
 		sender.send(sendPacket);
 	}
 
@@ -166,7 +167,7 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 	public void createHeartBeat() {
 		try {
 			for (Client client : clientController.getClients()) {
-				DatagramPacket heartbeatPacket = manager.createHeartbeatDatagramPacket(client);
+				DatagramPacket heartbeatPacket = DatagramFactory.createHeartbeatDatagramPacket(client);
 				socket.send(heartbeatPacket);
 			}
 		} catch (IOException e) {
