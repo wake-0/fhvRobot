@@ -214,8 +214,10 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
                 if (payload.length < 6) break;
                 short roll = (short) ((payload[0] << 8) | payload[1]);
                 short pitch = (short) ((payload[2] << 8) | payload[3]);
-                short yaw = (short) ((payload[4] << 8) | payload[5]);
-                callback.orientationChange(roll, pitch, yaw);
+                short high = (short)(payload[4] & 0x00ff);
+                short low  = payload[5];
+                int yaw = (short)((high & 0xFF) << 8) | (low & 0xFF);
+                callback.orientationChange(roll, pitch, (short)yaw);
                 break;
             default:
                 break;
