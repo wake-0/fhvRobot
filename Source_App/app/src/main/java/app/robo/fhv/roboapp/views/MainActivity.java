@@ -214,7 +214,9 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
 
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                networkClient.getCommunicationClient().triggerLed();
+                if(isOperator) {
+                    networkClient.getCommunicationClient().triggerLed();
+                }
                 return false;
             }
         });
@@ -418,7 +420,9 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
             new Runnable() {
                 @Override
                 public void run() {
-                    compass.setAngle(yaw);
+                    if(isOperator) {
+                        compass.setAngle(yaw);
+                    }
                 }
             }
         );

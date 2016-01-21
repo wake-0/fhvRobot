@@ -49,6 +49,9 @@
         <viewModels:MainViewModel />
     </Window.DataContext>
 
+    <Window.InputBindings>
+        <KeyBinding Key="S" Modifiers="Alt" Command="{Binding OpenSettingsWindowCommand}" />
+    </Window.InputBindings>
 
     <Grid>
         <Grid.Background>
@@ -83,18 +86,9 @@
 
                 <StackPanel TextElement.Foreground="{StaticResource Foreground}"
                             Orientation="Horizontal">
-                    <!-- TODO: change TextBox to TextBlock -->
-                    <TextBox Text="{Binding CurrentScore.Name}"  
+                    <TextBlock Text="{Binding ScoreManager.CurrentScore.Name}"  
                                HorizontalAlignment="Stretch" 
                                VerticalAlignment="Stretch" />
-
-                    <!-- Test button -->
-                    <Button Content="Send" Command="{Binding SendMessageCommand}" />
-                    <Button Content="Test" Command="{Binding TestCommand}" />
-                    <Button Content="Open" Command="{Binding OpenCommand}" />
-                    <Button Content="Save" Command="{Binding SaveCommand}" />
-                    <Button Content="HighScore" Command="{Binding SendHighscoreCommand}" />
-                    <Button Content="Operator" Command="{Binding SendOperatorCommand}" />
                 </StackPanel>
             </Viewbox>
         </Border>

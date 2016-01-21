@@ -13,6 +13,7 @@ namespace GameServer.Managers
     public class ScoreManager
     {
         #region Properties
+        public Score CurrentScore { get; set; }
         public ObservableCollection<Score> TopScores { get; private set; }
         public ObservableCollection<Score> Scores { get; private set; }
 
