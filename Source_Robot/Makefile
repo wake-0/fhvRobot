@@ -28,6 +28,10 @@ DEPS = \
  include/mocks/TransportMock.h \
  include/Controller.h \
  include/ConnectionAPI.h \
+ include/configuration/ini.h \
+ include/configuration/INIReader.h \
+ include/GPIO/GPIOConst.h \
+ include/GPIO/GPIOManager.h \
  include/sensors/Lidar.h \
  include/sensors/MPU9150.h \
  include/sensors/FusionFilter.h \
@@ -36,7 +40,9 @@ DEPS = \
 
 # Compiler object files 
 COBJ = \
- $(OBJDIR)/dmcc_lib/dmcc.o
+ $(OBJDIR)/dmcc_lib/dmcc.o \
+ $(OBJDIR)/impl/configuration/ini.o
+
  
 CPPOBJ = \
  $(OBJDIR)/impl/Robot.o \
@@ -44,9 +50,12 @@ CPPOBJ = \
  $(OBJDIR)/tests/TransportMock.o \
  $(OBJDIR)/impl/Controller.o \
  $(OBJDIR)/impl/ConnectionAPI.o \
+ $(OBJDIR)/impl/FusionFilter.o \
+ $(OBJDIR)/impl/INIReader.o \
  $(OBJDIR)/impl/Lidar.o \
  $(OBJDIR)/impl/MPU9150.o \
- $(OBJDIR)/impl/FusionFilter.o \
+ $(OBJDIR)/impl/GPIOConst.o \
+ $(OBJDIR)/impl/GPIOManager.o \
  $(OBJDIR)/impl/I2C.o
  
 CPPSRC = \
@@ -58,6 +67,9 @@ CPPSRC = \
  ./source/impl/sensors/Lidar.cpp \
  ./source/impl/sensors/MPU9150.cpp \
  ./source/impl/sensors/FusionFilter.cpp \
+ ./source/impl/GPIO/GPIOConst.cpp \
+ ./source/impl/GPIO/GPIOManager.cpp \
+ ./source/impl/configuration/INIReader.cpp \
  ./source/impl/ConnectionAPI.cpp
 
 # gcc binaries to use
@@ -104,6 +116,9 @@ $(PROJECT): $(COBJ) $(SOURCES)
 	$(CXX) -c ./source/impl/sensors/Lidar.cpp -o $(OBJDIR)/impl/Lidar.o -Wall
 	$(CXX) -c ./source/impl/sensors/MPU9150.cpp -o $(OBJDIR)/impl/MPU9150.o -Wall
 	$(CXX) -c ./source/impl/sensors/FusionFilter.cpp -o $(OBJDIR)/impl/FusionFilter.o -Wall
+	$(CXX) -c ./source/impl/GPIO/GPIOConst.cpp -o $(OBJDIR)/impl/GPIOConst.o -Wall
+	$(CXX) -c ./source/impl/GPIO/GPIOManager.cpp -o $(OBJDIR)/impl/GPIOManager.o -Wall
+	$(CXX) -c ./source/impl/configuration/INIReader.cpp -o $(OBJDIR)/impl/INIReader.o -Wall
 	$(CXX) -c ./source/impl/mocks/TransportMock.cpp -o $(OBJDIR)/tests/TransportMock.o -Wall
 	$(CXX) -c ./source/tests/testsuite.cpp -o $(OBJDIR)/tests/testsuite.o -Wall
 	$(CXX) -c ./source/tests/sensor_testsuite.cpp -o $(OBJDIR)/tests/sensor_testsuite.o -Wall
@@ -128,6 +143,7 @@ clean:
 	$(REMOVE) $(OBJDIR)/*.o
 	$(REMOVE) $(OBJDIR)/dmcc_lib/*.o
 	$(REMOVE) $(OBJDIR)/impl/*.o
+	$(REMOVE) $(OBJDIR)/impl/configuration/*.o
 	$(REMOVE) $(OBJDIR)/tests/*.o
 	$(REMOVE) $(PROJECT)
 	

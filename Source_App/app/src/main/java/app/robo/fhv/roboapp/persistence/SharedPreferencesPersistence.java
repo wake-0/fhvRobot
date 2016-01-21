@@ -29,6 +29,10 @@ public class SharedPreferencesPersistence {
         return instance;
     }
 
+    public static boolean isInstanceCreated() {
+        return (instance != null);
+    }
+
     public long getLastLoginTime() {
         SharedPreferences prefs = context.getSharedPreferences(
                 SHARED_PREFERENCES_ID, Context.MODE_PRIVATE);

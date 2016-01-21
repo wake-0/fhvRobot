@@ -104,9 +104,13 @@ public class ClientController<T extends IExtendedConfiguration> implements IClie
 		if (client == null) {
 			return;
 		}
-
-		clients.remove(client);
-		clientTimers.remove(client);
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				clients.remove(client);
+				clientTimers.remove(client);
+			}
+		});
 	}
 
 	@Override

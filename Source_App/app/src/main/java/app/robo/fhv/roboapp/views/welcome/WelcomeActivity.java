@@ -31,7 +31,9 @@ public class WelcomeActivity extends AppIntro2 implements Serializable {
 
     @Override
     public void init(Bundle savedInstanceState) {
-        SharedPreferencesPersistence.createInstance(this);
+        if (!SharedPreferencesPersistence.isInstanceCreated()) {
+            SharedPreferencesPersistence.createInstance(this);
+        }
         instance = SharedPreferencesPersistence.getInstance();
         addSlide(new WelcomeSplashPage());
         addSlide(new WelcomeThatsMe());

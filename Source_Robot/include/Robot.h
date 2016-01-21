@@ -34,6 +34,7 @@ private:
     	Debugger(VERBOSE) << "ReceiveLoopHelper calling private method\n";
         return ((Robot*)context)->MotorControlLoop();
     }
+    bool GetOrientationPrecise(float* roll, float* pitch, float* yaw);
 public:
 	Robot(MPU9150* mpu, FusionFilter* filter);
 	virtual ~Robot();
@@ -43,6 +44,7 @@ public:
 	bool MotorRight(int percent, bool forceAction);
 
 	bool GetOrientation(short* roll, short* pitch, short* yaw);
+	bool GetOrientation_10(short* roll, short* pitch, short* yaw);
 };
 
 }

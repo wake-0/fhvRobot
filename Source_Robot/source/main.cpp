@@ -21,24 +21,44 @@
 #include "../include/sensors/FusionFilter.h"
 #include "../include/sensors/MPU9150.h"
 #include "../include/sensors/I2C.h"
+#include "../include/configuration/INIReader.h"
 #include <unistd.h>
+#include <string.h>
 
 using namespace FhvRobot;
 
+#define DEFAULT_CONFIG_FILE		("config.ini")
 #define DEFAULT_SERVER_IP		("83.212.127.13")
 
 int main(int argc, char** argv)
 {
 
-	char serverIp[255] = { 0 };
+	char configFile[255] = { 0 };
 	if (argc == 2)
 	{
-		memcpy(serverIp, argv[1], strlen(argv[1]));
+		memcpy(configFile, argv[1], strlen(argv[1]));
 	}
 	else
 	{
-		memcpy(serverIp, DEFAULT_SERVER_IP, strlen(DEFAULT_SERVER_IP));
+		memcpy(configFile, DEFAULT_CONFIG_FILE, strlen(DEFAULT_SERVER_IP));
 	}
+
+	std::string serverAddress = DEFAULT_SERVER_IP;
+
+	Debugger(VERBOSE) << "Reading config file " << configFile << "\n";
+	INIReader reader(configFile);
+	if (reader.ParseError() < 0) {
+		Debugger(ERROR) << "Could not read ini file: " << configFile << "\n";
+		Debugger(INFO) << "Sample config.ini\n";
+		Debugger(INFO) << "[server]\n";
+		Debugger(INFO) << "address=127.0.0.1 ; Use YOUR server's ip address instead\n\n";
+		Debugger(INFO) << "Using default server ip: " << DEFAULT_SERVER_IP << "\n";
+	}
+	else
+	{
+		serverAddress = reader.Get("server", "address", DEFAULT_SERVER_IP);
+	}
+
 	FusionFilter filter;
 	I2C i2c(I2C_2);
 	MPU9150 mpu(&i2c);
@@ -48,7 +68,7 @@ int main(int argc, char** argv)
 	while (running)
 	{
 		Debugger(INFO) << "Trying to connect...\n";
-		running = controller.Start(serverIp); // Returns after a disconnect only
+		running = controller.Start((char*)serverAddress.c_str()); // Returns after a disconnect only
 		if (running)
 		{
 			Debugger(WARNING) << "Disconnect because of timeout\n";

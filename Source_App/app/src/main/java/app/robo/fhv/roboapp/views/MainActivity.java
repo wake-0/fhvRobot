@@ -32,6 +32,7 @@ import app.robo.fhv.roboapp.communication.SignalStrength;
 import app.robo.fhv.roboapp.domain.Score;
 import app.robo.fhv.roboapp.utils.ScoreArrayAdapter;
 import app.robo.fhv.roboapp.utils.XmlHelper;
+import app.robo.fhv.roboapp.views.custom.CompassView;
 import app.robo.fhv.roboapp.views.welcome.WelcomeActivity;
 
 public class MainActivity extends FragmentActivity implements CommunicationClient.ICommunicationCallback, MediaStreaming.IFrameReceived, IHighScoreManager {
@@ -51,6 +52,7 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
     private ImageView camCanvas;
     private ImageView signalStrength;
     private ImageView highScores;
+    private ImageView lamp;
 
     private View lytHighscore;
     private ListView listHighscore;
@@ -62,6 +64,8 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
     private NetworkClient networkClient;
     private ValueAnimator leftSnapBackAnimator;
     private ValueAnimator rightSnapBackAnimator;
+
+    private CompassView compass;
 
     private boolean reconnectActivityStarted;
 
@@ -86,12 +90,15 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
         camCanvas = (ImageView) findViewById(R.id.imgCamCanvas);
         signalStrength = (ImageView) findViewById(R.id.imgSignalStrength);
         highScores = (ImageView) findViewById(R.id.imgHighScores);
+        lamp = (ImageView) findViewById(R.id.imgLamp);
         statusText = (TextView) findViewById(R.id.lblStatusText);
         spectatorText = (TextView) findViewById(R.id.txtSpecatatorWelcome);
         setSpectatorText("Zuschauermodus");
 
         sbLeft = (SeekBar) findViewById(R.id.sbLeft);
         sbRight = (SeekBar) findViewById(R.id.sbRight);
+
+        compass = (CompassView) findViewById(R.id.cmpRobotCompass);
 
         lytHighscore = findViewById(R.id.lytHighscoreLayout);
 
@@ -199,6 +206,15 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
                     lytHighscore.setVisibility(View.VISIBLE);
                     networkClient.getCommunicationClient().sendHighScoreRequest();
                 }
+                return false;
+            }
+        });
+
+        lamp.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                networkClient.getCommunicationClient().triggerLed();
                 return false;
             }
         });
@@ -393,6 +409,18 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
                         setSpectatorText("Zuschauermodus");
                     }
                 }
+        );
+    }
+
+    @Override
+    public void orientationChange(float roll, float pitch, final float yaw) {
+        new Handler(Looper.getMainLooper()).post(
+            new Runnable() {
+                @Override
+                public void run() {
+                    compass.setAngle(yaw, true);
+                }
+            }
         );
     }
 

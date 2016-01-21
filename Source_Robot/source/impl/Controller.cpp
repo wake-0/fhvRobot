@@ -67,7 +67,7 @@ bool Controller::Start(char* serverIp) {
 	while(running)
 	{
 		for (int i = 0; i < 30; i++) {
-			robot.GetOrientation(&roll, &pitch, &yaw);
+			robot.GetOrientation_10(&roll, &pitch, &yaw);
 			connection->SendOrientation(roll, pitch, yaw);
 			usleep(1000000 / 30);
 		}
