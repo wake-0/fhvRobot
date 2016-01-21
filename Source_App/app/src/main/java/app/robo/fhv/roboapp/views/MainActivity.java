@@ -402,12 +402,12 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
     }
 
     @Override
-    public void orientationChange(short roll, short pitch, final short yaw) {
+    public void orientationChange(float roll, float pitch, final float yaw) {
         new Handler(Looper.getMainLooper()).post(
             new Runnable() {
                 @Override
                 public void run() {
-                    compass.setAngle(yaw);
+                    compass.setAngle(yaw, true);
                 }
             }
         );
