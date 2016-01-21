@@ -132,7 +132,7 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 				short high = (short)(payload[4] & 0x00ff);
 				short low  = payload[5];
 				int yaw = (short)((high & 0xFF) << 8) | (low & 0xFF);
-				client.setOrientation(new Orientation3D(roll, pitch, (short)yaw));
+				client.setOrientation(new Orientation3D(roll / 10.0f, pitch / 10.0f, (short)yaw / 10.0f));
 				handled = true;
 			}
 		}

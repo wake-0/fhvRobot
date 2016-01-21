@@ -48,7 +48,7 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
         void startSteering();
         void stopSteering();
 
-        void orientationChange(short roll, short pitch, short yaw);
+        void orientationChange(float roll, float pitch, float yaw);
     }
 
     private static final String LOG_TAG = "CommunicationClient";
@@ -217,7 +217,7 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
                 short high = (short)(payload[4] & 0x00ff);
                 short low  = payload[5];
                 int yaw = (short)((high & 0xFF) << 8) | (low & 0xFF);
-                callback.orientationChange(roll, pitch, (short)yaw);
+                callback.orientationChange(roll / 10.0f, pitch / 10.0f, (short)yaw / 10.0f);
                 break;
             default:
                 break;
