@@ -157,7 +157,7 @@ bool test_class_UdpConnection() {
 }
 
 bool test_class_Robot() {
-	Robot r(NULL, NULL);
+	Robot r(NULL, NULL, NULL);
 	// Both forward
 	printf("Running forward with 50\n");
 	assert( r.MotorLeft(50, true) == true);

@@ -21,8 +21,9 @@ namespace FhvRobot {
 
 static std::string exec(char* cmd);
 
-Controller::Controller(MPU9150* mpu, FusionFilter* filter) : robot(mpu, filter) {
+Controller::Controller(MPU9150* mpu, FusionFilter* filter, GPIO::GPIOManager* gp) : robot(mpu, filter, gp) {
 	connection = NULL;
+	gpioManager = gp;
 	running = false;
 }
 
@@ -154,6 +155,11 @@ void Controller::CameraOff()
 void Controller::ForceDisconnect()
 {
 	running = false;
+}
+
+void Controller::TriggerLED()
+{
+	robot.TriggerLED();
 }
 
 std::string exec(char* cmd) {

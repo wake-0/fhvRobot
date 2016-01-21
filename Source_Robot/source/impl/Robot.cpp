@@ -19,7 +19,7 @@
 
 namespace FhvRobot {
 
-Robot::Robot(MPU9150* __mpu, FusionFilter* __filter) {
+Robot::Robot(MPU9150* __mpu, FusionFilter* __filter, GPIO::GPIOManager* gp) {
 	// Open session of DMCC library
 	session = DMCCstart(0);
 	if (session < 0)
@@ -48,6 +48,12 @@ Robot::Robot(MPU9150* __mpu, FusionFilter* __filter) {
 		mpu->GetCompassCalibration(calib);
 	}
 	filter = __filter;
+	manager = gp;
+	if (manager != NULL)
+	{
+		int pin = GPIO::GPIOConst::getInstance()->getGpioByKey("P8_11");
+		manager->setDirection(pin, GPIO::OUTPUT);
+	}
 }
 
 Robot::~Robot() {
@@ -162,6 +168,14 @@ bool Robot::GetOrientation_10(short* roll, short* pitch, short* yaw) {
         return true;
     }
     return false;
+}
+
+void Robot::TriggerLED()
+{
+	int pin = GPIO::GPIOConst::getInstance()->getGpioByKey("P8_11");
+	manager->setValue(pin, GPIO::HIGH);
+	usleep(1000);
+	manager->setValue(pin, GPIO::LOW);
 }
 
 } /* namespace FhvRobot */

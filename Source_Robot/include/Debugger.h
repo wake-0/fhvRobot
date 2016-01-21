@@ -5,7 +5,7 @@
 #include <iostream>
 
 #define _DEBUG
-#define CAKE_DebugLevel VERBOSE
+#define CAKE_DebugLevel INFO
 
 #define ERROR 0
 #define WARNING 2

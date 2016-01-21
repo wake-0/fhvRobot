@@ -11,6 +11,8 @@
 #include "Debugger.h"
 #include "sensors/MPU9150.h"
 #include "sensors/FusionFilter.h"
+#include "GPIO/GPIOManager.h"
+#include "GPIO/GPIOConst.h"
 
 #define MOTOR_LEFT				(1)
 #define MOTOR_RIGHT				(2)
@@ -26,6 +28,7 @@ private:
     pthread_t motorControlThread;
     MPU9150* mpu;
     FusionFilter* filter;
+    GPIO::GPIOManager* manager;
     float calib[3];
 
     void* MotorControlLoop();
@@ -36,7 +39,7 @@ private:
     }
     bool GetOrientationPrecise(float* roll, float* pitch, float* yaw);
 public:
-	Robot(MPU9150* mpu, FusionFilter* filter);
+	Robot(MPU9150* mpu, FusionFilter* filter, GPIO::GPIOManager* man);
 	virtual ~Robot();
 
 	bool MotorStop(bool forceAction);
@@ -45,6 +48,8 @@ public:
 
 	bool GetOrientation(short* roll, short* pitch, short* yaw);
 	bool GetOrientation_10(short* roll, short* pitch, short* yaw);
+
+	void TriggerLED();
 };
 
 }

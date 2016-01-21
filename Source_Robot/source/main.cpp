@@ -22,6 +22,7 @@
 #include "../include/sensors/MPU9150.h"
 #include "../include/sensors/I2C.h"
 #include "../include/configuration/INIReader.h"
+#include "../include/GPIO/GPIOManager.h"
 #include <unistd.h>
 #include <string.h>
 
@@ -62,7 +63,8 @@ int main(int argc, char** argv)
 	FusionFilter filter;
 	I2C i2c(I2C_2);
 	MPU9150 mpu(&i2c);
-	Controller controller(&mpu, &filter);
+	GPIO::GPIOManager* gp = GPIO::GPIOManager::getInstance();
+	Controller controller(&mpu, &filter, gp);
 	controller.Init();
 	bool running = true;
 	while (running)
@@ -76,6 +78,7 @@ int main(int argc, char** argv)
 			usleep(10 * 1000 * 1000);
 		}
 	}
+	gp->~GPIOManager();
 	Debugger(INFO) << "Stopping robot\n";
 	return 0;
 }

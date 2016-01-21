@@ -24,6 +24,7 @@
 #define COMMAND_MOTOR_LEFT			(11)
 #define COMMAND_MOTOR_RIGHT			(10)
 #define COMMAND_MOTOR_BOTH			(12)
+#define COMMAND_TRIGGER_LED			(18)
 
 namespace FhvRobot {
 
@@ -85,6 +86,10 @@ void ConnectionAPI::MessageReceived(const char* msg, unsigned int len)
 	else if (command == COMMAND_CAMERA_OFF)
 	{
 		callback->CameraOff();
+	}
+	else if (command == COMMAND_TRIGGER_LED)
+	{
+		callback->TriggerLED();
 	}
 }
 

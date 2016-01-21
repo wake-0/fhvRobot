@@ -22,6 +22,7 @@ public:
 	virtual void CameraOn(char* host, int port) = 0;
 	virtual void CameraOff() = 0;
 	virtual void ForceDisconnect() = 0;
+	virtual void TriggerLED() = 0;
 };
 
 class ConnectionAPI : public ProtocolLayerCallback {
