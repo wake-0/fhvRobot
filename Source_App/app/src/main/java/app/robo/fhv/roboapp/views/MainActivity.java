@@ -418,7 +418,7 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
             new Runnable() {
                 @Override
                 public void run() {
-                    compass.setAngle(yaw, true);
+                    compass.setAngle(yaw);
                 }
             }
         );
