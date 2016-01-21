@@ -281,75 +281,9 @@ public class CompassView extends View {
         }
 
         // label actual middle angle
-        paint.setTextSize(12);
-        canvas.drawText(Integer.toString((int)angle)+"°", canvas.getWidth()/2-5, canvas.getHeight()*0.8f, paint);
+        //paint.setTextSize(12);
+        //canvas.drawText(Integer.toString((int)angle)+"°", canvas.getWidth()/2-5, canvas.getHeight()*0.8f, paint);
     }
-
-
-
-    /*
-    private void drawTicks(Canvas canvas) {
-        float availableAngle = 160;
-        float majorStep = (float) (majorTickStep/ maxSpeed *availableAngle);
-        float minorStep = majorStep / (1 + minorTicks);
-
-        float majorTicksLength = 30;
-        float minorTicksLength = majorTicksLength/2;
-
-        RectF oval = getOval(canvas, 1);
-        float radius = oval.width()*0.35f;
-
-        float currentAngle = 10;
-        double curProgress = 0;
-        while (currentAngle <= 170) {
-
-            canvas.drawLine(
-                    (float) (oval.centerX() + Math.cos((180-currentAngle)/180*Math.PI)*(radius-majorTicksLength/2)),
-                    (float) (oval.centerY() - Math.sin(currentAngle/180*Math.PI)*(radius-majorTicksLength/2)),
-                    (float) (oval.centerX() + Math.cos((180-currentAngle)/180*Math.PI)*(radius+majorTicksLength/2)),
-                    (float) (oval.centerY() - Math.sin(currentAngle/180*Math.PI)*(radius+majorTicksLength/2)),
-                    ticksPaint
-            );
-
-            for (int i=1; i<=minorTicks; i++) {
-                float angle = currentAngle + i*minorStep;
-                if (angle >= 170 + minorStep/2) {
-                    break;
-                }
-                canvas.drawLine(
-                        (float) (oval.centerX() + Math.cos((180 - angle) / 180 * Math.PI) * radius),
-                        (float) (oval.centerY() - Math.sin(angle / 180 * Math.PI) * radius),
-                        (float) (oval.centerX() + Math.cos((180 - angle) / 180 * Math.PI) * (radius + minorTicksLength)),
-                        (float) (oval.centerY() - Math.sin(angle / 180 * Math.PI) * (radius + minorTicksLength)),
-                        ticksPaint
-                );
-            }
-
-            if (labelConverter != null) {
-
-                canvas.save();
-                canvas.rotate(180 + currentAngle, oval.centerX(), oval.centerY());
-                float txtX = oval.centerX() + radius + majorTicksLength/2 + 8;
-                float txtY = oval.centerY();
-                canvas.rotate(+90, txtX, txtY);
-                canvas.drawText(labelConverter.getLabelFor(curProgress, maxSpeed), txtX, txtY, txtPaint);
-                canvas.restore();
-            }
-
-            currentAngle += majorStep;
-            curProgress += majorTickStep;
-        }
-
-        RectF smallOval = getOval(canvas, 0.7f);
-        colorLinePaint.setColor(defaultColor);
-        canvas.drawArc(smallOval, 185, 170, false, colorLinePaint);
-
-        for (ColoredRange range: ranges) {
-            colorLinePaint.setColor(range.getColor());
-            canvas.drawArc(smallOval, (float) (190 + range.getBegin()/ maxSpeed *160), (float) ((range.getEnd() - range.getBegin())/ maxSpeed *160), false, colorLinePaint);
-        }
-    }
-    */
 
 
     private void drawBackground(Canvas canvas) {
