@@ -103,6 +103,10 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
         sendCommand(Flags.REQUEST_FLAG, Commands.DRIVE_RIGHT, rightValue);
     }
 
+    public void triggerLed() {
+        sendCommand(Flags.REQUEST_FLAG, Commands.TRIGGER_LED, 0);
+    }
+
     private void sendCommand(int flags, int command, int value) {
         int mappedValue = ProgressMapper.progressToDriveValue(value);
         byte byteValue = NumberParser.intToByte(mappedValue);
