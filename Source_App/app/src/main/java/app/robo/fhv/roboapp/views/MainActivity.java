@@ -32,6 +32,7 @@ import app.robo.fhv.roboapp.communication.SignalStrength;
 import app.robo.fhv.roboapp.domain.Score;
 import app.robo.fhv.roboapp.utils.ScoreArrayAdapter;
 import app.robo.fhv.roboapp.utils.XmlHelper;
+import app.robo.fhv.roboapp.views.custom.CompassView;
 import app.robo.fhv.roboapp.views.welcome.WelcomeActivity;
 
 public class MainActivity extends FragmentActivity implements CommunicationClient.ICommunicationCallback, MediaStreaming.IFrameReceived, IHighScoreManager {
@@ -63,6 +64,8 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
     private ValueAnimator leftSnapBackAnimator;
     private ValueAnimator rightSnapBackAnimator;
 
+    private CompassView compass;
+
     private boolean reconnectActivityStarted;
 
     @Override
@@ -92,6 +95,8 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
 
         sbLeft = (SeekBar) findViewById(R.id.sbLeft);
         sbRight = (SeekBar) findViewById(R.id.sbRight);
+
+        compass = (CompassView) findViewById(R.id.cmpRobotCompass);
 
         lytHighscore = findViewById(R.id.lytHighscoreLayout);
 
@@ -393,6 +398,18 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
                         setSpectatorText("Zuschauermodus");
                     }
                 }
+        );
+    }
+
+    @Override
+    public void orientationChange(short roll, short pitch, final short yaw) {
+        new Handler(Looper.getMainLooper()).post(
+            new Runnable() {
+                @Override
+                public void run() {
+                    compass.setAngle(yaw);
+                }
+            }
         );
     }
 
