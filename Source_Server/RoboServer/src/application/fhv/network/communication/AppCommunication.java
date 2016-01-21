@@ -41,6 +41,7 @@ public class AppCommunication extends Communication {
 	protected boolean isCommandToDelegate(int command) {
 		return command == Commands.DRIVE_BOTH ||
 				command == Commands.DRIVE_LEFT ||
-				command == Commands.DRIVE_RIGHT;
+				command == Commands.DRIVE_RIGHT ||
+				command == Commands.TRIGGER_LED;
 	}
 }
