@@ -47,6 +47,8 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
 
         void startSteering();
         void stopSteering();
+
+        void orientationChange(short roll, short pitch, short yaw);
     }
 
     private static final String LOG_TAG = "CommunicationClient";
@@ -206,6 +208,15 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
                 if (applicationPDU.isAnswer()) {
                     highScoreManager.updateScores(new String(applicationPDU.getPayload()));
                 }
+                break;
+            case Commands.ORIENTATION_DATA:
+                byte[] payload = applicationPDU.getPayload();
+                if (payload.length < 6) break;
+                short roll = (short) ((payload[0] << 8) | payload[1]);
+                short pitch = (short) ((payload[2] << 8) | payload[3]);
+                short yaw = (short) ((payload[4] << 8) | payload[5]);
+                callback.orientationChange(roll, pitch, yaw);
+                break;
             default:
                 break;
         }

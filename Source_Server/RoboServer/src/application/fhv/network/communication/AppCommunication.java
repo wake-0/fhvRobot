@@ -3,6 +3,7 @@ package network.communication;
 import java.net.DatagramPacket;
 import java.net.SocketException;
 
+import communication.commands.Commands;
 import communication.managers.IAnswerHandler;
 import communication.pdu.ApplicationPDU;
 import controllers.PersistencyController;
@@ -38,6 +39,8 @@ public class AppCommunication extends Communication {
 
 	@Override
 	protected boolean isCommandToDelegate(int command) {
-		return true;
+		return command == Commands.DRIVE_BOTH ||
+				command == Commands.DRIVE_LEFT ||
+				command == Commands.DRIVE_RIGHT;
 	}
 }

@@ -131,19 +131,20 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 				short pitch = (short) ((payload[2] << 8) | payload[3]);
 				short yaw = (short) ((payload[4] << 8) | payload[5]);
 				client.setOrientation(new Orientation3D(roll, pitch, yaw));
+				handled = true;
 			}
 		}
 
 		if (!handled) {
 			handled = handleDataReceivedCore(packet, pdu, sender, client);
-
-			if (isCommandToDelegate(command)) {
-				if (delegator != null && client.getIsOperator()) {
-					delegator.delegateMessage(flags, command, payload);
-				}
-			}
 		}
 
+		if (isCommandToDelegate(command)) {
+			if (delegator != null) {
+				delegator.delegateMessage(flags, command, payload);
+			}
+		}
+		
 		// Set the received data
 		client.setReceiveData(new String(payload));
 
