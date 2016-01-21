@@ -48,11 +48,13 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 	protected final HeartbeatProvider heartbeatProvider;
 	protected final ClientNameController nameController;
 	protected final PersistencyController persistencyController;
+	protected final Delegator delegator;
 
 	// Constructors
-	public Communication(IClientController<Client> clientController, int port,
+	public Communication(IClientController<Client> clientController, Delegator delegator, int port,
 			PersistencyController persistencyController) throws SocketException {
 		this.clientController = clientController;
+		this.delegator = delegator;
 		this.manager = new CommunicationManager(clientController);
 		this.socket = new DatagramSocket(port);
 
@@ -90,6 +92,7 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 		Client client = (Client) manager.getCurrentConfiguration();
 		byte[] payload = pdu.getPayload();
 		int command = pdu.getCommand();
+		int flags = pdu.getFlags();
 		boolean handled = false;
 
 		// This means register name
@@ -133,6 +136,12 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 
 		if (!handled) {
 			handled = handleDataReceivedCore(packet, pdu, sender, client);
+
+			if (isCommandToDelegate(command)) {
+				if (delegator != null && client.getIsOperator()) {
+					delegator.delegateMessage(flags, command, payload);
+				}
+			}
 		}
 
 		// Set the received data
@@ -140,6 +149,8 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 
 		return handled;
 	}
+
+	protected abstract boolean isCommandToDelegate(int command);
 
 	protected abstract boolean handleDataReceivedCore(DatagramPacket packet, ApplicationPDU pdu, IAnswerHandler sender,
 			Client client);
@@ -188,5 +199,9 @@ public abstract class Communication implements Runnable, IDataReceivedHandler<Ap
 
 		int command = operator.getIsOperator() ? Commands.ROBO_STEARING : Commands.ROBO_NOT_STEARING;
 		sendToClient(operator, Flags.REQUEST_FLAG, command, new byte[] { 0 });
+	}
+
+	public IClientController<Client> getClientController() {
+		return clientController;
 	}
 }

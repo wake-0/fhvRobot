@@ -16,9 +16,9 @@ import network.IClientController;
 public class GamingCommunication extends Communication {
 
 	// Constructor
-	public GamingCommunication(IClientController<Client> clientController, int port,
+	public GamingCommunication(IClientController<Client> clientController, Delegator delegator, int port,
 			PersistencyController persistencyController) throws SocketException {
-		super(clientController, port, persistencyController);
+		super(clientController, delegator, port, persistencyController);
 	}
 
 	// Methods
@@ -53,6 +53,11 @@ public class GamingCommunication extends Communication {
 		}
 
 		return true;
+	}
+
+	@Override
+	protected boolean isCommandToDelegate(int command) {
+		return false;
 	}
 
 }

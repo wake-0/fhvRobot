@@ -3,6 +3,7 @@ package network.communication;
 import java.net.DatagramPacket;
 import java.net.SocketException;
 
+import communication.commands.Commands;
 import communication.managers.IAnswerHandler;
 import communication.pdu.ApplicationPDU;
 import controllers.PersistencyController;
@@ -12,9 +13,9 @@ import network.IClientController;
 public class RoboCommunication extends Communication {
 
 	// Constructor
-	public RoboCommunication(IClientController<Client> clientController, int port,
+	public RoboCommunication(IClientController<Client> clientController, Delegator delegator, int port,
 			PersistencyController persistencyController) throws SocketException {
-		super(clientController, port, persistencyController);
+		super(clientController, delegator, port, persistencyController);
 	}
 
 	// Methods
@@ -23,6 +24,8 @@ public class RoboCommunication extends Communication {
 			Client client) {
 		try {
 			byte[] payload = pdu.getPayload();
+			int command = pdu.getCommand();
+			int flags = pdu.getFlags();
 
 			// Only for test purposes
 			// client.setSendData(new String(payload));
@@ -33,5 +36,10 @@ public class RoboCommunication extends Communication {
 		}
 
 		return true;
+	}
+
+	@Override
+	protected boolean isCommandToDelegate(int command) {
+		return command == Commands.ORIENTATION_DATA;
 	}
 }

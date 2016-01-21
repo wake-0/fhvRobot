@@ -20,6 +20,7 @@ import network.communication.AppCommunication;
 import network.communication.Communication;
 import network.communication.CommunicationDelegator;
 import network.communication.GamingCommunication;
+import network.communication.OperatorDelegator;
 import network.communication.RoboCommunication;
 
 public class NetworkServer {
@@ -28,7 +29,8 @@ public class NetworkServer {
 	private final Communication roboCommunication;
 	private final Communication appCommunication;
 	private final Communication gamingCommunication;
-	private final CommunicationDelegator delegator;
+	private final CommunicationDelegator appToRoboDelegator;
+	private final OperatorDelegator roboToOperatorDelegator;
 	private final IClientController<Client> appController;
 	private final PersistencyController persistencyController;
 
@@ -42,18 +44,20 @@ public class NetworkServer {
 			IClientController<Client> gamingController) throws SocketException {
 
 		this.appController = appController;
-		this.delegator = new CommunicationDelegator(roboController, appController);
+		this.appToRoboDelegator = new CommunicationDelegator();
+		this.roboToOperatorDelegator = new OperatorDelegator();
 		this.persistencyController = new PersistencyController();
 
 		// Added network sender and receiver which can log
-		this.roboCommunication = new RoboCommunication(roboController, roboPort, persistencyController);
-		delegator.setChannelA(roboCommunication);
+		this.roboCommunication = new RoboCommunication(roboController, roboToOperatorDelegator, roboPort,
+				persistencyController);
+		appToRoboDelegator.setTargetCommunication(roboCommunication);
 
-		this.appCommunication = new AppCommunication(appController, delegator, appPort, persistencyController);
-		delegator.setChannelB(appCommunication);
+		this.appCommunication = new AppCommunication(appController, appToRoboDelegator, appPort, persistencyController);
+		roboToOperatorDelegator.setTargetCommunication(appCommunication);
 
 		// Gaming communication
-		this.gamingCommunication = new GamingCommunication(gamingController, gamingPort, persistencyController);
+		this.gamingCommunication = new GamingCommunication(gamingController, null, gamingPort, persistencyController);
 
 		// Add operator changed controller
 		appController.addOperatorChangedListener(appCommunication);

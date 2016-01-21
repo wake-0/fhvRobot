@@ -11,14 +11,10 @@ import network.IClientController;
 
 public class AppCommunication extends Communication {
 
-	// Fields
-	private final CommunicationDelegator delegator;
-
 	// Constructor
-	public AppCommunication(IClientController<Client> clientController, CommunicationDelegator delegator, int port,
+	public AppCommunication(IClientController<Client> clientController, Delegator delegator, int port,
 			PersistencyController persistencyController) throws SocketException {
-		super(clientController, port, persistencyController);
-		this.delegator = delegator;
+		super(clientController, delegator, port, persistencyController);
 	}
 
 	// Methods
@@ -28,21 +24,20 @@ public class AppCommunication extends Communication {
 		try {
 			byte[] payload = pdu.getPayload();
 			int command = pdu.getCommand();
-			int flags = pdu.getFlags();
 
 			// Only for test purposes
 			client.setSendData(new String(payload));
 			clientController.handleCommandReceived(client, command, payload);
 
-			// This delegator is used to communicate with the robos
-			if (delegator != null && client.getIsOperator()) {
-				delegator.DelegateMessage(this, flags, command, payload);
-			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
+		return true;
+	}
+
+	@Override
+	protected boolean isCommandToDelegate(int command) {
 		return true;
 	}
 }
