@@ -99,7 +99,7 @@ bool Robot::MotorRight(int percent, bool forceAction) {
 	return true;
 }
 
-bool Robot::GetOrientation(short* roll, short* pitch, short* yaw) {
+bool Robot::GetOrientationPrecise(float* roll, float* pitch, float* yaw) {
     float accel_x = mpu->GetAccelerometerX() / 16384.0; // * G; // * A_GAIN;
     float accel_y = mpu->GetAccelerometerY() / 16384.0; // * G; // * A_GAIN;
     float accel_z = mpu->GetAccelerometerZ() / 16384.0; // * G; // * A_GAIN;
@@ -128,9 +128,37 @@ bool Robot::GetOrientation(short* roll, short* pitch, short* yaw) {
         */
         if (y < 0) y=(360+y);
 
+        *roll = (r);
+        *pitch = (p);
+        *yaw = (y);
+        return true;
+    }
+    return false;
+}
+
+bool Robot::GetOrientation(short* roll, short* pitch, short* yaw) {
+    float r = 0;
+    float p = 0;
+    float y = 0;
+    if (this->GetOrientationPrecise(&r, &p, &y))
+    {
         *roll = static_cast<float>(r);
         *pitch = static_cast<float>(p);
         *yaw = static_cast<float>(y);
+        return true;
+    }
+    return false;
+}
+
+bool Robot::GetOrientation_10(short* roll, short* pitch, short* yaw) {
+    float r = 0;
+    float p = 0;
+    float y = 0;
+    if (this->GetOrientationPrecise(&r, &p, &y))
+    {
+        *roll = static_cast<float>(r * 10);
+        *pitch = static_cast<float>(p * 10);
+        *yaw = static_cast<float>(y * 10);
         return true;
     }
     return false;
