@@ -33,7 +33,7 @@ namespace GameServer.ViewModels
 
             // TODO: Discuss if the toggle start stop should be refactored
             TimerService = new TimerService();
-            TimerService.ToggleStartStop();
+            //TimerService.ToggleStartStop();
 
             server = new NetworkServer(ScoreManager);
             server.NewPlayerReceived += NewPlayerReceived;
