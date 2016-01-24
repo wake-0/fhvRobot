@@ -124,14 +124,20 @@ namespace GameServer.Controllers
             var data = new byte[]{ 1, 0 };
             serverSocket.SendTo(data, data.Length, SocketFlags.None, ipEndPoint);
 
-            // Receive session id
-            var buffer = new byte[BUFFER_SIZE];
-            serverSocket.Receive(buffer);
-            sessionId = buffer[1];
+            try
+            {
+                // Receive session id
+                var buffer = new byte[BUFFER_SIZE];
+                serverSocket.Receive(buffer);
+                sessionId = buffer[1];
 
-            // Display if the connection was successfull
-            Console.WriteLine(sessionId > 0 ? @"Connection successfull ..." : @"Connection unsuccessfull ...");
-
+                // Display if the connection was successfull
+                Console.WriteLine(sessionId > 0 ? @"Connection successfull ..." : @"Connection unsuccessfull ...");
+            }
+            catch
+            {
+                Console.WriteLine("Socket error occured. Did not connect to server.");
+            }
             return sessionId > 0;
         }
         #endregion

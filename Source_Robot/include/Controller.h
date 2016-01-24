@@ -13,6 +13,7 @@
 #include "sensors/I2C.h"
 #include "sensors/FusionFilter.h"
 #include "sensors/MPU9150.h"
+#include "GPIO/GPIOManager.h"
 
 namespace FhvRobot {
 
@@ -20,10 +21,11 @@ class Controller : ApplicationCallback {
 private:
 	Robot robot;
 	ConnectionAPI* connection;
+	GPIO::GPIOManager* gpioManager;
 	bool running;
 	char serverAddress[255];
 public:
-	Controller(MPU9150* mpu, FusionFilter* filter);
+	Controller(MPU9150* mpu, FusionFilter* filter, GPIO::GPIOManager* gp);
 	virtual ~Controller();
 
 	void Init();
@@ -33,6 +35,7 @@ public:
 	void CameraOn(char* host, int port);
 	void CameraOff();
 	void ForceDisconnect();
+	void TriggerLED();
 };
 
 } /* namespace FhvRobot */

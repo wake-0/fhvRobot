@@ -421,7 +421,7 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
                 @Override
                 public void run() {
                     if(isOperator) {
-                        compass.setAngle(yaw, true);
+                        compass.setAngle(yaw);
                     }
                 }
             }
