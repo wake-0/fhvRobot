@@ -9,6 +9,7 @@ using GameServer.Services;
 using GameServer.Utils;
 using Microsoft.Win32;
 using PostSharp.Patterns.Model;
+using GameServer.Views;
 
 namespace GameServer.ViewModels
 {
@@ -22,6 +23,7 @@ namespace GameServer.ViewModels
         private readonly TimerService timerService;
         private readonly PersistencyManager persistencyManager;
         private readonly ScoreManager scoreManager;
+        private TimeMeasurement tmWindow;
         #endregion
 
         #region Properties
@@ -58,6 +60,7 @@ namespace GameServer.ViewModels
         public ICommand TestCommand { get; private set; }
         public ICommand OpenCommand { get; private set; }
         public ICommand SaveCommand { get; private set; }
+        public ICommand ShowTMWindow { get; private set; }
 
         public ITriggerSystem TriggerSystem { get; private set; }
         #endregion
@@ -69,7 +72,7 @@ namespace GameServer.ViewModels
             this.server = server;
             this.scoreManager = scoreManager;
             persistencyManager = new PersistencyManager();
-            TriggerSystem = new TriggerSystemMock();
+            TriggerSystem = CameraTriggerService.Instance;
 
             SendMessageCommand = new DelegateCommand(SendMessage);
             SendHighscoreCommand = new DelegateCommand(SendHighscore);
@@ -78,6 +81,8 @@ namespace GameServer.ViewModels
             TestCommand = new DelegateCommand(o => SetTestData());
             OpenCommand = new DelegateCommand(o => LoadScore());
             SaveCommand = new DelegateCommand(o => SaveScore());
+
+            ShowTMWindow = new DelegateCommand(o => ShowTimeMeasurementWindow());
 
             ExampleText = "Test";
         }
@@ -150,6 +155,15 @@ namespace GameServer.ViewModels
             if (fileName != "")
             {
                 scoreManager.SetAllScores(persistencyManager.LoadScores(fileName));
+            }
+        }
+
+        private void ShowTimeMeasurementWindow()
+        {
+            if (tmWindow == null || !tmWindow.IsVisible)
+            {
+                tmWindow = new TimeMeasurement();
+                tmWindow.Show();
             }
         }
         #endregion
