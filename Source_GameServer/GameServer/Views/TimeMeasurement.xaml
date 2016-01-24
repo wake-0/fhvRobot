@@ -5,9 +5,42 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameServer.Views"
         mc:Ignorable="d"
-        Title="TimeMeasurement" Height="300" Width="300">
-    <Grid>
-        <Image Name="imgTestCapture"/>
-        
+        Closing="Window_Closing"
+        Initialized="Window_Initialized"
+        Title="TimeMeasurement" Height="370" Width="840" MinHeight="370" MaxHeight="370">
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="340"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="340"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+            <Label Content="Capture Settings" />
+            <ComboBox Name="cmbCaptureDevices" SelectionChanged="cmbCaptureDevices_SelectionChanged" Margin="0,0,0,10"/>
+            <Button Click="Button_ClearROI" Margin="0,0,0,10">Clear ROI</Button>
+        </StackPanel>
+        <Label Grid.Column="1">Raw Image</Label>
+        <Border Padding="10"  Width="340" Height="270" Grid.Column="1">
+            <Border.Background>
+                <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
+                    <GradientStop Color="#FFFFC934" Offset="0"/>
+                    <GradientStop Color="#FFFFFFFF" Offset="0.567"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Image Name="imgTestCapture" Width="320" Height="240" MouseLeftButtonUp="imgTestCapture_MouseLeftButtonUp"/>
+        </Border>
+        <Label Grid.Column="3">Processed Image</Label>
+        <Border Padding="10"  Width="340" Height="270" Grid.Column="3" >
+            <Border.Background>
+                <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
+                    <GradientStop Color="#FFC934FF" Offset="0"/>
+                    <GradientStop Color="#FFFFFFFF" Offset="0.567"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Image Name="imgProcessedCapture" Width="320" Height="240"/>
+        </Border>
+
+
     </Grid>
 </Window>

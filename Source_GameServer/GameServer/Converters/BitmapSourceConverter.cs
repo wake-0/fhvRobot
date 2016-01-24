@@ -1,10 +1,6 @@
 ﻿using Emgu.CV;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
@@ -27,6 +23,7 @@ namespace GameServer.Converters
         /// <returns>The equivalent BitmapSource</returns>
         public static BitmapSource ToBitmapSource(IImage image)
         {
+            if (image == null) return null;
             using (System.Drawing.Bitmap source = image.Bitmap)
             {
                 IntPtr ptr = source.GetHbitmap(); //obtain the Hbitmap

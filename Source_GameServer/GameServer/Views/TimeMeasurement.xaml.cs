@@ -1,75 +1,76 @@
 ﻿using Emgu.CV;
+using GameServer.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace GameServer.Views
 {
     /// <summary>
     /// Interaction logic for TimeMeasurement.xaml
     /// </summary>
-    public partial class TimeMeasurement : Window
+    public partial class TimeMeasurement : Window, ICameraTriggerServiceFrameCallback
     {
-        Capture _capture;
-        private bool _captureInProgress;
 
         public TimeMeasurement()
         {
-            //             var window = new TimeMeasurement();
-            //             window.Show();
             InitializeComponent();
-            try
+
+            foreach (string s in CameraTriggerService.Instance.CaptureDevices)
             {
-                _capture = new Capture();
-                _capture.ImageGrabbed += ProcessFrame;
+                cmbCaptureDevices.Items.Add(s);
             }
-            catch (NullReferenceException excpt)
-            {   //show errors if there is any
-                MessageBox.Show(excpt.Message);
+            cmbCaptureDevices.SelectedIndex = CameraTriggerService.Instance.SelectedDeviceIndex;
+        }
+
+        private void imgTestCapture_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            System.Windows.Point p = e.GetPosition(imgTestCapture);
+            double x = p.X;
+            double y = p.Y;
+            Console.WriteLine("[Capture ROI] Mouse click: x=" + x + ", y=" + y + ", width=" + imgTestCapture.Width + ", height=" + imgTestCapture.Height);
+            CameraTriggerService.Instance.RegionOfInterestPoints.Add(new System.Drawing.Point((int)(x * CameraTriggerService.Instance.CaptureWidth / imgTestCapture.Width), (int)(y * CameraTriggerService.Instance.CaptureHeight / imgTestCapture.Height)));
+        }
+
+        private void Button_ClearROI(object sender, RoutedEventArgs e)
+        {
+            CameraTriggerService.Instance.RegionOfInterestPoints.Clear();
+        }
+
+        private void cmbCaptureDevices_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try {
+                CameraTriggerService.Instance.SetCameraDevice(cmbCaptureDevices.SelectedIndex);
+            }
+            catch
+            {
+                MessageBox.Show("Could not set camera device");
             }
         }
 
-
-        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        public void FrameUpdate(IImage rawFrame, IImage diffFrame)
         {
-            if (_capture != null)
-            {
-                if (_captureInProgress)
-                {  //stop the capture
-                    _capture.Pause();
-                }
-                else
-                {
-                    //start the capture
-                    _capture.Start();
-                }
-
-                _captureInProgress = !_captureInProgress;
-            }
-        }
-
-        private void ProcessFrame(object sender, EventArgs e)
-        {
-            Mat image = new Mat();
-
-            _capture.Retrieve(image);
-            this.Dispatcher.Invoke((Action)(() => {
+            this.Dispatcher.Invoke(DispatcherPriority.Render, (Action)(() => {
                 try
                 {
-                    imgTestCapture.Source = GameServer.Converters.BitmapSourceConvert.ToBitmapSource(image);
+                    imgTestCapture.Source = Converters.BitmapSourceConvert.ToBitmapSource(rawFrame);
+                    imgProcessedCapture.Source = Converters.BitmapSourceConvert.ToBitmapSource(diffFrame);
                 }
                 catch (Exception ex) { Console.WriteLine(ex.Message); }
             }));
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            CameraTriggerService.Instance.FrameCallback = null;
+        }
+
+        private void Window_Initialized(object sender, EventArgs e)
+        {
+            CameraTriggerService.Instance.FrameCallback = this;
         }
     }
 }
