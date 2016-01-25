@@ -36,7 +36,6 @@ namespace GameServer.Managers
         {
             if (score == null) throw new ArgumentNullException("score");
 
-
             Application.Current.Dispatcher.Invoke(() =>
             {
                 if (TopScores.Count < NUMBER_TOP_SCORES)
@@ -61,7 +60,22 @@ namespace GameServer.Managers
                     // Insert into normal list
                     InsertScoreAtPosition(Scores, score);
                 }
+
+                UpdateRank();
             });
+        }
+
+        private void UpdateRank()
+        {
+            for (var i = 0; i < TopScores.Count; i++)
+            {
+                TopScores[i].Rank = i + 1;
+            }
+
+            for (var i = 0; i < Scores.Count; i++)
+            {
+                Scores[i].Rank = i + 1 + NUMBER_TOP_SCORES;
+            }
         }
 
         public IEnumerable<Score> GetAllScores()

@@ -72,7 +72,12 @@ namespace GameServer.ViewModels
             if (string.IsNullOrEmpty(playerName) || string.Equals(playerName, ScoreManager.CurrentScore.Name)) { return;}
 
             ScoreManager.Add(ScoreManager.CurrentScore);
-            ScoreManager.CurrentScore = new Score { Name = playerName, Duration = new TimeSpan() };
+
+            Random random = new Random();
+            int randomMin = random.Next(0, 60);
+            int randomSec = random.Next(0, 60);
+
+            ScoreManager.CurrentScore = new Score { Name = playerName, Duration = new TimeSpan(0, randomMin, randomSec) };
         }
         #endregion
     }

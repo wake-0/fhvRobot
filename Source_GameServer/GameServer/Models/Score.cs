@@ -7,6 +7,7 @@ namespace GameServer.Models
     public class Score
     {
         #region Properties
+        public int Rank { get; set; }
         public string Name { get; set; }
         public TimeSpan Duration { get; set; }
         #endregion

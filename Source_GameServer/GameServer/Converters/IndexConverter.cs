@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows.Controls;
 using System.Windows.Data;
 
 namespace GameServer.Converters
@@ -9,18 +8,11 @@ namespace GameServer.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var item = value as ListViewItem;
-            var listView = ItemsControl.ItemsControlFromItemContainer(item) as ListView;
-            if (item == null || listView == null) return null;
-
-            var offset = 0;
-            if (parameter != null)
+            if (!(value is int))
             {
-                int.TryParse(parameter as string, out offset);
+                return "1.";
             }
-
-            var index = listView.ItemContainerGenerator.IndexFromContainer(item) + offset;
-            return index.ToString() + ".";
+            return value + ".";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
