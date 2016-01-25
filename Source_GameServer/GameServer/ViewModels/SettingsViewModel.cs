@@ -60,7 +60,7 @@ namespace GameServer.ViewModels
         public ICommand TestCommand { get; private set; }
         public ICommand OpenCommand { get; private set; }
         public ICommand SaveCommand { get; private set; }
-        public ICommand ShowTMWindow { get; private set; }
+        public ICommand ShowTMWindowCommand { get; private set; }
 
         public ITriggerSystem TriggerSystem { get; private set; }
         #endregion
@@ -82,7 +82,7 @@ namespace GameServer.ViewModels
             OpenCommand = new DelegateCommand(o => LoadScore());
             SaveCommand = new DelegateCommand(o => SaveScore());
 
-            ShowTMWindow = new DelegateCommand(o => ShowTimeMeasurementWindow());
+            ShowTMWindowCommand = new DelegateCommand(o => ShowTimeMeasurementWindow());
 
             ExampleText = "Test";
         }
