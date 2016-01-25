@@ -73,6 +73,7 @@ namespace GameServer.ViewModels
             this.scoreManager = scoreManager;
             persistencyManager = new PersistencyManager();
             TriggerSystem = CameraTriggerService.Instance;
+            TriggerSystem.TriggerRaised += TimeTrigger;
 
             SendMessageCommand = new DelegateCommand(SendMessage);
             SendHighscoreCommand = new DelegateCommand(SendHighscore);
@@ -89,6 +90,12 @@ namespace GameServer.ViewModels
         #endregion
 
         #region Methods
+
+        private void TimeTrigger(object sender, EventArgs e)
+        {
+            timerService.ToggleStartStop();
+        }
+
         private void SetTestData()
         {
             scoreManager.CurrentScore = new Score { Name = "MyPlayer", Duration = new TimeSpan() };
