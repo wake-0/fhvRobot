@@ -67,7 +67,7 @@
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="1.5*" />
+            <RowDefinition Height="2*" />
             <RowDefinition Height="2*" />
             <RowDefinition Height="4*" />
         </Grid.RowDefinitions>
@@ -79,19 +79,24 @@
                 Opacity="{StaticResource Opacity}"
                 VerticalAlignment="Stretch">
 
-            <!-- This Viewbox is used to automatically resize the font size -->
-            <Viewbox>
+            <DockPanel TextElement.Foreground="{StaticResource Foreground}">
+                <!-- This Viewbox is used to automatically resize the font size -->
+            <Viewbox Margin="10,0,0,0">
                 <Viewbox.LayoutTransform>
-                    <ScaleTransform CenterX="50" ScaleX="1" />
+                    <ScaleTransform CenterX="45" ScaleX="1" />
                 </Viewbox.LayoutTransform>
 
-                <StackPanel TextElement.Foreground="{StaticResource Foreground}"
-                            Orientation="Horizontal">
-                    <TextBlock Text="{Binding ScoreManager.CurrentScore.Name}"  
+                    <TextBlock Text="{Binding CurrentPlayer}"
                                HorizontalAlignment="Stretch" 
                                VerticalAlignment="Stretch" />
-                </StackPanel>
+
             </Viewbox>
+                <TextBlock Text="{Binding ScoreManager.CurrentScore.Duration, StringFormat='{}{0:mm\\:ss\\.ff}'}"  
+                               FontSize="30"
+                               Margin="0,0,10,0"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center"/>
+            </DockPanel>
         </Border>
 
         <controls:DigitalClockControl  
@@ -144,7 +149,7 @@
                                 <TextBlock Text="{Binding Rank, Converter={StaticResource IndexConverter}}" 
                                            Style="{StaticResource WinnerTextBlock}" />
                                 <TextBlock Grid.Column="1"  Text="{Binding Name}" Style="{StaticResource WinnerTextBlock}" HorizontalAlignment="Stretch" />
-                                <TextBlock Grid.Column="2" Text="{Binding Duration}" Style="{StaticResource WinnerTextBlock}" />
+                                <TextBlock Grid.Column="2" Text="{Binding Duration , StringFormat='{}{0:mm\\:ss\\.ff}'}" Style="{StaticResource WinnerTextBlock}" />
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -183,7 +188,7 @@
                                     <TextBlock Text="{Binding Rank, Converter={StaticResource IndexConverter}}" 
                                                Style="{StaticResource GeneralTextBlock}" />
                                     <TextBlock Grid.Column="1" Text="{Binding Name}" Style="{StaticResource GeneralTextBlock}" HorizontalAlignment="Stretch" />
-                                    <TextBlock Grid.Column="2" Text="{Binding Duration}" Style="{StaticResource GeneralTextBlock}" />
+                                    <TextBlock Grid.Column="2" Text="{Binding Duration, StringFormat='{}{0:mm\\:ss\\.ff}'}" Style="{StaticResource GeneralTextBlock}" />
                                 </Grid>
                             </DataTemplate>
                         </ListView.ItemTemplate>

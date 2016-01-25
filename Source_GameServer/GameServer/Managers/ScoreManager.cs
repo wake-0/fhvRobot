@@ -27,7 +27,7 @@ namespace GameServer.Managers
         {
             TopScores = new ObservableCollection<Score>();
             Scores = new ObservableCollection<Score>();
-            CurrentScore = new Score { Name = "First candidate", Duration = new TimeSpan(0,55,55) };
+            CurrentScore = null;
         }
         #endregion
 

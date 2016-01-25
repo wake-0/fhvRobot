@@ -15,6 +15,7 @@ using GameServer.Controllers;
 using GameServer.Managers;
 using GameServer.Services;
 using GameServer.ViewModels;
+using GameServer.Interfaces;
 
 namespace GameServer.Views
 {
@@ -23,10 +24,10 @@ namespace GameServer.Views
     /// </summary>
     public partial class SettingsWindow : Window
     {
-        public SettingsWindow(NetworkServer server, TimerService timerService, ScoreManager scoreManager, MainViewModel mainView)
+        public SettingsWindow(NetworkServer server, ITriggerSystem triggerSystem, TimerService timerService, ScoreManager scoreManager, MainViewModel mainView)
         {
             InitializeComponent();
-            this.DataContext = new SettingsViewModel(server, timerService, scoreManager, mainView);
+            this.DataContext = new SettingsViewModel(server, triggerSystem, timerService, scoreManager, mainView);
         }
     }
 }

@@ -8,6 +8,7 @@ using GameServer.Services;
 using GameServer.Utils;
 using GameServer.Views;
 using PostSharp.Patterns.Model;
+using GameServer.Interfaces;
 
 namespace GameServer.ViewModels
 {
@@ -18,6 +19,7 @@ namespace GameServer.ViewModels
         private readonly NetworkServer server;
         private readonly Timer updateCurrentPlayerTimer;
         private SettingsWindow settingsWindow;
+        private ITriggerSystem triggerSystem;
         #endregion
 
         #region Properties
@@ -26,6 +28,8 @@ namespace GameServer.ViewModels
         public TimerService TimerService { get; private set; }
         public ICommand OpenSettingsWindowCommand { get; private set; }
         public int SelectedScore { get; internal set; }
+        public string CurrentPlayer { get; internal set; }
+        public TimeSpan CurrentBestTime { get; internal set; }
         #endregion
 
         #region ctor
@@ -33,10 +37,13 @@ namespace GameServer.ViewModels
         {
             ScoreManager = new ScoreManager();
             SelectedScore = -1;
+            CurrentPlayer = "-";
 
-            // TODO: Discuss if the toggle start stop should be refactored
+            triggerSystem = CameraTriggerService.Instance;
+            triggerSystem.TriggerRaised += TimeTrigger;
+
             TimerService = new TimerService();
-            //TimerService.ToggleStartStop();
+            TimerService.TimeTracked += TimeTracked;
 
             server = new NetworkServer(ScoreManager);
             server.NewPlayerReceived += NewPlayerReceived;
@@ -53,6 +60,21 @@ namespace GameServer.ViewModels
         #endregion
 
         #region Methods
+
+        private void TimeTracked(object sender, TimeTrackedEventArgs e)
+        {
+            TimeSpan time = e.EndTime.Subtract(e.StartTime);
+            if (triggerSystem.IsSystemActive && (ScoreManager.CurrentScore == null || ScoreManager.CurrentScore.Duration.CompareTo(time) > 0))
+            {
+                ScoreManager.CurrentScore = new Score { Name = CurrentPlayer, Duration = time };
+            }
+        }
+
+        private void TimeTrigger(object sender, EventArgs e)
+        {
+            TimerService.ToggleStartStop();
+        }
+
         private void OnUpdateCurrentPlayerTimerElapsed(object sender, ElapsedEventArgs e)
         {
             server.RequestOperator();
@@ -65,21 +87,19 @@ namespace GameServer.ViewModels
                 settingsWindow.Close();
             }
 
-            settingsWindow = new SettingsWindow(server, TimerService, ScoreManager, this);
+            settingsWindow = new SettingsWindow(server, triggerSystem, TimerService, ScoreManager, this);
             settingsWindow.Show(); 
         }
 
         private void NewPlayerReceived(object sender, string playerName)
         {
-            if (string.IsNullOrEmpty(playerName) || string.Equals(playerName, ScoreManager.CurrentScore.Name)) { return;}
+            if (string.IsNullOrEmpty(playerName)) { return;}
 
-            ScoreManager.Add(ScoreManager.CurrentScore);
-
-            Random random = new Random();
-            int randomMin = random.Next(0, 60);
-            int randomSec = random.Next(0, 60);
-
-            ScoreManager.CurrentScore = new Score { Name = playerName, Duration = new TimeSpan(0, randomMin, randomSec) };
+            if (playerName.Equals(CurrentPlayer) == false)
+            {
+                CurrentPlayer = playerName;
+                ScoreManager.CurrentScore = null;
+            }
         }
         #endregion
     }

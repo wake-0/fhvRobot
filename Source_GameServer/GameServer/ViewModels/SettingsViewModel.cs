@@ -49,6 +49,10 @@ namespace GameServer.ViewModels
                 else
                 {
                     TriggerSystem.DeactivateSystem();
+                    if (timerService.TimerState == TimerState.Tracking)
+                    {
+                        timerService.ToggleStartStop();
+                    }
                 }
 
                 isTriggerSystemActive = TriggerSystem.IsSystemActive;
@@ -64,21 +68,21 @@ namespace GameServer.ViewModels
         public ICommand OpenCommand { get; private set; }
         public ICommand SaveCommand { get; private set; }
         public ICommand ShowTMWindowCommand { get; private set; }
+        public ICommand SaveScoreCommand { get; private set; }
         public ICommand DeleteScoreCommand { get; private set; }
 
         public ITriggerSystem TriggerSystem { get; private set; }
         #endregion
 
         #region ctor
-        public SettingsViewModel(NetworkServer server, TimerService timerService, ScoreManager scoreManager, MainViewModel mainView)
+        public SettingsViewModel(NetworkServer server, ITriggerSystem triggerSystem, TimerService timerService, ScoreManager scoreManager, MainViewModel mainView)
         {
             this.timerService = timerService;
             this.server = server;
             this.scoreManager = scoreManager;
             this.mainView = mainView;
             persistencyManager = new PersistencyManager();
-            TriggerSystem = CameraTriggerService.Instance;
-            TriggerSystem.TriggerRaised += TimeTrigger;
+            TriggerSystem = triggerSystem;
 
             SendMessageCommand = new DelegateCommand(SendMessage);
             SendHighscoreCommand = new DelegateCommand(SendHighscore);
@@ -89,9 +93,21 @@ namespace GameServer.ViewModels
             SaveCommand = new DelegateCommand(o => SaveScore());
 
             ShowTMWindowCommand = new DelegateCommand(o => ShowTimeMeasurementWindow());
+            SaveScoreCommand = new DelegateCommand(o => SaveCurrentScore());
             DeleteScoreCommand = new DelegateCommand(o => DeleteScore());
 
             ExampleText = "Test";
+        }
+        #endregion
+
+        #region Methods
+        private void SaveCurrentScore()
+        {
+            if (scoreManager.CurrentScore != null && timerService.TimerState == TimerState.Stopped)
+            {
+                scoreManager.Add(scoreManager.CurrentScore);
+                scoreManager.CurrentScore = null;
+            }
         }
 
         private void DeleteScore()
@@ -110,14 +126,6 @@ namespace GameServer.ViewModels
                     }
                 }
             }
-        }
-        #endregion
-
-        #region Methods
-
-        private void TimeTrigger(object sender, EventArgs e)
-        {
-            timerService.ToggleStartStop();
         }
 
         private void SetTestData()
