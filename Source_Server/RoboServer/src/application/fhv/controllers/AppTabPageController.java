@@ -18,6 +18,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.util.Callback;
 import models.Client;
 import models.ClientFactory;
@@ -57,6 +58,8 @@ public class AppTabPageController implements Initializable {
 	@FXML
 	private Button btnReleaseOperator;
 	@FXML
+	private ToggleButton btnAutomodeOperator;
+	@FXML
 	private Button btnKill;
 
 	private NetworkServer server;
@@ -69,16 +72,27 @@ public class AppTabPageController implements Initializable {
 			@Override
 			public void onChanged(ListChangeListener.Change<? extends Client> change) {
 				while (change.next()) {
+					boolean autoMode = btnAutomodeOperator != null && btnAutomodeOperator.isSelected();
+
 					if (change.wasRemoved()) {
 						List<? extends Client> removedClients = change.getRemoved();
 						for (Client c : removedClients) {
 							server.DisconnectedAppClient(c);
 						}
+
+						if (autoMode) {
+							autoUpdateOperator(appController.getClients());
+						}
+					} else if (change.wasAdded()) {
+						// set next operator
+						if (autoMode) {
+							autoUpdateOperator(change.getAddedSubList());
+						}
 					}
 				}
 			}
 		});
-		;
+
 		appController.addCommandListener(new ICommandListener<Client>() {
 			@Override
 			public void commandReceived(Client client, int command, byte[] payload) {
@@ -87,6 +101,17 @@ public class AppTabPageController implements Initializable {
 				});
 			}
 		}, Commands.GENERAL_MESSAGE);
+	}
+
+	private void autoUpdateOperator(List<? extends Client> addedClients) {
+		// check already a operator selected
+		if (!appController.getOperators().isEmpty()) {
+			return;
+		}
+
+		if (!addedClients.isEmpty()) {
+			addedClients.get(0).setIsOperator(true);
+		}
 	}
 
 	// Methods
@@ -199,4 +224,5 @@ public class AppTabPageController implements Initializable {
 	private void clearDetails() {
 		tfSend.clear();
 	}
+
 }

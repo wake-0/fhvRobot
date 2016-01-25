@@ -8,6 +8,20 @@
     -fx-background-insets: 5px;
 }
 
+.toggle-button {
+	-fx-padding: 10px;
+    -fx-border-insets: 5px;
+    -fx-background-insets: 5px;
+}
+
+.toggle-button:selected {
+	-fx-padding: 10px;
+    -fx-border-insets: 5px;
+    -fx-background-insets: 5px;
+    -fx-background-color: blue;
+    -fx-text-fill: white;
+}
+
 .list-view {
 	-fx-padding: 10px;
     -fx-border-insets: 5px;

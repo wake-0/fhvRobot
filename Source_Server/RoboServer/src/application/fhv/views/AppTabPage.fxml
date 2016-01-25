@@ -46,6 +46,7 @@
    			<Label alignment="CENTER" contentDisplay="CENTER" maxWidth="Infinity" text="Operator" />
    			<Button fx:id="btnSetOperator" maxWidth="Infinity" onAction="#handleSetOperatorClick" text="Set" />
    			<Button fx:id="btnReleaseOperator" maxWidth="Infinity" onAction="#handleReleaseOperatorClick" text="Release" />
+   			<ToggleButton fx:id="btnAutomodeOperator" maxWidth="Infinity" text="Auto" />
    		</children>
    	</VBox>
    	<TextArea fx:id="tfReceive" editable="false" GridPane.columnIndex="0" GridPane.columnSpan="1" GridPane.rowIndex="1" />
