@@ -134,6 +134,10 @@ namespace GameServer.ViewModels
             scoreManager.Add(new Score { Name = "Max", Duration = new TimeSpan() });
             scoreManager.Add(new Score { Name = "Johanna", Duration = new TimeSpan() });
             scoreManager.Add(new Score { Name = "Mario", Duration = new TimeSpan() });
+            scoreManager.Add(new Score { Name = "Mario", Duration = new TimeSpan() });
+            scoreManager.Add(new Score { Name = "Mario", Duration = new TimeSpan() });
+            scoreManager.Add(new Score { Name = "Mario", Duration = new TimeSpan() });
+
         }
 
         private void SendMessage(object obj)

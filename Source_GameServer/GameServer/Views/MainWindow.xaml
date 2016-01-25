@@ -12,6 +12,7 @@
         ResizeMode="NoResize"  
         WindowStartupLocation="CenterScreen" 
         WindowState="Maximized"
+        Initialized="Window_Initialized"
         SnapsToDevicePixels="True">
 
     <Window.Resources>
@@ -154,43 +155,45 @@
                     </ListView.ItemContainerStyle>
                 </ListView>
 
-                <ListView x:Name="ScoreListView" Grid.Row="1" 
-                  ItemsSource="{Binding ScoreManager.Scores}" SelectionMode="Single" SelectionChanged="ScoreListView_Selected">
-                    <ListView.Template>
-                        <ControlTemplate>
+                <ScrollViewer Name="ScoreScrollViewer" Grid.Row="1">
+                    <ListView x:Name="ScoreListView" 
+                      ItemsSource="{Binding ScoreManager.Scores}" SelectionMode="Single" SelectionChanged="ScoreListView_Selected">
+                        <ListView.Template>
+                            <ControlTemplate>
 
-                            <Border x:Name="mask" CornerRadius="0,0,5,5" 
-                            Opacity="{StaticResource Opacity}"
-                            Background="{StaticResource Background}">
+                                <Border x:Name="mask" CornerRadius="0,0,5,5" 
+                                Opacity="{StaticResource Opacity}"
+                                Background="{StaticResource Background}">
 
-                                <ScrollViewer>
-                                    <ItemsPresenter TextElement.Foreground="{StaticResource Foreground}" />
-                                </ScrollViewer>
+                                
+                                        <ItemsPresenter TextElement.Foreground="{StaticResource Foreground}" />
+                                
 
-                            </Border>
-                        </ControlTemplate>
-                    </ListView.Template>
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid HorizontalAlignment="Stretch" Margin="40,0,10,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding Rank, Converter={StaticResource IndexConverter}}" 
-                                           Style="{StaticResource GeneralTextBlock}" />
-                                <TextBlock Grid.Column="1" Text="{Binding Name}" Style="{StaticResource GeneralTextBlock}" HorizontalAlignment="Stretch" />
-                                <TextBlock Grid.Column="2" Text="{Binding Duration}" Style="{StaticResource GeneralTextBlock}" />
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                </ListView>
+                                </Border>
+                            </ControlTemplate>
+                        </ListView.Template>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid HorizontalAlignment="Stretch" Margin="40,0,10,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Rank, Converter={StaticResource IndexConverter}}" 
+                                               Style="{StaticResource GeneralTextBlock}" />
+                                    <TextBlock Grid.Column="1" Text="{Binding Name}" Style="{StaticResource GeneralTextBlock}" HorizontalAlignment="Stretch" />
+                                    <TextBlock Grid.Column="2" Text="{Binding Duration}" Style="{StaticResource GeneralTextBlock}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
+                </ScrollViewer>
             </Grid>
         </Border>
     </Grid>
