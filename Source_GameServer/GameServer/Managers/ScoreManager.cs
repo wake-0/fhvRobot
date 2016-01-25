@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Windows;
+using System.Windows.Threading;
 using System.Xml;
 using GameServer.Models;
 using PostSharp.Patterns.Model;
@@ -25,6 +27,7 @@ namespace GameServer.Managers
         {
             TopScores = new ObservableCollection<Score>();
             Scores = new ObservableCollection<Score>();
+            CurrentScore = new Score { Name = "First candidate", Duration = new TimeSpan(0,55,55) };
         }
         #endregion
 
@@ -33,28 +36,32 @@ namespace GameServer.Managers
         {
             if (score == null) throw new ArgumentNullException("score");
 
-            if (TopScores.Count < NUMBER_TOP_SCORES)
-            {
-                // Insert new top score
-                InsertScoreAtPosition(TopScores, score);
-            }
-            else if (TopScores.Any(s => s.Duration > score.Duration))
-            {
-                // Take last entry
-                var worstScore = TopScores.Last();
-                TopScores.Remove(worstScore);
 
-                // Insert worst score to normal list at the beginning
-                Scores.Insert(0, worstScore);
-
-                // Insert new top score
-                InsertScoreAtPosition(TopScores, score);
-            }
-            else
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                // Insert into normal list
-                InsertScoreAtPosition(Scores, score);
-            }
+                if (TopScores.Count < NUMBER_TOP_SCORES)
+                {
+                    // Insert new top score
+                    InsertScoreAtPosition(TopScores, score);
+                }
+                else if (TopScores.Any(s => s.Duration > score.Duration))
+                {
+                    // Take last entry
+                    var worstScore = TopScores.Last();
+                    TopScores.Remove(worstScore);
+
+                    // Insert worst score to normal list at the beginning
+                    Scores.Insert(0, worstScore);
+
+                    // Insert new top score
+                    InsertScoreAtPosition(TopScores, score);
+                }
+                else
+                {
+                    // Insert into normal list
+                    InsertScoreAtPosition(Scores, score);
+                }
+            });
         }
 
         public IEnumerable<Score> GetAllScores()
@@ -102,23 +109,30 @@ namespace GameServer.Managers
 
         public void Clear()
         {
-            TopScores.Clear();
-            Scores.Clear();
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                TopScores.Clear();
+                Scores.Clear();
+            });
         }
 
         private void InsertScoreAtPosition(ObservableCollection<Score> scores, Score score)
         {
             if (scores == null) throw new ArgumentNullException("scores");
 
-            for (var i = 0; i < scores.Count; i++)
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                if (scores.ElementAt(i).Duration <= score.Duration) continue;
+                for (var i = 0; i < scores.Count; i++)
+                {
+                    if (scores.ElementAt(i).Duration <= score.Duration) continue;
 
-                scores.Insert(i, score);
-                return;
-            }
+                    scores.Insert(i, score);
+                    return;
+                }
 
-            scores.Add(score);
+                scores.Add(score);
+            });
         }
         #endregion
     }

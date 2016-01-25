@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Timers;
 using System.Windows.Input;
 using GameServer.Controllers;
 using GameServer.Managers;
@@ -14,8 +15,8 @@ namespace GameServer.ViewModels
     public class MainViewModel
     {
         #region Fields
-
         private readonly NetworkServer server;
+        private readonly Timer updateCurrentPlayerTimer;
         private SettingsWindow settingsWindow;
         #endregion
 
@@ -41,10 +42,19 @@ namespace GameServer.ViewModels
 
             OpenSettingsWindowCommand = new DelegateCommand(OpenSettingsWindow);
             OpenSettingsWindowCommand.Execute(null);
+
+            // Each 100 milliseconds get player
+            updateCurrentPlayerTimer = new Timer(2000);
+            updateCurrentPlayerTimer.Elapsed += OnUpdateCurrentPlayerTimerElapsed;
+            updateCurrentPlayerTimer.Start();
         }
         #endregion
 
         #region Methods
+        private void OnUpdateCurrentPlayerTimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            server.RequestOperator();
+        }
 
         private void OpenSettingsWindow(object obj)
         {
@@ -59,6 +69,9 @@ namespace GameServer.ViewModels
 
         private void NewPlayerReceived(object sender, string playerName)
         {
+            if (string.IsNullOrEmpty(playerName) || string.Equals(playerName, ScoreManager.CurrentScore.Name)) { return;}
+
+            ScoreManager.Add(ScoreManager.CurrentScore);
             ScoreManager.CurrentScore = new Score { Name = playerName, Duration = new TimeSpan() };
         }
         #endregion

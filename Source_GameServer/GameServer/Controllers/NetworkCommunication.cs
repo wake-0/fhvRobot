@@ -55,8 +55,8 @@ namespace GameServer.Controllers
                
 
                 // Print received message
-                Console.WriteLine(@"return [" + value + @"]");
-                Console.WriteLine(BitConverter.ToString(buffer));
+                //Console.WriteLine(@"return [" + value + @"]");
+                //Console.WriteLine(BitConverter.ToString(buffer));
             }
         }
 
