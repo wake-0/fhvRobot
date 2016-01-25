@@ -33,33 +33,39 @@ namespace GameServer.Managers
         {
             var scores = new List<Score>();
 
-            using (var reader = XmlReader.Create(fileName))
-            {
-                while (reader.Read())
+            try {
+                using (var reader = XmlReader.Create(fileName))
                 {
-                    // Only detect start elements.
-                    if (!reader.IsStartElement()) continue;
-
-                    // Get element name and switch on it.
-                    if (reader.Name == "Score")
+                    while (reader.Read())
                     {
-                        var score = new Score();
+                        // Only detect start elements.
+                        if (!reader.IsStartElement()) continue;
 
-                        var nameAttribute = reader["Name"];
-                        if (nameAttribute != null)
+                        // Get element name and switch on it.
+                        if (reader.Name == "Score")
                         {
-                            score.Name = nameAttribute;
-                        }
+                            var score = new Score();
 
-                        var durationAttribute = reader["Duration"];
-                        if (durationAttribute != null)
-                        {
-                            score.Duration = TimeSpan.Parse(durationAttribute);
-                        }
+                            var nameAttribute = reader["Name"];
+                            if (nameAttribute != null)
+                            {
+                                score.Name = nameAttribute;
+                            }
 
-                        scores.Add(score);
+                            var durationAttribute = reader["Duration"];
+                            if (durationAttribute != null)
+                            {
+                                score.Duration = TimeSpan.Parse(durationAttribute);
+                            }
+
+                            scores.Add(score);
+                        }
                     }
                 }
+            }
+            catch
+            {
+                Console.WriteLine("Could not load scores");
             }
             return scores;
         }

@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System;
+using GameServer.Managers;
 
 namespace GameServer.Views
 {
@@ -17,10 +18,14 @@ namespace GameServer.Views
         private bool selectionLock;
         private Storyboard storyboard;
 
-        public MainWindow()
+        public MainWindow(bool loadScores)
         {
             InitializeComponent();
             ((MainViewModel)DataContext).ScoreManager.Scores.CollectionChanged += Scores_CollectionChanged;
+            if (loadScores)
+            {
+                ((MainViewModel)DataContext).LoadDefaultScores();
+            }
         }
 
         void Scores_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -29,6 +34,7 @@ namespace GameServer.Views
             {
                 var item = ScoreListView.Items[ScoreListView.Items.Count - 1];
                 RestartAnimation(null, null);
+                ((MainViewModel)DataContext).SaveDefaultScores();
             }
         }
 

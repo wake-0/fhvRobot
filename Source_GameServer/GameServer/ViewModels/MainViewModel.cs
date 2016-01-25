@@ -15,6 +15,8 @@ namespace GameServer.ViewModels
     [NotifyPropertyChanged]
     public class MainViewModel
     {
+        public const string DEFAULT_SCORE_FILENAME = "scores.xml";
+
         #region Fields
         private readonly NetworkServer server;
         private readonly Timer updateCurrentPlayerTimer;
@@ -24,7 +26,7 @@ namespace GameServer.ViewModels
 
         #region Properties
         public ScoreManager ScoreManager { get; private set; }
-        
+
         public TimerService TimerService { get; private set; }
         public ICommand OpenSettingsWindowCommand { get; private set; }
         public int SelectedScore { get; internal set; }
@@ -60,6 +62,19 @@ namespace GameServer.ViewModels
         #endregion
 
         #region Methods
+
+        internal void LoadDefaultScores()
+        {
+            Console.WriteLine("Loading scores...");
+            PersistencyManager p = new PersistencyManager();
+            ScoreManager.SetAllScores(p.LoadScores(DEFAULT_SCORE_FILENAME));
+        }
+
+        internal void SaveDefaultScores()
+        {
+            PersistencyManager p = new PersistencyManager();
+            p.SaveScores(ScoreManager.GetAllScores(), DEFAULT_SCORE_FILENAME);
+        }
 
         private void TimeTracked(object sender, TimeTrackedEventArgs e)
         {

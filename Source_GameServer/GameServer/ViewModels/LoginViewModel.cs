@@ -18,6 +18,7 @@ namespace GameServer.ViewModels
         #region Properties
         public ICommand LoginCommand { get; private set; }
         public string Text { get; set; }
+        public bool LoadScores { get; set; }
         #endregion
 
         #region ctor
@@ -40,7 +41,7 @@ namespace GameServer.ViewModels
                 NetworkSettings.SERVER_ADDRESS = address;
 
                 // Create new game window
-                var gameWindow = new MainWindow();
+                var gameWindow = new MainWindow(LoadScores);
                 gameWindow.Show();
 
                 view.Close();
