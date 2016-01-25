@@ -25,12 +25,14 @@ namespace GameServer.ViewModels
         
         public TimerService TimerService { get; private set; }
         public ICommand OpenSettingsWindowCommand { get; private set; }
+        public int SelectedScore { get; internal set; }
         #endregion
 
         #region ctor
         public MainViewModel()
         {
             ScoreManager = new ScoreManager();
+            SelectedScore = -1;
 
             // TODO: Discuss if the toggle start stop should be refactored
             TimerService = new TimerService();
@@ -63,7 +65,7 @@ namespace GameServer.ViewModels
                 settingsWindow.Close();
             }
 
-            settingsWindow = new SettingsWindow(server, TimerService, ScoreManager);
+            settingsWindow = new SettingsWindow(server, TimerService, ScoreManager, this);
             settingsWindow.Show(); 
         }
 

@@ -23,10 +23,10 @@ namespace GameServer.Views
     /// </summary>
     public partial class SettingsWindow : Window
     {
-        public SettingsWindow(NetworkServer server, TimerService timerService, ScoreManager scoreManager)
+        public SettingsWindow(NetworkServer server, TimerService timerService, ScoreManager scoreManager, MainViewModel mainView)
         {
             InitializeComponent();
-            this.DataContext = new SettingsViewModel(server, timerService, scoreManager);
+            this.DataContext = new SettingsViewModel(server, timerService, scoreManager, mainView);
         }
     }
 }

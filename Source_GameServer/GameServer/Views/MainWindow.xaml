@@ -115,8 +115,8 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <ListView
-                  ItemsSource="{Binding ScoreManager.TopScores}">
+                <ListView x:Name="TopScoreListView"
+                  ItemsSource="{Binding ScoreManager.TopScores}" SelectionMode="Single" SelectionChanged="TopScoreListView_Selected">
                     <ListView.Template>
                         <ControlTemplate>
 
@@ -155,7 +155,7 @@
                 </ListView>
 
                 <ListView x:Name="ScoreListView" Grid.Row="1" 
-                  ItemsSource="{Binding ScoreManager.Scores}">
+                  ItemsSource="{Binding ScoreManager.Scores}" SelectionMode="Single" SelectionChanged="ScoreListView_Selected">
                     <ListView.Template>
                         <ControlTemplate>
 

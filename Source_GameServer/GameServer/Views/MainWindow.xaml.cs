@@ -10,6 +10,8 @@ namespace GameServer.Views
     /// </summary>
     public partial class MainWindow : Window
     {
+        private bool selectionLock;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -29,6 +31,28 @@ namespace GameServer.Views
         {
             base.OnClosing(e);
             System.Environment.Exit(1);
+        }
+
+        private void ScoreListView_Selected(object sender, RoutedEventArgs e)
+        {
+            if (!selectionLock)
+            {
+                selectionLock = true;
+                TopScoreListView.SelectedIndex = -1;
+                selectionLock = false;
+                ((MainViewModel)DataContext).SelectedScore = TopScoreListView.Items.Count + ScoreListView.SelectedIndex;
+            }
+        }
+
+        private void TopScoreListView_Selected(object sender, RoutedEventArgs e)
+        {
+            if (!selectionLock)
+            {
+                selectionLock = true;
+                ScoreListView.SelectedIndex = -1;
+                selectionLock = false;
+                ((MainViewModel)DataContext).SelectedScore = TopScoreListView.SelectedIndex;
+            }
         }
     }
 }

@@ -10,6 +10,7 @@ using GameServer.Utils;
 using Microsoft.Win32;
 using PostSharp.Patterns.Model;
 using GameServer.Views;
+using System.Windows;
 
 namespace GameServer.ViewModels
 {
@@ -24,6 +25,7 @@ namespace GameServer.ViewModels
         private readonly PersistencyManager persistencyManager;
         private readonly ScoreManager scoreManager;
         private TimeMeasurement tmWindow;
+        private MainViewModel mainView;
         #endregion
 
         #region Properties
@@ -53,6 +55,7 @@ namespace GameServer.ViewModels
             }
         }
         public string ExampleText { get; set; }
+        public int SelectedScore { get; set; }
 
         public ICommand SendHighscoreCommand { get; private set; }
         public ICommand SendOperatorCommand { get; private set; }
@@ -61,16 +64,18 @@ namespace GameServer.ViewModels
         public ICommand OpenCommand { get; private set; }
         public ICommand SaveCommand { get; private set; }
         public ICommand ShowTMWindowCommand { get; private set; }
+        public ICommand DeleteScoreCommand { get; private set; }
 
         public ITriggerSystem TriggerSystem { get; private set; }
         #endregion
 
         #region ctor
-        public SettingsViewModel(NetworkServer server, TimerService timerService, ScoreManager scoreManager)
+        public SettingsViewModel(NetworkServer server, TimerService timerService, ScoreManager scoreManager, MainViewModel mainView)
         {
             this.timerService = timerService;
             this.server = server;
             this.scoreManager = scoreManager;
+            this.mainView = mainView;
             persistencyManager = new PersistencyManager();
             TriggerSystem = CameraTriggerService.Instance;
             TriggerSystem.TriggerRaised += TimeTrigger;
@@ -84,8 +89,27 @@ namespace GameServer.ViewModels
             SaveCommand = new DelegateCommand(o => SaveScore());
 
             ShowTMWindowCommand = new DelegateCommand(o => ShowTimeMeasurementWindow());
+            DeleteScoreCommand = new DelegateCommand(o => DeleteScore());
 
             ExampleText = "Test";
+        }
+
+        private void DeleteScore()
+        {
+            int index = mainView.SelectedScore;
+            if (index >= 0)
+            {
+                Score s = scoreManager.GetAllScores()[index];
+                if (s != null)
+                {
+                    // Ask for deletion
+                    MessageBoxResult result = MessageBox.Show("Eintrag löschen?\n" + s.Rank + ". " + s.Name + " - " + s.Duration.ToString(), "Löschen", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        scoreManager.DeleteScore(index);
+                    }
+                }
+            }
         }
         #endregion
 

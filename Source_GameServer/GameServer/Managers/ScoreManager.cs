@@ -65,6 +65,31 @@ namespace GameServer.Managers
             });
         }
 
+        public void DeleteScore(int index)
+        {
+            if (TopScores.Count + Scores.Count - 1 < index || index < 0)
+            {
+                return;
+            }
+            try {
+                if (index <= NUMBER_TOP_SCORES - 1)
+                {
+                    TopScores.RemoveAt(index);
+                    var bestScores = Scores.First();
+                    Scores.Remove(bestScores);
+                    TopScores.Add(bestScores);
+                }
+                else
+                {
+                    Scores.RemoveAt(index - NUMBER_TOP_SCORES);
+                }
+            } catch
+            {
+
+            }
+            UpdateRank();
+        }
+
         private void UpdateRank()
         {
             for (var i = 0; i < TopScores.Count; i++)
@@ -78,7 +103,7 @@ namespace GameServer.Managers
             }
         }
 
-        public IEnumerable<Score> GetAllScores()
+        public List<Score> GetAllScores()
         {
             var list = new List<Score>();
             list.AddRange(TopScores);
