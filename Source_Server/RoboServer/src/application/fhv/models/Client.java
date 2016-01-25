@@ -47,7 +47,7 @@ public class Client implements Comparable<Client>, IExtendedConfiguration {
 		heartBeatCount = new SimpleIntegerProperty();
 		isOperator = new SimpleBooleanProperty(false);
 		orientation = new SimpleObjectProperty<>(new Orientation3D(0, 0, 0));
-		setName("Anonymous");
+		setName("");
 	}
 
 	// Methods
@@ -159,15 +159,15 @@ public class Client implements Comparable<Client>, IExtendedConfiguration {
 	public IntegerProperty HeartBeatProperty() {
 		return heartBeatCount;
 	}
-	
+
 	public ObjectProperty<Orientation3D> OrientationProperty() {
 		return orientation;
 	}
-	
+
 	public void setOrientation(Orientation3D orientation) {
 		this.orientation.set(orientation);
 	}
-	
+
 	public Orientation3D getOrientation() {
 		return orientation.get();
 	}

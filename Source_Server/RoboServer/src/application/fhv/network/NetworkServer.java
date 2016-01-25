@@ -57,7 +57,8 @@ public class NetworkServer {
 		roboToOperatorDelegator.setTargetCommunication(appCommunication);
 
 		// Gaming communication
-		this.gamingCommunication = new GamingCommunication(gamingController, null, gamingPort, persistencyController);
+		this.gamingCommunication = new GamingCommunication(gamingController, null, gamingPort, persistencyController,
+				appController);
 
 		// Add operator changed controller
 		appController.addOperatorChangedListener(appCommunication);

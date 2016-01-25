@@ -9,16 +9,21 @@ import communication.flags.Flags;
 import communication.managers.DatagramFactory;
 import communication.managers.IAnswerHandler;
 import communication.pdu.ApplicationPDU;
+import controllers.IOperatorManager;
 import controllers.PersistencyController;
 import models.Client;
 import network.IClientController;
 
 public class GamingCommunication extends Communication {
 
+	private final IOperatorManager<Client> operatorManager;
+
 	// Constructor
 	public GamingCommunication(IClientController<Client> clientController, Delegator delegator, int port,
-			PersistencyController persistencyController) throws SocketException {
+			PersistencyController persistencyController, IOperatorManager<Client> operatorManager)
+					throws SocketException {
 		super(clientController, delegator, port, persistencyController);
+		this.operatorManager = operatorManager;
 	}
 
 	// Methods
@@ -33,7 +38,7 @@ public class GamingCommunication extends Communication {
 			int command = pdu.getCommand();
 			switch (command) {
 			case Commands.REQUEST_OPERATOR:
-				List<Client> operators = clientController.getOperators();
+				List<Client> operators = operatorManager.getOperators();
 				String name = "";
 				if (!operators.isEmpty()) {
 					name = operators.get(0).getName();
