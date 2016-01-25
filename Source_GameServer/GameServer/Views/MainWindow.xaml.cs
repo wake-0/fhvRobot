@@ -1,4 +1,5 @@
-﻿using GameServer.ViewModels;
+﻿using System.ComponentModel;
+using GameServer.ViewModels;
 using System.Windows;
 using GameServer.Models;
 
@@ -22,6 +23,12 @@ namespace GameServer.Views
                 var item = ScoreListView.Items[ScoreListView.Items.Count - 1];
                 ScoreListView.ScrollIntoView((Score)item);
             }
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            System.Environment.Exit(1);
         }
     }
 }
