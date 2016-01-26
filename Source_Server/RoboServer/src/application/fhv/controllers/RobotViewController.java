@@ -44,6 +44,7 @@ public class RobotViewController implements Initializable, IMediaStreamingFrameR
 	private Client selectedClient;
 	private DriveController driveController;
 	private CameraController cameraController;
+	private LightController lightController;
 	
 	@FXML
 	private Slider sldLeftMotor;
@@ -67,7 +68,9 @@ public class RobotViewController implements Initializable, IMediaStreamingFrameR
 	private Button btnCameraOn;
 	@FXML
 	private Button btnCameraOff;
-	
+	@FXML
+	private Button btnTriggerLED;
+
 	private BooleanProperty robotControlledProperty;
 	private Xform world;
 	private Xform robot;
@@ -96,7 +99,8 @@ public class RobotViewController implements Initializable, IMediaStreamingFrameR
 		sldRightMotor.disableProperty().bind(robotControlledProperty.not());
 		btnCameraOff.disableProperty().bind(robotControlledProperty.not());
 		btnCameraOn.disableProperty().bind(robotControlledProperty.not());
-		
+		btnTriggerLED.disableProperty().bind(robotControlledProperty.not());
+
 		camCanvas.setPreserveRatio(true);
 		camCanvas.fitWidthProperty().bind(scrollPaneCam.widthProperty());
 		camCanvas.fitHeightProperty().bind(scrollPaneCam.heightProperty());
@@ -216,13 +220,14 @@ public class RobotViewController implements Initializable, IMediaStreamingFrameR
 	}
 
 	public void setRobotView(Client selectedClient,
-			DriveController driveController, CameraController cameraController) {
+			DriveController driveController, CameraController cameraController, LightController lightController) {
 		if (this.selectedClient != null) {
 			this.selectedClient.OrientationProperty().removeListener(listener);
 		}
 		this.selectedClient = selectedClient;
 		this.driveController = driveController;
 		this.cameraController = cameraController;
+		this.lightController = lightController;
 		sldLeftMotor.setValue(0);
 		sldRightMotor.setValue(0);
 		robotControlledProperty.set(true);
@@ -246,6 +251,11 @@ public class RobotViewController implements Initializable, IMediaStreamingFrameR
 	private void handleCameraOff() {
 		cameraController.turnCameraOff(selectedClient);
 		camCanvas.setImage(null);
+	}
+	
+	@FXML
+	private void handleTriggerLED() {
+		lightController.sendTriggerLED(selectedClient);
 	}
 
 	@Override

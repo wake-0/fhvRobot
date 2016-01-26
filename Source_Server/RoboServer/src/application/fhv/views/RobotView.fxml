@@ -46,6 +46,7 @@
 		<HBox GridPane.rowIndex="1" GridPane.columnSpan="3">
 			<Button fx:id="btnCameraOn" onAction="#handleCameraOn" >Camera On</Button>
 			<Button fx:id="btnCameraOff" onAction="#handleCameraOff">Camera Off</Button>
+			<Button fx:id="btnTriggerLED" onAction="#handleTriggerLED">Trigger LED</Button>
 		</HBox>
 	</children>
 </GridPane>

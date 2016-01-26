@@ -57,6 +57,7 @@ public class RoboTabPageController implements Initializable {
 	private Button btnView;
 
 	private RobotViewController robotViewController;
+	private LightController lightController;
 
 	// Constructor
 	public RoboTabPageController() {
@@ -94,7 +95,7 @@ public class RoboTabPageController implements Initializable {
 		Client selectedClient = roboController.getSelectedClient();
 
 		if (selectedClient != null) {
-			robotViewController.setRobotView(selectedClient, driveController, cameraController);
+			robotViewController.setRobotView(selectedClient, driveController, cameraController, lightController);
 		}
 	}
 
@@ -152,6 +153,7 @@ public class RoboTabPageController implements Initializable {
 		this.server = server;
 		this.driveController = new DriveController(server);
 		this.cameraController = new CameraController(server);
+		this.lightController = new LightController(server);
 	}
 
 	private void clearDetails() {
