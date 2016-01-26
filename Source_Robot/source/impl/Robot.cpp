@@ -136,7 +136,7 @@ bool Robot::GetOrientationPrecise(float* roll, float* pitch, float* yaw) {
 
         *roll = (r);
         *pitch = (p);
-        *yaw = (y);
+        *yaw = (360 - y);
         return true;
     }
     return false;
