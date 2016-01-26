@@ -80,12 +80,12 @@ bool Controller::Start(char* serverIp) {
 		long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
 		if (connection->GetLastMessageTime() + TIMEOUT_MS < ms)
 		{
-			connection->Disconnect();
-			robot.MotorStop(true);
-			CameraOff();
 			break;
 		}
 	}
+	connection->Disconnect();
+	robot.MotorStop(true);
+	CameraOff();
 	return running;
 }
 

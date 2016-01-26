@@ -52,8 +52,16 @@ Robot::Robot(MPU9150* __mpu, FusionFilter* __filter, GPIO::GPIOManager* gp) {
 	if (manager != NULL)
 	{
 		int pin = GPIO::GPIOConst::getInstance()->getGpioByKey("P8_11");
+		manager->exportPin(pin);
 		manager->setDirection(pin, GPIO::OUTPUT);
 	}
+
+	TriggerLED();
+	usleep(100 * 1000);
+	TriggerLED();
+	usleep(100 * 1000);
+	TriggerLED();
+	usleep(100 * 1000);
 }
 
 Robot::~Robot() {
@@ -174,7 +182,7 @@ void Robot::TriggerLED()
 {
 	int pin = GPIO::GPIOConst::getInstance()->getGpioByKey("P8_11");
 	manager->setValue(pin, GPIO::HIGH);
-	usleep(1000);
+	usleep(5 * 1000);
 	manager->setValue(pin, GPIO::LOW);
 }
 
