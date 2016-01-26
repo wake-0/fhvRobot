@@ -90,7 +90,12 @@ public class ClientController<T extends IExtendedConfiguration> implements IClie
 			return;
 		}
 
-		clients.add(client);
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				clients.add(client);
+			}
+		});
 
 		// Each minute check heart beat
 		HeartbeatManager<T> manager = new HeartbeatManager<T>(client, this);
