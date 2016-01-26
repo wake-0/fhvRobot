@@ -9,6 +9,7 @@
  */
 package controllers;
 
+import java.io.PrintStream;
 import java.net.SocketException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -20,6 +21,7 @@ import javafx.scene.control.TextArea;
 import models.Client;
 import network.IClientController;
 import network.NetworkServer;
+import utils.ServerOutputPrinter;
 
 public class MainWindowController implements Initializable {
 
@@ -58,10 +60,10 @@ public class MainWindowController implements Initializable {
 			roboViewController.setRobotViewController(robotViewController);
 			appViewController.setServer(server);
 
-			// PrintStream outputStream = new PrintStream(new
-			// ServerOutputPrinter(taServerOutput));
-			// System.setOut(outputStream);
-			System.out.println("System output redirected ...");
+			PrintStream outputStream = new PrintStream(new
+			ServerOutputPrinter(taServerOutput));
+			System.setErr(outputStream);
+			System.err.println("System error output redirected ...");
 
 		} catch (SocketException e) {
 			e.printStackTrace();
