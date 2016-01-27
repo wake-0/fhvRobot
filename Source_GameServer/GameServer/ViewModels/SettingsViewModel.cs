@@ -130,21 +130,21 @@ namespace GameServer.ViewModels
 
         private void SetTestData()
         {
-            scoreManager.CurrentScore = new Score { Name = "MyPlayer", Duration = new TimeSpan() };
+            //scoreManager.CurrentScore = new Score { Name = "MyPlayer", Duration = new TimeSpan() };
 
             scoreManager.Clear();
-            scoreManager.Add(new Score { Name = "Peter", Duration = new TimeSpan() });
-            scoreManager.Add(new Score { Name = "Klaus", Duration = new TimeSpan() });
-            scoreManager.Add(new Score { Name = "Johannes", Duration = new TimeSpan() });
-            scoreManager.Add(new Score { Name = "Bernhard", Duration = new TimeSpan() });
-            scoreManager.Add(new Score { Name = "Mathias", Duration = new TimeSpan() });
-            scoreManager.Add(new Score { Name = "Julia", Duration = new TimeSpan() });
-            scoreManager.Add(new Score { Name = "Max", Duration = new TimeSpan() });
-            scoreManager.Add(new Score { Name = "Johanna", Duration = new TimeSpan() });
-            scoreManager.Add(new Score { Name = "Mario", Duration = new TimeSpan() });
-            scoreManager.Add(new Score { Name = "Mario", Duration = new TimeSpan() });
-            scoreManager.Add(new Score { Name = "Mario", Duration = new TimeSpan() });
-            scoreManager.Add(new Score { Name = "Mario", Duration = new TimeSpan() });
+            scoreManager.Add(new Score { Name = "Peter", Duration = new TimeSpan(1, 12, 13) });
+            scoreManager.Add(new Score { Name = "Klaus", Duration = new TimeSpan(0, 55, 23) });
+            scoreManager.Add(new Score { Name = "Johannes", Duration = new TimeSpan(0, 33, 12) });
+            scoreManager.Add(new Score { Name = "Bernhard", Duration = new TimeSpan(0, 11, 3) });
+            scoreManager.Add(new Score { Name = "Mathias", Duration = new TimeSpan(0, 2, 37) });
+            scoreManager.Add(new Score { Name = "Julia", Duration = new TimeSpan(0, 7, 7) });
+            scoreManager.Add(new Score { Name = "Max", Duration = new TimeSpan(0, 12, 34) });
+            scoreManager.Add(new Score { Name = "Johanna", Duration = new TimeSpan(0, 11, 47) });
+            scoreManager.Add(new Score { Name = "Mario", Duration = new TimeSpan(0, 44, 12) });
+            scoreManager.Add(new Score { Name = "Mario", Duration = new TimeSpan(0, 17, 7) });
+            scoreManager.Add(new Score { Name = "Mario", Duration = new TimeSpan(0, 8, 15) });
+            scoreManager.Add(new Score { Name = "Mario", Duration = new TimeSpan(0, 47, 11) });
 
         }
 
