@@ -233,9 +233,14 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
     public void updateScores(String highScore) {
         Log.d(LOG_TAG, "Received highScore: " + highScore);
 
-        Score[] scores = XmlHelper.parseHighScoreString(highScore);
-        listHighscore = (ListView) lytHighscore.findViewById(R.id.listHighscore);
-        listHighscore.setAdapter(new ScoreArrayAdapter(lytHighscore.getContext(), scores));
+        final Score[] scores = XmlHelper.parseHighScoreString(highScore);
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                listHighscore = (ListView) lytHighscore.findViewById(R.id.listHighscore);
+                listHighscore.setAdapter(new ScoreArrayAdapter(lytHighscore.getContext(), scores));
+            }
+        });
     }
 
     @Override
