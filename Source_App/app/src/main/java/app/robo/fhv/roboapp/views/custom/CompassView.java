@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -214,13 +215,15 @@ public class CompassView extends View {
 
 
     private void drawNeedle(Canvas canvas) {
-        canvas.drawLine(
-                (float) (canvas.getWidth()/2),
-                (float) (0),
-                (float) (canvas.getWidth()/2),
-                (float) (canvas.getHeight()/2),
-                needlePaint
-        );
+        Path path = new Path();
+        path.setFillType(Path.FillType.EVEN_ODD);
+        path.moveTo(canvas.getWidth()/2 - 10, 0);
+        path.lineTo(canvas.getWidth()/2 + 10, 0);
+        path.lineTo(canvas.getWidth()/2, canvas.getHeight()/2);
+        path.lineTo(canvas.getWidth()/2 - 10, 0);
+        path.close();
+        canvas.drawPath(path, needlePaint);
+
     }
 
     private void drawTicks(Canvas canvas) {
@@ -277,7 +280,18 @@ public class CompassView extends View {
             // label major scale values
             startTick -= (startTick % majorTickStep);
             int scaleAngle = ((int)startTick + 10 * i) % FULL_ROTATION_ANGLE;
-            canvas.drawText(Integer.toString(scaleAngle)+"°", x-5, canvas.getHeight() * 0.8f, paint);
+            String text = Integer.toString((scaleAngle >= 0) ? scaleAngle : 360 + scaleAngle) + "";
+            if (text.equals("90")) {
+                text = "E";
+            } else if (text.equals("180")) {
+                text = "S";
+            } else if (text.equals("270")) {
+                text = "W";
+            } else if (text.equals("0")) {
+                text = "N";
+            }
+            float tw = paint.measureText(text);
+            canvas.drawText(text, x-tw/2, canvas.getHeight() * 0.8f, paint);
         }
 
         // label actual middle angle
@@ -325,8 +339,8 @@ public class CompassView extends View {
         colorLinePaint.setColor(defaultColor);
 
         needlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        needlePaint.setStrokeWidth(5);
-        needlePaint.setStyle(Paint.Style.STROKE);
+        needlePaint.setStrokeWidth(3);
+        needlePaint.setStyle(Paint.Style.FILL);
         needlePaint.setColor(Color.argb(200, 255, 0, 0));
     }
 
