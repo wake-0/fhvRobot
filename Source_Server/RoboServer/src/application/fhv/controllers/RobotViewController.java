@@ -197,13 +197,13 @@ public class RobotViewController implements Initializable, IMediaStreamingFrameR
 	        @Override
 	        public void handle(KeyEvent t) {
 	        	if (t.getText().length() == 0) return;
-	            if (t.getText().charAt(0) == 'w') {
+	            if (t.getText().charAt(0) == 'w' && leftTimeline != null) {
 	            	leftTimeline.stop();
-	            } else if (t.getText().charAt(0) == 's') {
+	            } else if (t.getText().charAt(0) == 's' && leftTimeline != null) {
 	            	leftTimeline.stop();
-	            } else if (t.getText().charAt(0) == 'i') {
+	            } else if (t.getText().charAt(0) == 'i' && rightTimeline != null) {
 	            	rightTimeline.stop();
-	            } else if (t.getText().charAt(0) == 'k') {
+	            } else if (t.getText().charAt(0) == 'k' && rightTimeline != null) {
 	            	rightTimeline.stop();
 	            }
 	        }
