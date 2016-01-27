@@ -1,13 +1,19 @@
 package app.robo.fhv.roboapp.views.welcome;
 
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +26,9 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,27 +57,51 @@ public class WelcomeHowItsDone extends Fragment {
                 if (isAdded() == false) {
                     return;
                 }
-                final Drawable[] ds = new Drawable[]{
-                        getResources().getDrawable(R.drawable.intro_0),
-                        getResources().getDrawable(R.drawable.intro_1),
-                        getResources().getDrawable(R.drawable.intro_2),
-                        getResources().getDrawable(R.drawable.intro_3),
-                        getResources().getDrawable(R.drawable.intro_4),
-                        getResources().getDrawable(R.drawable.intro_5),
-                        getResources().getDrawable(R.drawable.intro_6),
-                        getResources().getDrawable(R.drawable.intro_7),
-                        getResources().getDrawable(R.drawable.intro_8),
-                        getResources().getDrawable(R.drawable.intro_9),
-                        getResources().getDrawable(R.drawable.intro_10),
-                        getResources().getDrawable(R.drawable.intro_11)
-                };
-                CyclicTransitionDrawable ctd = new CyclicTransitionDrawable(ds);
-                imgTutorial.setImageDrawable(ctd);
-                ctd.startTransition(500, 3000);
+
+                new AsyncTask<Void, Void, Drawable[]>() {
+
+                    @Override
+                    protected Drawable[] doInBackground(Void... params) {
+                        Drawable[] dss = new Drawable[12];
+                        for (int i = 0; i < dss.length; i++) {
+                            dss[i] = getAssetImage(WelcomeHowItsDone.this.getContext(), "intro_" + i);
+                        }
+                        return dss;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Drawable[] dss) {
+                        for (int i = 0; i < dss.length; i++) {
+                            if (dss[i] == null) {
+                                Log.e("WELCOME", "Cannot load tutorial");
+                                return;
+                            }
+                        }
+                        CyclicTransitionDrawable ctd = new CyclicTransitionDrawable(dss);
+                        imgTutorial.setImageDrawable(ctd);
+                        ctd.startTransition(500, 3000);
+                    }
+                }.execute();
                 this.cancel();
             }
         };
         ct.start();
         return v;
+    }
+
+    public static Drawable getAssetImage(Context context, String filename) {
+        AssetManager assets = context.getResources().getAssets();
+        InputStream buffer = null;
+        try {
+            buffer = new BufferedInputStream((assets.open(("drawable/" + filename + ".png"))));
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = 2;
+            options.inPreferredConfig = Bitmap.Config.RGB_565;
+            Bitmap bitmap = BitmapFactory.decodeStream(buffer, null, options);
+            return new BitmapDrawable(context.getResources(), bitmap);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

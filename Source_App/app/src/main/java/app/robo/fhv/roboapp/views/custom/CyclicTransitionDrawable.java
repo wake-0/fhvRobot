@@ -105,9 +105,9 @@ public class CyclicTransitionDrawable extends LayerDrawable implements Drawable.
 
                 transitionStatus = TransitionState.PAUSED;
             }
-        }
-        else
+        } else {
             getDrawable(currentDrawableIndex).draw(canvas);
+        }
 
         invalidateSelf();
     }
