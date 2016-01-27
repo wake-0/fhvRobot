@@ -37,7 +37,7 @@ public class WelcomeHowItsDone extends Fragment {
 
         imgTutorial = (ImageView) v.findViewById(R.id.imgTutorial);
 
-        new CountDownTimer(3000, 1000) {
+        final CountDownTimer ct = new CountDownTimer(3000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
 
@@ -45,7 +45,10 @@ public class WelcomeHowItsDone extends Fragment {
 
             @Override
             public void onFinish() {
-                final Drawable[] ds = new Drawable[] {
+                if (isAdded() == false) {
+                    return;
+                }
+                final Drawable[] ds = new Drawable[]{
                         getResources().getDrawable(R.drawable.intro_0),
                         getResources().getDrawable(R.drawable.intro_1),
                         getResources().getDrawable(R.drawable.intro_2),
@@ -62,8 +65,10 @@ public class WelcomeHowItsDone extends Fragment {
                 CyclicTransitionDrawable ctd = new CyclicTransitionDrawable(ds);
                 imgTutorial.setImageDrawable(ctd);
                 ctd.startTransition(500, 3000);
+                this.cancel();
             }
-        }.start();
+        };
+        ct.start();
         return v;
     }
 }
