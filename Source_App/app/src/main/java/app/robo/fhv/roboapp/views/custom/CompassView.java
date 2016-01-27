@@ -31,9 +31,9 @@ public class CompassView extends View {
 
     public static final int DEFAULT_MINOR_TICKS = 5;
     public static final int DEFAULT_LABEL_TEXT_SIZE_DP = 12;
-    public static final int COMPASS_MAX_VALUE = 360;
+    public static final float COMPASS_MAX_VALUE = 360;
     public static final float ANGLE_RANGE = 60.0f;
-    public static final int FULL_ROTATION_ANGLE = 360;
+    public static final float FULL_ROTATION_ANGLE = 360;
 
     private double angle = 0;
     private int defaultColor = Color.rgb(180, 180, 180);
@@ -217,9 +217,9 @@ public class CompassView extends View {
     private void drawNeedle(Canvas canvas) {
         Path path = new Path();
         path.setFillType(Path.FillType.EVEN_ODD);
-        path.moveTo(canvas.getWidth()/2 - 10, 0);
+        path.moveTo(canvas.getWidth() / 2 - 10, 0);
         path.lineTo(canvas.getWidth()/2 + 10, 0);
-        path.lineTo(canvas.getWidth()/2, canvas.getHeight()/2);
+        path.lineTo(canvas.getWidth() / 2, canvas.getHeight() / 2);
         path.lineTo(canvas.getWidth()/2 - 10, 0);
         path.close();
         canvas.drawPath(path, needlePaint);
@@ -279,7 +279,7 @@ public class CompassView extends View {
 
             // label major scale values
             startTick -= (startTick % majorTickStep);
-            int scaleAngle = ((int)startTick + 10 * i) % FULL_ROTATION_ANGLE;
+            int scaleAngle = ((int)startTick + 10 * i) % (int)(FULL_ROTATION_ANGLE);
             String text = Integer.toString((scaleAngle >= 0) ? scaleAngle : 360 + scaleAngle) + "";
             if (text.equals("90")) {
                 text = "E";
@@ -291,7 +291,8 @@ public class CompassView extends View {
                 text = "N";
             }
             float tw = paint.measureText(text);
-            canvas.drawText(text, x-tw/2, canvas.getHeight() * 0.8f, paint);
+            Paint.FontMetrics fm = paint.getFontMetrics();
+            canvas.drawText(text, x-tw/2.0f, canvas.getHeight() - 1, paint);
         }
 
         // label actual middle angle
