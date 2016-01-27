@@ -31,8 +31,10 @@ public class WelcomeActivity extends AppIntro2 implements Serializable {
 
     @Override
     public void init(Bundle savedInstanceState) {
+        boolean firstStart = false;
         if (!SharedPreferencesPersistence.isInstanceCreated()) {
             SharedPreferencesPersistence.createInstance(this);
+            firstStart = true;
         }
         instance = SharedPreferencesPersistence.getInstance();
         addSlide(new WelcomeSplashPage());
@@ -44,6 +46,7 @@ public class WelcomeActivity extends AppIntro2 implements Serializable {
         if(countDownTimer != null) {
             return;
         }
+        final boolean fs = firstStart;
         countDownTimer = new CountDownTimer(2000, 2000) {
 
             @Override
@@ -55,7 +58,7 @@ public class WelcomeActivity extends AppIntro2 implements Serializable {
             public void onFinish() {
                 long lastLogin = instance.getLastLoginTime();
                 // 1000ms * 3600s * 24h * 3 = 3 days
-                if(lastLogin != 0 && (System.currentTimeMillis() - lastLogin < 1000*3600*24*3)) {
+                if(fs && lastLogin != 0 && (System.currentTimeMillis() - lastLogin < 1000*3600*24*3)) {
                     getPager().setCurrentItem(3, true);
                 }
                 instance.persistLastLoginTime(System.currentTimeMillis());
