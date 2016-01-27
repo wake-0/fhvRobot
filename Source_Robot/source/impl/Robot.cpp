@@ -134,7 +134,7 @@ bool Robot::GetOrientationPrecise(float* roll, float* pitch, float* yaw) {
         float r, p, y;
         filter->ReadValues(&r, &p, &y);
 
-    	Debugger(ERROR) << "Got orientation values: roll=" << r << ", pitch=" << p << ", yaw=" << y << "\n";
+    	Debugger(VERBOSE) << "Got orientation values: roll=" << r << ", pitch=" << p << ", yaw=" << y << "\n";
 
     	/*
         if (r < 0) r=(360+r);

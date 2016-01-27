@@ -142,7 +142,7 @@ bool ConnectionAPI::SendHeartBeat()
 
 bool ConnectionAPI::SendOrientation(short roll, short pitch, short yaw)
 {
-	Debugger(ERROR) << "Sending orientation: roll=" << roll << ", pitch=" << pitch << ", yaw=" << yaw << "\n";
+	Debugger(VERBOSE) << "Sending orientation: roll=" << roll << ", pitch=" << pitch << ", yaw=" << yaw << "\n";
 	char msg[8];
 	msg[0] = COMMAND_ORIENTATION;
 	msg[1] = 6;
