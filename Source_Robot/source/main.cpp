@@ -23,7 +23,9 @@
 #include "../include/sensors/I2C.h"
 #include "../include/configuration/INIReader.h"
 #include "../include/GPIO/GPIOManager.h"
+#include <sys/types.h>
 #include <unistd.h>
+#include <sys/stat.h>
 #include <string.h>
 
 using namespace FhvRobot;
@@ -34,6 +36,23 @@ using namespace FhvRobot;
 int main(int argc, char** argv)
 {
 
+	// Read current path of executable
+	char path[255];
+	char dest[255];
+	pid_t pid = getpid();
+	sprintf(path, "/proc/%d/exe", pid);
+	if (readlink((const char*)path, dest, 255) == -1)
+		Debugger(ERROR) << "Could not read path\n";
+	else {
+		Debugger(INFO) << "Current path is " << dest << "\n";
+	}
+	char* curr = &dest[strlen(dest) - 1];
+	while (*curr != '/' && curr > dest) {
+		*curr = '\0';
+		curr--;
+	}
+	Debugger(INFO) << "Directory is " << dest << "\n";
+
 	char configFile[255] = { 0 };
 	if (argc == 2)
 	{
@@ -41,7 +60,7 @@ int main(int argc, char** argv)
 	}
 	else
 	{
-		memcpy(configFile, DEFAULT_CONFIG_FILE, strlen(DEFAULT_SERVER_IP));
+		sprintf(configFile, "%s/%s", dest, DEFAULT_CONFIG_FILE);
 	}
 
 	std::string serverAddress = DEFAULT_SERVER_IP;
