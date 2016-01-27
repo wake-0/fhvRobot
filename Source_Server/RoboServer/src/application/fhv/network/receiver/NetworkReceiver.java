@@ -12,6 +12,7 @@ package network.receiver;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.SocketException;
 
 public class NetworkReceiver implements INetworkReceiver {
 
@@ -32,6 +33,8 @@ public class NetworkReceiver implements INetworkReceiver {
 			}
 
 			socket.receive(packet);
+		} catch (SocketException e) {
+			System.out.println("Socket was closed properly.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
