@@ -18,7 +18,7 @@
         android:paddingRight="32dp"
         android:text="Das bin ich!"
         android:textColor="@android:color/white"
-        android:textSize="48sp"
+        android:textSize="42sp"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -44,51 +44,11 @@
         android:layout_weight="50"
         android:orientation="vertical">
 
-        <TextView
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="10"
-            android:gravity="center"
-            android:text="Nicht ganz!"
-            android:textColor="@android:color/white"
-            android:textSize="28sp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
-            android:gravity="center"
-            android:text="Ausgestattet mit"
-            android:textColor="@android:color/white"
-            android:textSize="20sp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
-            android:gravity="center"
-            android:text="Mini-Computer"
-            android:textColor="@android:color/white"
-            android:textSize="28sp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="6"
-            android:gravity="center"
-            android:text="und"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
-            android:gravity="center"
-            android:text="Kamera"
-            android:textColor="@android:color/white"
-            android:textSize="28sp" />
-
+            android:layout_weight="50"
+            android:src="@drawable/thats_me"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
