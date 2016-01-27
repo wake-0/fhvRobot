@@ -24,8 +24,9 @@ private:
 	GPIO::GPIOManager* gpioManager;
 	bool running;
 	char serverAddress[255];
+	char* path;
 public:
-	Controller(MPU9150* mpu, FusionFilter* filter, GPIO::GPIOManager* gp);
+	Controller(char* path, MPU9150* mpu, FusionFilter* filter, GPIO::GPIOManager* gp);
 	virtual ~Controller();
 
 	void Init();

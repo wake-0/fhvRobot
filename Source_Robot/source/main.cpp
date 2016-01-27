@@ -65,7 +65,7 @@ int main(int argc, char** argv)
 	I2C i2c(I2C_2);
 	MPU9150 mpu(&i2c);
 	GPIO::GPIOManager* gp = GPIO::GPIOManager::getInstance();
-	Controller controller(&mpu, &filter, gp);
+	Controller controller(dest, &mpu, &filter, gp);
 	controller.Init();
 	bool running = true;
 	while (running)

@@ -21,7 +21,8 @@ namespace FhvRobot {
 
 static std::string exec(char* cmd);
 
-Controller::Controller(MPU9150* mpu, FusionFilter* filter, GPIO::GPIOManager* gp) : robot(mpu, filter, gp) {
+Controller::Controller(char* path, MPU9150* mpu, FusionFilter* filter, GPIO::GPIOManager* gp) : robot(mpu, filter, gp) {
+	this->path = path;
 	connection = NULL;
 	gpioManager = gp;
 	running = false;
@@ -121,7 +122,7 @@ void Controller::CameraOn(char* host, int port)
 	{
 		hostname = host;
 	}
-	sprintf(streamHost, "./fhvrobot_streaming %s %d > 0&", hostname, port);
+	sprintf(streamHost, "%s/fhvrobot_streaming %s %d > 0&", path, hostname, port);
 
 	// Check if stream already running
 	char pidCall[255];
