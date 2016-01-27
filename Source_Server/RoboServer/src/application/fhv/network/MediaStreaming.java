@@ -74,12 +74,16 @@ public class MediaStreaming implements Runnable {
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
-					for (Client c : appController.getClients()) {
-						if (c.requiresStreamForwarding(client)) {
-							DatagramPacket p = DatagramFactory.createRawBytePacket(c, data, len);
-							p.setPort(APP_CLIENT_FORWARD_PORT);
-							forwardSender.send(p);
+					try {
+						for (Client c : appController.getClients()) {
+							if (c.requiresStreamForwarding(client)) {
+								DatagramPacket p = DatagramFactory.createRawBytePacket(c, data, len);
+								p.setPort(APP_CLIENT_FORWARD_PORT);
+								forwardSender.send(p);
+							}
 						}
+					} catch (Exception e) {
+						System.err.println("Exception while transmitting frame - dropping it.");
 					}
 				}
 			}).start();
@@ -100,7 +104,7 @@ public class MediaStreaming implements Runnable {
 						}
 					});
 				} catch (IOException e) {
-					System.out.println("WARNING: Dropped frame!");
+					System.err.println("Error while deserializing frame - dropping it.");
 				}
 			}
 
