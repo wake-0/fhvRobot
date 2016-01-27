@@ -29,7 +29,7 @@
             android:name=".views.ReconnectActivity"
             android:label="Reconnect"
             android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
     </application>
 </manifest>
