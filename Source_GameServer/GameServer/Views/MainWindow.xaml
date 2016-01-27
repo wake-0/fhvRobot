@@ -40,10 +40,10 @@
             <Setter Property="Foreground" Value="{StaticResource Foreground}" />
             <Setter Property="Margin" Value="5,2" />
         </Style>
-        
+
         <!-- Converters -->
         <converters:IndexConverter x:Key="IndexConverter" />
-        
+
     </Window.Resources>
 
     <Window.DataContext>
@@ -67,7 +67,7 @@
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*" />
+            <RowDefinition Height="1.5*" />
             <RowDefinition Height="2*" />
             <RowDefinition Height="4*" />
         </Grid.RowDefinitions>
@@ -79,24 +79,30 @@
                 Opacity="{StaticResource Opacity}"
                 VerticalAlignment="Stretch">
 
-            <DockPanel TextElement.Foreground="{StaticResource Foreground}">
-                <!-- This Viewbox is used to automatically resize the font size -->
-            <Viewbox Margin="10,0,0,0">
-                <Viewbox.LayoutTransform>
-                    <ScaleTransform CenterX="45" ScaleX="1" />
-                </Viewbox.LayoutTransform>
+            <Grid 
+                                Margin="25,0" 
+                                TextElement.Foreground="{StaticResource Foreground}" 
+                                HorizontalAlignment="Stretch">
 
-                    <TextBlock Text="{Binding CurrentPlayer}"
-                               HorizontalAlignment="Stretch" 
-                               VerticalAlignment="Stretch" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-            </Viewbox>
-                <TextBlock Text="{Binding ScoreManager.CurrentScore.Duration, StringFormat='{}{0:mm\\:ss\\.ff}'}"  
-                               FontSize="30"
+                <TextBlock Grid.Column="0"
+                        Text="{Binding CurrentPlayer}"
+                               HorizontalAlignment="Left" 
+                               VerticalAlignment="Center" 
+                               FontSize="68" />
+
+                <TextBlock Grid.Column="1"
+                               Text="{Binding ScoreManager.CurrentScore.Duration, StringFormat='{}{0:mm\\:ss\\.ff}'}"  
                                Margin="0,0,10,0"
                                HorizontalAlignment="Right"
-                               VerticalAlignment="Center"/>
-            </DockPanel>
+                               VerticalAlignment="Center"
+                               FontSize="68"
+                           Foreground="#CCFF99" />
+            </Grid>
         </Border>
 
         <controls:DigitalClockControl  
@@ -170,9 +176,9 @@
                                 Opacity="{StaticResource Opacity}"
                                 Background="{StaticResource Background}">
 
-                                
-                                        <ItemsPresenter TextElement.Foreground="{StaticResource Foreground}" />
-                                
+
+                                    <ItemsPresenter TextElement.Foreground="{StaticResource Foreground}" />
+
 
                                 </Border>
                             </ControlTemplate>

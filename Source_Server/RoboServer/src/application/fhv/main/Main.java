@@ -11,13 +11,13 @@ package main;
 
 import java.net.URL;
 
+import controllers.MainWindowController;
 import javafx.application.Application;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import controllers.MainWindowController;
 
 public class Main extends Application {
 
@@ -53,7 +53,7 @@ public class Main extends Application {
 
 			// Show stage
 			stage.show();
-			
+
 			// Post initialize
 			MainWindowController controller = loader.getController();
 			controller.postInitialize(scene);
