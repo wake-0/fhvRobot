@@ -220,12 +220,13 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
                 return false;
             }
         });
-
+        switchToSpectatorMode();
         playerName = getIntent().getExtras().getString(WelcomeActivity.PLAYER_NAME_TAG);
         Log.d(LOG_TAG, "Using player name " + playerName);
     }
 
     private void setSpectatorText(String value) {
+        spectatorText.setVisibility(View.VISIBLE);
         spectatorText.setText(value);
     }
 
@@ -323,6 +324,7 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
+                    switchToSpectatorMode();
                     if (!reconnectActivityStarted)
                         Toast.makeText(MainActivity.this, "Verbindung abgebrochen!", Toast.LENGTH_SHORT).show();
                 }
@@ -364,42 +366,45 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
         isOperator = true;
 
         new Handler(Looper.getMainLooper()).post(
-            new Runnable() {
-                @Override
-                public void run() {
+                new Runnable() {
+                    @Override
+                    public void run() {
                         CountDownTimer countDownTimer = new CountDownTimer(5000, 1000) {
                             @Override
                             public void onTick(long millis) {
-                                if(!isOperator) {
+                                if (!isOperator) {
                                     return;
                                 }
 
-                                if(millis > 5000) {
+                                if (millis > 5000) {
                                     setSpectatorText("Bereit machen!");
-                                } else if(millis > 4000) {
+                                } else if (millis > 4000) {
                                     setSpectatorText("3");
-                                } else if(millis > 3000) {
+                                } else if (millis > 3000) {
                                     setSpectatorText("2");
-                                } else if(millis > 2000) {
+                                } else if (millis > 2000) {
                                     setSpectatorText("1");
-                                } else if(millis > 1000){
+                                } else if (millis > 1000) {
                                     setSpectatorText("LOS!");
                                 }
                             }
 
                             @Override
                             public void onFinish() {
-                                if(isOperator) {
+                                if (isOperator) {
                                     setSpectatorText("");
-                    sbLeft.setVisibility(View.VISIBLE);
-                    sbRight.setVisibility(View.VISIBLE);
-                }
+                                    spectatorText.setVisibility(View.INVISIBLE);
+                                    sbLeft.setVisibility(View.VISIBLE);
+                                    sbRight.setVisibility(View.VISIBLE);
+                                    lamp.setVisibility(View.VISIBLE);
+                                    compass.setVisibility(View.VISIBLE);
+                                }
                                 this.cancel();
                             }
                         };
                         countDownTimer.start();
                     }
-            }
+                }
         );
     }
 
@@ -411,12 +416,18 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
                 new Runnable() {
                     @Override
                     public void run() {
-                        sbLeft.setVisibility(View.INVISIBLE);
-                        sbRight.setVisibility(View.INVISIBLE);
-                        setSpectatorText("Zuschauermodus");
+                        switchToSpectatorMode();
                     }
                 }
         );
+    }
+
+    private void switchToSpectatorMode() {
+        sbLeft.setVisibility(View.INVISIBLE);
+        sbRight.setVisibility(View.INVISIBLE);
+        compass.setVisibility(View.INVISIBLE);
+        lamp.setVisibility(View.INVISIBLE);
+        setSpectatorText("Zuschauermodus");
     }
 
     @Override
