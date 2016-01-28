@@ -57,6 +57,7 @@ int main(int argc, char** argv)
 
 	std::string serverAddress = DEFAULT_SERVER_IP;
 	std::string robotName = DEFAULT_ROBOT_NAME;
+	int motorFactor = 100;
 
 	Debugger(VERBOSE) << "Reading config file " << configFile << "\n";
 	INIReader reader(configFile);
@@ -67,12 +68,16 @@ int main(int argc, char** argv)
 		Debugger(INFO) << "address=127.0.0.1 ; Use YOUR server's ip address instead\n\n";
 		Debugger(INFO) << "[robot]\n";
 		Debugger(INFO) << "name=FHVrobot ; Robot's name\n";
+		Debugger(INFO) << "[motor]\n";
+		Debugger(INFO) << "factor=100 ; Factor to set max power of motor (0, 100]\n";
 		Debugger(INFO) << "Using default server ip: " << DEFAULT_SERVER_IP << "\n";
 	}
 	else
 	{
 		serverAddress = reader.Get("server", "address", DEFAULT_SERVER_IP);
 		robotName = reader.Get("robot", "name", DEFAULT_ROBOT_NAME);
+		motorFactor = reader.GetInteger("motor", "factor", 100);
+		motorFactor = (motorFactor < 0 || motorFactor > 100) ? 100 : motorFactor;
 	}
 
 	FusionFilter filter;
@@ -80,6 +85,7 @@ int main(int argc, char** argv)
 	MPU9150 mpu(&i2c);
 	GPIO::GPIOManager* gp = GPIO::GPIOManager::getInstance();
 	controller = new Controller(dest, &mpu, &filter, gp);
+	controller->getRobot()->setFactor(motorFactor / 100.0f);
 	controller->Init();
 	bool running = true;
 	while (running)

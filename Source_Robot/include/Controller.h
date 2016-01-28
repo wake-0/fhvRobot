@@ -37,6 +37,8 @@ public:
 	void CameraOff();
 	void ForceDisconnect();
 	void TriggerLED();
+
+	Robot* getRobot() { return &robot; }
 };
 
 } /* namespace FhvRobot */

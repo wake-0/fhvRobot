@@ -21,6 +21,7 @@ namespace FhvRobot {
 
 Robot::Robot(MPU9150* __mpu, FusionFilter* __filter, GPIO::GPIOManager* gp) {
 	// Open session of DMCC library
+	factor = 1;
 	session = DMCCstart(0);
 	if (session < 0)
 	{
@@ -73,9 +74,9 @@ void* Robot::MotorControlLoop() {
 	while (1)
 	{
 		if (MOTOR_LEFT == 1)
-			setAllMotorPower(session, SPEED_TO_PWM(motorLeftValue) * MOTOR_LEFT_POLARITY, SPEED_TO_PWM(motorRightValue) * MOTOR_RIGHT_POLARITY);
+			setAllMotorPower(session, factor * SPEED_TO_PWM(motorLeftValue) * MOTOR_LEFT_POLARITY, factor * SPEED_TO_PWM(motorRightValue) * MOTOR_RIGHT_POLARITY);
 		else
-			setAllMotorPower(session, SPEED_TO_PWM(motorRightValue) * MOTOR_RIGHT_POLARITY, SPEED_TO_PWM(motorLeftValue) * MOTOR_LEFT_POLARITY);
+			setAllMotorPower(session, factor * SPEED_TO_PWM(motorRightValue) * MOTOR_RIGHT_POLARITY, factor * SPEED_TO_PWM(motorLeftValue) * MOTOR_LEFT_POLARITY);
 
 		usleep(MOTOR_CONTROL_SLEEP_TIME_US);
 	}
@@ -96,7 +97,7 @@ bool Robot::MotorStop(bool forceAction) {
 bool Robot::MotorLeft(int percent, bool forceAction) {
 	if (forceAction)
 	{
-		setMotorPower(session, MOTOR_LEFT, SPEED_TO_PWM(percent) * MOTOR_LEFT_POLARITY);
+		setMotorPower(session, MOTOR_LEFT, factor * SPEED_TO_PWM(percent) * MOTOR_LEFT_POLARITY);
 		return !(getMotorDir(session, MOTOR_LEFT) == -1);
 	}
 	motorLeftValue = percent;
@@ -106,7 +107,7 @@ bool Robot::MotorLeft(int percent, bool forceAction) {
 bool Robot::MotorRight(int percent, bool forceAction) {
 	if (forceAction)
 	{
-		setMotorPower(session, MOTOR_RIGHT, SPEED_TO_PWM(percent) * MOTOR_RIGHT_POLARITY);
+		setMotorPower(session, MOTOR_RIGHT, factor * SPEED_TO_PWM(percent) * MOTOR_RIGHT_POLARITY);
 		return !(getMotorDir(session, MOTOR_RIGHT) == -1);
 	}
 	motorRightValue = percent;

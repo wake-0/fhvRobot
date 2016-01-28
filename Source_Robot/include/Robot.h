@@ -25,6 +25,7 @@ private:
 	int session;
 	int motorLeftValue;
 	int motorRightValue;
+	float factor;
     pthread_t motorControlThread;
     MPU9150* mpu;
     FusionFilter* filter;
@@ -41,6 +42,12 @@ private:
 public:
 	Robot(MPU9150* mpu, FusionFilter* filter, GPIO::GPIOManager* man);
 	virtual ~Robot();
+
+	void setFactor(float value) {
+		Debugger(INFO) << "Setting motor factor to " << value << "\n";
+		factor = value;
+	}
+	float getFactor() { return factor; }
 
 	bool MotorStop(bool forceAction);
 	bool MotorLeft(int percent, bool forceAction);
