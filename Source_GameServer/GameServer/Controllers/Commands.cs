@@ -11,5 +11,6 @@
 
         public static readonly int TIME_MEASUREMENT_STARTED = 40;
         public static readonly int TIME_MEASUREMENT_STOPPED = 41;
+        public static readonly int TIME_MEASUREMENT_DISMISSED = 42;
     }
 }

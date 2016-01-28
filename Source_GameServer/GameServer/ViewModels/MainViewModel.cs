@@ -79,6 +79,11 @@ namespace GameServer.ViewModels
         private void TimeTracked(object sender, TimeTrackedEventArgs e)
         {
             TimeSpan time = e.EndTime.Subtract(e.StartTime);
+            if (!triggerSystem.IsSystemActive)
+            {
+                server.SendTimeMeasurementDismissed();
+                return;
+            }
             server.SendTimeMeasurementStopped(time.ToString("mm\\:ss\\.ff"));
             if (triggerSystem.IsSystemActive && (ScoreManager.CurrentScore == null || ScoreManager.CurrentScore.Duration.CompareTo(time) > 0))
             {
