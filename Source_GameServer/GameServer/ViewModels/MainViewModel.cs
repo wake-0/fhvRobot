@@ -79,6 +79,7 @@ namespace GameServer.ViewModels
         private void TimeTracked(object sender, TimeTrackedEventArgs e)
         {
             TimeSpan time = e.EndTime.Subtract(e.StartTime);
+            server.SendTimeMeasurementStopped(time.ToString("mm\\:ss\\.ff"));
             if (triggerSystem.IsSystemActive && (ScoreManager.CurrentScore == null || ScoreManager.CurrentScore.Duration.CompareTo(time) > 0))
             {
                 ScoreManager.CurrentScore = new Score { Name = CurrentPlayer, Duration = time };
@@ -88,6 +89,10 @@ namespace GameServer.ViewModels
         private void TimeTrigger(object sender, EventArgs e)
         {
             TimerService.ToggleStartStop();
+            if (TimerService.TimerState == TimerState.Tracking)
+            {
+                server.SendTimeMeasurementStarted();
+            }
         }
 
         private void OnUpdateCurrentPlayerTimerElapsed(object sender, ElapsedEventArgs e)

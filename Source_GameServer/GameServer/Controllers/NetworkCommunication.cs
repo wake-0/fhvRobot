@@ -107,11 +107,6 @@ namespace GameServer.Controllers
             serverSocket.SendTo(sendData, sizeOfSendData, SocketFlags.None, ipEndPoint);
         }
 
-        public void SendMessage(string message)
-        {
-            SendCommand(Commands.GENERAL_MESSAGE, message);
-        }
-
         public void Stop()
         {
             running = false;

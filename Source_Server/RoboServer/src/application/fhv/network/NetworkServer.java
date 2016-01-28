@@ -31,6 +31,7 @@ public class NetworkServer {
 	private final Communication gamingCommunication;
 	private final CommunicationDelegator appToRoboDelegator;
 	private final OperatorDelegator roboToOperatorDelegator;
+	private final OperatorDelegator gameToOperatorDelegator;
 	private final IClientController<Client> appController;
 	private final PersistencyController persistencyController;
 
@@ -46,6 +47,7 @@ public class NetworkServer {
 		this.appController = appController;
 		this.appToRoboDelegator = new CommunicationDelegator();
 		this.roboToOperatorDelegator = new OperatorDelegator();
+		this.gameToOperatorDelegator = new OperatorDelegator();
 		this.persistencyController = new PersistencyController();
 
 		// Added network sender and receiver which can log
@@ -55,10 +57,11 @@ public class NetworkServer {
 
 		this.appCommunication = new AppCommunication(appController, appToRoboDelegator, appPort, persistencyController);
 		roboToOperatorDelegator.setTargetCommunication(appCommunication);
+		gameToOperatorDelegator.setTargetCommunication(appCommunication);
 
 		// Gaming communication
-		this.gamingCommunication = new GamingCommunication(gamingController, null, gamingPort, persistencyController,
-				appController);
+		this.gamingCommunication = new GamingCommunication(gamingController, gameToOperatorDelegator, gamingPort,
+				persistencyController, appController);
 
 		// Add operator changed controller
 		appController.addOperatorChangedListener(appCommunication);

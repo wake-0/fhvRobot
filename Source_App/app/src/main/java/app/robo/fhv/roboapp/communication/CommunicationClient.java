@@ -194,9 +194,22 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
         lastMessageReceiveTime = System.currentTimeMillis();
 
         int command = applicationPDU.getCommand();
+        String serverMessage;
         switch (command) {
             case Commands.GENERAL_MESSAGE:
-                String serverMessage = new String(applicationPDU.getPayload());
+                serverMessage = new String(applicationPDU.getPayload());
+                callback.generalMessageReceived(serverMessage);
+                break;
+            case Commands.FORWARD_GENERAL_MESSAGE:
+                serverMessage = new String(applicationPDU.getPayload());
+                callback.generalMessageReceived(serverMessage);
+                break;
+            case Commands.TIME_MEASUREMENT_STARTED:
+                serverMessage = new String(applicationPDU.getPayload());
+                callback.generalMessageReceived(serverMessage);
+                break;
+            case Commands.TIME_MEASUREMENT_STOPPED:
+                serverMessage = new String(applicationPDU.getPayload());
                 callback.generalMessageReceived(serverMessage);
                 break;
             case Commands.CHANGE_NAME:

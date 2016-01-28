@@ -6,6 +6,7 @@ public class Commands {
 
 	public static final int CHANGE_NAME = 1;
 	public static final int GENERAL_MESSAGE = 2;
+	public static final int FORWARD_GENERAL_MESSAGE = 3;
 
 	public static final int DRIVE_LEFT = 11;
 	public static final int DRIVE_RIGHT = 10;
@@ -22,9 +23,12 @@ public class Commands {
 	public static final int CAMERA_OFF = 21;
 
 	public static final int REQUEST_OPERATOR = 30;
-	
+
+	public static final int TIME_MEASUREMENT_STARTED = 40;
+	public static final int TIME_MEASUREMENT_STOPPED = 41;
+
 	public static final int PERSIST_DATA = 60;
 	public static final int REQUEST_PERSISTED_DATA = 61;
 
-	public static final int ORIENTATION_DATA = 72; 
+	public static final int ORIENTATION_DATA = 72;
 }

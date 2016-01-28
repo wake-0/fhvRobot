@@ -38,7 +38,7 @@ namespace GameServer.Controllers
 
         public void SendMessage(string message)
         {
-            communication.SendMessage(message);
+            communication.SendCommand(Commands.FORWARD_GENERAL_MESSAGE, message);
         }
 
         public void Stop()
@@ -50,6 +50,16 @@ namespace GameServer.Controllers
         public void RequestOperator()
         {
             communication.SendCommand(Commands.GET_OPERATOR, "");
+        }
+
+        public void SendTimeMeasurementStarted()
+        {
+            communication.SendCommand(Commands.TIME_MEASUREMENT_STARTED, "");
+        }
+
+        public void SendTimeMeasurementStopped(string time)
+        {
+            communication.SendCommand(Commands.TIME_MEASUREMENT_STOPPED, time);
         }
 
         public void SendHighScore()
