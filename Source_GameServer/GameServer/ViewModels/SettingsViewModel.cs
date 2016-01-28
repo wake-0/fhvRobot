@@ -151,7 +151,6 @@ namespace GameServer.ViewModels
         private void SendMessage(object obj)
         {
             server.SendMessage(ExampleText);
-            timerService.ToggleStartStop();
         }
 
         private void SendOperator(object obj)
