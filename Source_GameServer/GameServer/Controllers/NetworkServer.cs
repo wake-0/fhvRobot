@@ -38,7 +38,7 @@ namespace GameServer.Controllers
 
         public void SendMessage(string message)
         {
-            communication.SendMessage(message);
+            communication.SendCommand(Commands.FORWARD_GENERAL_MESSAGE, message);
         }
 
         public void Stop()
