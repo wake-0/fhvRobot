@@ -14,13 +14,14 @@ using namespace FhvRobot;
 
 #define DEFAULT_CONFIG_FILE		("config.ini")
 #define DEFAULT_SERVER_IP		("83.212.127.13")
+#define DEFAULT_ROBOT_NAME		("FHVrobot")
 
 int main(int argc, char** argv)
 {
 
 	// Read current path of executable
-	char path[255];
-	char dest[255];
+	char path[255] = { 0 };
+	char dest[255] = { 0 };
 	pid_t pid = getpid();
 	sprintf(path, "/proc/%d/exe", pid);
 	if (readlink((const char*)path, dest, 255) == -1)
@@ -46,6 +47,7 @@ int main(int argc, char** argv)
 	}
 
 	std::string serverAddress = DEFAULT_SERVER_IP;
+	std::string robotName = DEFAULT_ROBOT_NAME;
 
 	Debugger(VERBOSE) << "Reading config file " << configFile << "\n";
 	INIReader reader(configFile);
@@ -54,11 +56,14 @@ int main(int argc, char** argv)
 		Debugger(INFO) << "Sample config.ini\n";
 		Debugger(INFO) << "[server]\n";
 		Debugger(INFO) << "address=127.0.0.1 ; Use YOUR server's ip address instead\n\n";
+		Debugger(INFO) << "[robot]\n";
+		Debugger(INFO) << "name=FHVrobot ; Robot's name\n";
 		Debugger(INFO) << "Using default server ip: " << DEFAULT_SERVER_IP << "\n";
 	}
 	else
 	{
 		serverAddress = reader.Get("server", "address", DEFAULT_SERVER_IP);
+		robotName = reader.Get("robot", "name", DEFAULT_ROBOT_NAME);
 	}
 
 	FusionFilter filter;
@@ -71,7 +76,7 @@ int main(int argc, char** argv)
 	while (running)
 	{
 		Debugger(INFO) << "Trying to connect...\n";
-		running = controller.Start((char*)serverAddress.c_str()); // Returns after a disconnect only
+		running = controller.Start((char*)serverAddress.c_str(), (char*) robotName.c_str()); // Returns after a disconnect only
 		if (running)
 		{
 			Debugger(WARNING) << "Disconnect because of timeout\n";
