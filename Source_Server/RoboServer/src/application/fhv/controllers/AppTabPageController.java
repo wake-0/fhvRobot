@@ -114,7 +114,19 @@ public class AppTabPageController implements Initializable, IGlobalClientDisconn
 		}
 
 		if (!addedClients.isEmpty()) {
-			addedClients.get(0).setIsOperator(true);
+			
+			new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					appController.setOperator(addedClients.get(0));
+				}
+			}).start();
 		}
 	}
 
