@@ -13,27 +13,38 @@
         android:layout_height="wrap_content"
         >
 
-        <TextView
-            android:id="@+id/highScores_name"
-            android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
-            android:text="name"
-            android:textSize="30dp"
-            android:layout_marginLeft="10dp"
-            >
-        </TextView>
+        <LinearLayout>
+            <TextView
+                android:id="@+id/highScores_rank"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textColor="#FFFFFF"
+                android:text="Rank"
+                android:textSize="30dp"
+                android:layout_marginLeft="10dp"
+                />
+
+            <TextView
+                android:id="@+id/highScores_name"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:textColor="#FFFFFF"
+                android:text="Name"
+                android:textSize="30dp"
+                android:layout_marginLeft="10dp"
+                />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/highScores_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#FFFFFF"
-            android:text="duration"
+            android:text="Duration"
             android:textSize="30dp"
             android:gravity="right"
             android:layout_marginRight="10dp"
-            >
-        </TextView>
+            />
     </TableRow>
 
 

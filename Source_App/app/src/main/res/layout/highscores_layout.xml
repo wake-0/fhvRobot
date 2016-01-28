@@ -4,12 +4,13 @@
     android:layout_alignParentTop="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/handsOn2_trans">
+    android:background="#CC334D5C">
 
     <ListView
         android:id="@+id/listHighscore"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#CC334D5C"
         />
 
     <TextView
@@ -19,6 +20,7 @@
         android:text="Keine Highscore verfügbar"
         android:gravity="center"
         android:textColor="@android:color/white"
+        android:background="#CC334D5C"
         android:textSize="32dp"/>
 
 </RelativeLayout>

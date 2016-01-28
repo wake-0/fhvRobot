@@ -3,7 +3,6 @@ using System.Windows.Input;
 using GameServer.Controllers;
 using GameServer.Interfaces;
 using GameServer.Managers;
-using GameServer.Mocks;
 using GameServer.Models;
 using GameServer.Services;
 using GameServer.Utils;
@@ -107,6 +106,7 @@ namespace GameServer.ViewModels
             {
                 scoreManager.Add(scoreManager.CurrentScore);
                 scoreManager.CurrentScore = null;
+                server.SendHighScore();
             }
         }
 

@@ -30,9 +30,11 @@ public class ScoreArrayAdapter extends ArrayAdapter<Score> {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.highscores_row_layout, parent, false);
 
+        TextView rankView = (TextView) rowView.findViewById(R.id.highScores_rank);
         TextView nameView = (TextView) rowView.findViewById(R.id.highScores_name);
         TextView durationView = (TextView) rowView.findViewById(R.id.highScores_duration);
 
+        rankView.setText((position + 1) + ".");
         nameView.setText(scores[position].getName());
         durationView.setText(scores[position].getDuration());
 
