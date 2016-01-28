@@ -52,6 +52,16 @@ namespace GameServer.Controllers
             communication.SendCommand(Commands.GET_OPERATOR, "");
         }
 
+        public void SendTimeMeasurementStarted()
+        {
+            communication.SendCommand(Commands.TIME_MEASUREMENT_STARTED, "");
+        }
+
+        public void SendTimeMeasurementStopped(string time)
+        {
+            communication.SendCommand(Commands.TIME_MEASUREMENT_STOPPED, time);
+        }
+
         public void SendHighScore()
         {
             communication.SendCommand(Commands.PERSIST_DATA, scoreManager.GetScoresAsXmlString());            

@@ -204,6 +204,14 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
                 serverMessage = new String(applicationPDU.getPayload());
                 callback.generalMessageReceived(serverMessage);
                 break;
+            case Commands.TIME_MEASUREMENT_STARTED:
+                serverMessage = new String(applicationPDU.getPayload());
+                callback.generalMessageReceived(serverMessage);
+                break;
+            case Commands.TIME_MEASUREMENT_STOPPED:
+                serverMessage = new String(applicationPDU.getPayload());
+                callback.generalMessageReceived(serverMessage);
+                break;
             case Commands.CHANGE_NAME:
                 callback.registered();
                 break;

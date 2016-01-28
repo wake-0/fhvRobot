@@ -8,5 +8,8 @@
 
         public static readonly int PERSIST_DATA = 60;
         public static readonly int REQUEST_PERSIST_DATA = 61;
+
+        public static readonly int TIME_MEASUREMENT_STARTED = 40;
+        public static readonly int TIME_MEASUREMENT_STOPPED = 41;
     }
 }
