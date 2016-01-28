@@ -97,7 +97,7 @@ public class ClientController<T extends IExtendedConfiguration> implements IClie
 			}
 		});
 
-		// Each minute check heart beat
+		// Let the HeartbeatManager check the heartbeat in a specified interval
 		HeartbeatManager<T> manager = new HeartbeatManager<T>(client, this);
 		manager.run();
 
