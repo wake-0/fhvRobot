@@ -201,6 +201,8 @@ public class AppTabPageController implements Initializable, IGlobalClientDisconn
 
 						if (item != null) {
 							label.setText(item.toString());
+						} else {
+							label.setText("");
 						}
 
 					}
