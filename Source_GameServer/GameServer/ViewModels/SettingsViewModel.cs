@@ -69,6 +69,7 @@ namespace GameServer.ViewModels
         public ICommand ShowTMWindowCommand { get; private set; }
         public ICommand SaveScoreCommand { get; private set; }
         public ICommand DeleteScoreCommand { get; private set; }
+        public ICommand DiscardScoreCommand { get; private set; }
 
         public ITriggerSystem TriggerSystem { get; private set; }
         #endregion
@@ -94,12 +95,20 @@ namespace GameServer.ViewModels
             ShowTMWindowCommand = new DelegateCommand(o => ShowTimeMeasurementWindow());
             SaveScoreCommand = new DelegateCommand(o => SaveCurrentScore());
             DeleteScoreCommand = new DelegateCommand(o => DeleteScore());
+            DiscardScoreCommand = new DelegateCommand(o => DiscardScore());
 
             ExampleText = "Test";
         }
         #endregion
 
         #region Methods
+
+
+        private void DiscardScore()
+        {
+            scoreManager.CurrentScore = null;
+        }
+
         private void SaveCurrentScore()
         {
             if (scoreManager.CurrentScore != null && timerService.TimerState == TimerState.Stopped)
