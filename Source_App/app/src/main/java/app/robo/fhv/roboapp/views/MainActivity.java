@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -62,6 +63,7 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
 
     private TextView statusText;
     private TextView spectatorText;
+    private TextView timeText;
 
     private int stepSize = 10;
     private NetworkClient networkClient;
@@ -104,6 +106,7 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
         compass = (CompassView) findViewById(R.id.cmpRobotCompass);
 
         lytHighscore = findViewById(R.id.lytHighscoreLayout);
+        timeText = (TextView) findViewById(R.id.txtTimeMeasurement);
 
         sbLeft.setProgress(MOTOR_SEEK_BAR_ZERO_VALUE);
         sbRight.setProgress(MOTOR_SEEK_BAR_ZERO_VALUE);
@@ -428,9 +431,9 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
                                 }
                             };
                             countDownTimer.start();
+                        }
                     }
-                }
-        );
+            );
     }
 
     @Override
@@ -470,6 +473,71 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
     }
 
     @Override
+    public void startTimer() {
+        new Handler(Looper.getMainLooper()).post(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        timeText.setText("00:00.00");
+                        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.bounce_animation);
+                        timeText.startAnimation(animation);
+                        timeText.setVisibility(View.VISIBLE);
+                        startTime = SystemClock.uptimeMillis();
+                        customHandler.postDelayed(updateTimerThread, 0);
+                    }
+                }
+        );
+    }
+
+    @Override
+    public void stopTimer(final String timeMessage) {
+        if (timeText.getVisibility() != View.VISIBLE) { return; }
+        new Handler(Looper.getMainLooper()).post(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        customHandler.removeCallbacks(updateTimerThread);
+                        timeText.setText(timeMessage);
+                        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.hide_animation_delayed);
+                        animation.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                timeText.setVisibility(View.INVISIBLE);
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+
+                            }
+                        });
+                        timeText.startAnimation(animation);
+                    }
+                }
+        );
+    }
+
+    @Override
+    public void dismissTimer() {
+        if (timeText.getVisibility() != View.VISIBLE) { return; }
+        new Handler(Looper.getMainLooper()).post(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.hide_animation);
+                        timeText.startAnimation(animation);
+                        timeText.setText("00:00.00");
+                        timeText.setVisibility(View.INVISIBLE);
+                    }
+                }
+        );
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
@@ -492,4 +560,30 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
                 }
         }
     }
+
+    private long startTime = 0L;
+    private Handler customHandler = new Handler();
+    long timeInMilliseconds = 0L;
+    long timeSwapBuff = 0L;
+    long updatedTime = 0L;
+
+    private Runnable updateTimerThread = new Runnable() {
+
+        public void run() {
+
+            timeInMilliseconds = SystemClock.uptimeMillis() - startTime;
+
+            updatedTime = timeSwapBuff + timeInMilliseconds;
+
+            int secs = (int) (updatedTime / 1000);
+            int mins = secs / 60;
+            secs = secs % 60;
+            int milliseconds = (int) (updatedTime % 100);
+            timeText.setText("" + String.format("%02d", mins) + ":"
+                    + String.format("%02d", secs) + "."
+                    + String.format("%02d", milliseconds));
+            customHandler.postDelayed(this, 55);
+        }
+
+    };
 }
