@@ -323,6 +323,10 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
     }
 
     private void showToast(String message) {
+        showToast(message, Toast.LENGTH_LONG);
+    }
+
+    private void showToast(String message, int len) {
         LayoutInflater inflater = getLayoutInflater();
 
         View layout = inflater.inflate(R.layout.custom_toast,
@@ -333,44 +337,44 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
 
         Toast toast = new Toast(getApplicationContext());
         toast.setGravity(Gravity.BOTTOM, 0, 20);
-        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setDuration(len);
         toast.setView(layout);
         toast.show();
-        Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void signalStrengthChange(final SignalStrength newStrength) {
         if (newStrength == SignalStrength.DEAD_SIGNAL) {
+            if (reconnectActivityStarted) return;
+
+            reconnectActivityStarted = true;
+
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
                     switchToSpectatorMode();
-                    if (!reconnectActivityStarted)
-                        showToast("Verbindung abgebrochen!");
+                    showToast("Verbindung abgebrochen!", Toast.LENGTH_SHORT);
                 }
             });
             try {
-                Thread.sleep(1000);
+                Thread.sleep(1500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if (!reconnectActivityStarted) {
-                reconnectActivityStarted = true;
-                networkClient.disconnect();
-                Intent intent = new Intent(this, ReconnectActivity.class);
-                startActivityForResult(intent, ReconnectActivity.REQUEST_CODE);
-                return;
-            }
+
+            networkClient.disconnect();
+            Intent intent = new Intent(this, ReconnectActivity.class);
+            startActivityForResult(intent, ReconnectActivity.REQUEST_CODE);
+                            return;
+                        }
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    // TODO: It would be nice to alpha blend the new image
+                    signalStrength.setImageDrawable(signalStrengthMap.get(newStrength));
+                }
+            });
         }
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                // TODO: It would be nice to alpha blend the new image
-                signalStrength.setImageDrawable(signalStrengthMap.get(newStrength));
-            }
-        });
-    }
 
     @Override
     public void registered() {
@@ -384,46 +388,46 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
             return;
         }
 
-        isOperator = true;
+            isOperator = true;
 
-        new Handler(Looper.getMainLooper()).post(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        CountDownTimer countDownTimer = new CountDownTimer(5000, 1000) {
-                            @Override
-                            public void onTick(long millis) {
-                                if (!isOperator) {
-                                    return;
+            new Handler(Looper.getMainLooper()).post(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            CountDownTimer countDownTimer = new CountDownTimer(5000, 1000) {
+                                @Override
+                                public void onTick(long millis) {
+                                    if (!isOperator) {
+                                        return;
+                                    }
+
+                                    if (millis > 5000) {
+                                        setSpectatorText("Bereit machen!");
+                                    } else if (millis > 4000) {
+                                        setSpectatorText("3");
+                                    } else if (millis > 3000) {
+                                        setSpectatorText("2");
+                                    } else if (millis > 2000) {
+                                        setSpectatorText("1");
+                                    } else if (millis > 1000) {
+                                        setSpectatorText("LOS!");
+                                    }
                                 }
 
-                                if (millis > 5000) {
-                                    setSpectatorText("Bereit machen!");
-                                } else if (millis > 4000) {
-                                    setSpectatorText("3");
-                                } else if (millis > 3000) {
-                                    setSpectatorText("2");
-                                } else if (millis > 2000) {
-                                    setSpectatorText("1");
-                                } else if (millis > 1000) {
-                                    setSpectatorText("LOS!");
+                                @Override
+                                public void onFinish() {
+                                    if (isOperator) {
+                                        setSpectatorText("");
+                                        spectatorText.setVisibility(View.INVISIBLE);
+                                        sbLeft.setVisibility(View.VISIBLE);
+                                        sbRight.setVisibility(View.VISIBLE);
+                                        lamp.setVisibility(View.VISIBLE);
+                                        compass.setVisibility(View.VISIBLE);
+                                    }
+                                    this.cancel();
                                 }
-                            }
-
-                            @Override
-                            public void onFinish() {
-                                if (isOperator) {
-                                    setSpectatorText("");
-                                    spectatorText.setVisibility(View.INVISIBLE);
-                                    sbLeft.setVisibility(View.VISIBLE);
-                                    sbRight.setVisibility(View.VISIBLE);
-                                    lamp.setVisibility(View.VISIBLE);
-                                    compass.setVisibility(View.VISIBLE);
-                                }
-                                this.cancel();
-                            }
-                        };
-                        countDownTimer.start();
+                            };
+                            countDownTimer.start();
                     }
                 }
         );
