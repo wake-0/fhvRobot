@@ -135,7 +135,7 @@ namespace GameServer.Managers
                 {
                     writer.WriteStartElement("Score");
                     writer.WriteAttributeString("Name", score.Name);
-                    writer.WriteAttributeString("Duration", score.Duration.ToString());
+                    writer.WriteAttributeString("Duration", score.Duration.ToString("mm\\:ss\\.ff"));
                     writer.WriteEndElement();
                 }
 
