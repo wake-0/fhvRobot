@@ -71,6 +71,12 @@ public class RoboTabPageController implements Initializable {
 						List<? extends Client> removedClients = change.getRemoved();
 						for (Client c : removedClients) {
 							server.DisconnectedRoboClient(c);
+							if (robotViewController != null && c.equals(robotViewController.getSelectedClient())) {
+								robotViewController.unbindRobotFromControl();
+							}
+							if (cameraController != null) {
+								cameraController.releaseMediaStreaming(c);
+							}
 						}
 					}
 				}

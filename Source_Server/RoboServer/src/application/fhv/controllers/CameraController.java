@@ -42,8 +42,13 @@ public class CameraController {
 	
 	public void turnCameraOff(Client client) {
 		server.sendToRobo(client, Flags.REQUEST_FLAG, Commands.CAMERA_OFF, new byte[0]);
-		MediaStreaming ms = clientStreamMap.get(client);
-		if (ms != null)
+		releaseMediaStreaming(client);
+	}
+
+	public void releaseMediaStreaming(Client c) {
+		MediaStreaming ms = clientStreamMap.get(c);
+		if (ms != null) {
 			ms.stop();
+		}
 	}
 }

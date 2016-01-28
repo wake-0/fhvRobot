@@ -240,6 +240,9 @@ public class RobotViewController implements Initializable, IMediaStreamingFrameR
 		this.selectedClient.OrientationProperty().removeListener(listener);
 		this.selectedClient = null;
 		this.driveController = null;
+		this.lightController = null;
+		this.cameraController = null;
+		camCanvas.setImage(null);
 	}
 
 	@FXML
@@ -281,5 +284,9 @@ public class RobotViewController implements Initializable, IMediaStreamingFrameR
 				robot.setRotate(newValue.pitch, newValue.yaw, newValue.roll);
 			}
 		});
+	}
+
+	public Object getSelectedClient() {
+		return selectedClient;
 	}
 }
