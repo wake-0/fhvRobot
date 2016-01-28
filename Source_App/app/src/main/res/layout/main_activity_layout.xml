@@ -157,6 +157,70 @@
         android:layout_marginTop="60dp"
         android:layout_marginBottom="15dp" />
 
+    <ImageView
+        android:id="@+id/imgMessage"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:padding="6dp"
+        android:background="@drawable/transparent_oval"
+        android:src="@drawable/message"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="15dp" />
+
+    <ScrollView
+        android:id="@+id/lytMessages"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="50dp"
+        android:layout_alignTop="@id/imgMessage"
+        android:layout_width="200dp"
+        android:layout_height="180dp"
+        android:padding="5dp"
+        android:visibility="invisible"
+        android:background="@drawable/transparent_rectangle">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Echtzeit-Nachricht"
+                    android:gravity="center"/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="true"
+                    android:onClick="sendMessage"
+                    android:text="Cool!"/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="true"
+                    android:onClick="sendMessage"
+                    android:text="Kein Bild :("/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="true"
+                    android:onClick="sendMessage"
+                    android:text="Ich liebe euch"/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="true"
+                    android:onClick="sendMessage"
+                    android:text="Wo bin ich?"/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="true"
+                    android:onClick="sendMessage"
+                    android:text="Okay. Alles gut!"/>
+        </LinearLayout>
+    </ScrollView>
+
     <include
         layout="@layout/highscores_layout"
         android:id="@+id/lytHighscoreLayout"

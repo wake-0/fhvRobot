@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
@@ -57,6 +58,7 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
     private ImageView signalStrength;
     private ImageView highScores;
     private ImageView lamp;
+    private ImageView messages;
 
     private View lytHighscore;
     private ListView listHighscore;
@@ -70,6 +72,7 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
     private ValueAnimator leftSnapBackAnimator;
     private ValueAnimator rightSnapBackAnimator;
 
+    private View lytMessages;
     private CompassView compass;
 
     private boolean reconnectActivityStarted;
@@ -110,6 +113,25 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
 
         sbLeft.setProgress(MOTOR_SEEK_BAR_ZERO_VALUE);
         sbRight.setProgress(MOTOR_SEEK_BAR_ZERO_VALUE);
+
+        lytMessages = (View) findViewById(R.id.lytMessages);
+        messages = (ImageView) findViewById(R.id.imgMessage);
+
+        messages.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (lytMessages.getVisibility() == View.VISIBLE) {
+                    Animation a = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out_animation);
+                    lytMessages.startAnimation(a);
+                    lytMessages.setVisibility(View.INVISIBLE);
+                } else {
+                    Animation a = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.bounce_animation);
+                    lytMessages.startAnimation(a);
+                    lytMessages.setVisibility(View.VISIBLE);
+                }
+                return false;
+            }
+        });
 
         try {
             networkClient = new NetworkClient(this, this, this);
@@ -231,6 +253,17 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
         Log.d(LOG_TAG, "Using player name " + playerName);
     }
 
+    public void sendMessage(View v) {
+        if (v instanceof Button == true) {
+            Button b = (Button)(v);
+            String message = b.getText().toString();
+            this.networkClient.getCommunicationClient().sendMessage(message);
+            Animation a = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out_animation);
+            lytMessages.startAnimation(a);
+            lytMessages.setVisibility(View.INVISIBLE);
+        }
+    }
+
     private void setSpectatorText(String value) {
         spectatorText.setVisibility(View.VISIBLE);
         spectatorText.setText(value);
@@ -286,7 +319,7 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                Animation animFadeOut = AnimationUtils.loadAnimation(MainActivity.this.getApplicationContext(), R.anim.fade_out_animation);
+                Animation animFadeOut = AnimationUtils.loadAnimation(MainActivity.this.getApplicationContext(), R.anim.fade_out_animation_delay);
                 statusText.setAlpha(1.0f);
                 statusText.setText(text);
                 statusText.startAnimation(animFadeOut);

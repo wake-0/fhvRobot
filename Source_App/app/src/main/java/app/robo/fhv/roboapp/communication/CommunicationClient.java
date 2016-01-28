@@ -277,6 +277,10 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
         new SendTask(clientSocket, comManager, configuration, Flags.REQUEST_FLAG, Commands.REQUEST_DISCONNECT, callback).execute(new byte[0]);
     }
 
+    public void sendMessage(String message) {
+        new SendTask(clientSocket, comManager, configuration, Flags.REQUEST_FLAG, Commands.GENERAL_MESSAGE, null).execute(message.getBytes());
+    }
+
     private class SendTask extends AsyncTask<byte[], Void, Void> {
 
         private final ISendTaskFinished callback;
