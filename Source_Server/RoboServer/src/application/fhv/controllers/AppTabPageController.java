@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import communication.commands.Commands;
+import communication.flags.Flags;
 import controllers.ClientController.ICommandListener;
+import controllers.ClientController.IGlobalClientDisconnectListener;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -22,11 +24,12 @@ import javafx.scene.control.ToggleButton;
 import javafx.util.Callback;
 import models.Client;
 import models.ClientFactory;
+import models.IExtendedConfiguration;
 import network.NetworkServer;
 import views.FlashingLabel;
 import views.OperatorLabel;
 
-public class AppTabPageController implements Initializable {
+public class AppTabPageController implements Initializable, IGlobalClientDisconnectListener<IExtendedConfiguration> {
 
 	// Fields
 	private final ClientController<Client> appController;
@@ -67,6 +70,7 @@ public class AppTabPageController implements Initializable {
 	// Constructor
 	public AppTabPageController() {
 		appController = new ClientController<>(new ClientFactory());
+		appController.registerGlobalClientDisconnectListener(this);
 		appController.getClients().addListener(new ListChangeListener<Client>() {
 
 			@Override
@@ -223,6 +227,15 @@ public class AppTabPageController implements Initializable {
 
 	private void clearDetails() {
 		tfSend.clear();
+	}
+
+	@Override
+	public void clientDisconnected(IExtendedConfiguration client) {
+		if (client instanceof Client) {
+			for (Client operator : appController.getOperators()) {
+				server.sendToApp(operator, Flags.REQUEST_FLAG, Commands.GENERAL_MESSAGE, new String("Der Roboter hat leider technische Probleme. Ein wenig Geduld...").getBytes());
+			}
+		}
 	}
 
 }

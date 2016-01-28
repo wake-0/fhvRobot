@@ -12,11 +12,16 @@ import controllers.factory.IClientFactory;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import models.Client;
 import models.IExtendedConfiguration;
 import network.IClientController;
 
 public class ClientController<T extends IExtendedConfiguration> implements IClientController<T>, IHeartbeatHandler<T> {
 
+	public interface IGlobalClientDisconnectListener<T extends IExtendedConfiguration> {
+		void clientDisconnected(T client);
+	}
+	
 	public interface ICommandListener<T extends IExtendedConfiguration> {
 		void commandReceived(T client, int command, byte[] payload);
 	}
@@ -24,6 +29,9 @@ public class ClientController<T extends IExtendedConfiguration> implements IClie
 	public interface IOperatorChangedListener<T extends IExtendedConfiguration> {
 		void handleOperatorChanged(T operator);
 	}
+	
+	// Static fields
+	private static List<IGlobalClientDisconnectListener<IExtendedConfiguration>> globalListeners = new ArrayList<>();
 
 	// Fields
 	private final ObservableList<T> clients;
@@ -116,6 +124,8 @@ public class ClientController<T extends IExtendedConfiguration> implements IClie
 				clientTimers.remove(client);
 			}
 		});
+		
+		ClientController.informGlobalDisconnectListeners(client);
 	}
 
 	@Override
@@ -184,6 +194,17 @@ public class ClientController<T extends IExtendedConfiguration> implements IClie
 			for (ClientController.ICommandListener<T> l : listeners) {
 				l.commandReceived(client, command, payload);
 			}
+		}
+	}
+
+	public static void registerGlobalClientDisconnectListener(IGlobalClientDisconnectListener<IExtendedConfiguration> listener) {
+		globalListeners.add(listener);
+	}
+	
+
+	public static void informGlobalDisconnectListeners(IExtendedConfiguration client) {
+		for (IGlobalClientDisconnectListener<IExtendedConfiguration> l : globalListeners) {
+			l.clientDisconnected(client);
 		}
 	}
 }
