@@ -30,7 +30,7 @@ public:
 	virtual ~Controller();
 
 	void Init();
-	bool Start(char* serverIp); // Non-Returning
+	bool Start(char* serverIp, char* name); // Non-Returning
 
 	void MotorCommand(unsigned int motorNum, int motorSpeed);
 	void CameraOn(char* host, int port);

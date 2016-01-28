@@ -37,7 +37,7 @@ void Controller::Init()
 	robot.MotorStop(true);
 }
 
-bool Controller::Start(char* serverIp) {
+bool Controller::Start(char* serverIp, char* name) {
 	connection = new ConnectionAPI(this);
 	UdpConnection udp;
 	SessionLayer sess(&udp);
@@ -58,7 +58,7 @@ bool Controller::Start(char* serverIp) {
 	while (res == false) {
 		Debugger(INFO) << "Trying to connecto to the server " << serverIp << " at " << DEFAULT_ROBOT_PORT << "\n";
 
-		res = connection->Connect("Controlled Nico", serverIp, DEFAULT_ROBOT_PORT);
+		res = connection->Connect(name, serverIp, DEFAULT_ROBOT_PORT);
 		if (res == false) {
 			Debugger(WARNING) << "Connection was not succesful. Trying to reconnect in 10s...\n";
 			usleep(10 * 1000 * 1000);
