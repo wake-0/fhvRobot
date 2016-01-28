@@ -214,7 +214,7 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
 
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                if(isOperator) {
+                if (isOperator) {
                     networkClient.getCommunicationClient().triggerLed();
                 }
                 return false;
@@ -239,6 +239,7 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
             @Override
             public void run() {
                 listHighscore = (ListView) lytHighscore.findViewById(R.id.listHighscore);
+                listHighscore.setEmptyView(lytHighscore.findViewById(R.id.empty));
                 listHighscore.setAdapter(new ScoreArrayAdapter(lytHighscore.getContext(), scores));
             }
         });

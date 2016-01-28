@@ -101,14 +101,6 @@
             app:seekBarRotation="CW270" />
     </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
 
-    <include
-        layout="@layout/highscores_layout"
-        android:id="@+id/lytHighscoreLayout"
-        android:layout_margin="50dp"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </include>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -143,5 +135,13 @@
         android:layout_marginTop="60dp"
         android:layout_marginBottom="15dp" />
 
+    <include
+        layout="@layout/highscores_layout"
+        android:id="@+id/lytHighscoreLayout"
+        android:layout_margin="50dp"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </include>
 </RelativeLayout>
 
