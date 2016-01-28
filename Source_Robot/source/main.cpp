@@ -5,12 +5,20 @@
 #include "../include/sensors/I2C.h"
 #include "../include/configuration/INIReader.h"
 #include "../include/GPIO/GPIOManager.h"
+#include <signal.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <string.h>
 
+
+static void registerSignalHandler(void);
+static void signalHandler(int sig);
+
+
 using namespace FhvRobot;
+
+static Controller* controller;
 
 #define DEFAULT_CONFIG_FILE		("config.ini")
 #define DEFAULT_SERVER_IP		("83.212.127.13")
@@ -18,6 +26,7 @@ using namespace FhvRobot;
 
 int main(int argc, char** argv)
 {
+	registerSignalHandler();
 
 	// Read current path of executable
 	char path[255] = { 0 };
@@ -70,13 +79,13 @@ int main(int argc, char** argv)
 	I2C i2c(I2C_2);
 	MPU9150 mpu(&i2c);
 	GPIO::GPIOManager* gp = GPIO::GPIOManager::getInstance();
-	Controller controller(dest, &mpu, &filter, gp);
-	controller.Init();
+	controller = new Controller(dest, &mpu, &filter, gp);
+	controller->Init();
 	bool running = true;
 	while (running)
 	{
 		Debugger(INFO) << "Trying to connect...\n";
-		running = controller.Start((char*)serverAddress.c_str(), (char*) robotName.c_str()); // Returns after a disconnect only
+		running = controller->Start((char*)serverAddress.c_str(), (char*) robotName.c_str()); // Returns after a disconnect only
 		if (running)
 		{
 			Debugger(WARNING) << "Disconnect because of timeout\n";
@@ -85,6 +94,18 @@ int main(int argc, char** argv)
 		}
 	}
 	gp->~GPIOManager();
+	free(controller);
 	Debugger(INFO) << "Stopping robot\n";
 	return 0;
+}
+
+void registerSignalHandler()
+{
+	signal(SIGINT, signalHandler);
+}
+
+void signalHandler(int sig)
+{
+	controller->ForceDisconnect();
+	signal(SIGINT, SIG_DFL);
 }

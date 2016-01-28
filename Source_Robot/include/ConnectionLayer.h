@@ -112,7 +112,7 @@ private:
 	struct sockaddr_in addr;
 	struct sockaddr_in in_addr;
     pthread_t receiveThread;
-
+    bool threadInitialized;
     void* ReceiveLoop();
     static void *ReceiveLoopHelper(void* context)
     {
@@ -121,7 +121,7 @@ private:
     }
     static void DebugOutputBuffer(char* buf, int len);
 public:
-	UdpConnection() : TransportLayer() { sock = 0; receiveThread = PTHREAD_ONCE_INIT; }
+	UdpConnection() : TransportLayer() { sock = 0; receiveThread = PTHREAD_ONCE_INIT; threadInitialized = false; }
 	virtual ~UdpConnection();
 
 	bool Connect(const char* address, int port);

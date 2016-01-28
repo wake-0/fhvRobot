@@ -68,8 +68,19 @@ bool UdpConnection::Connect(const char* address, int port) {
 
 	// Start receive thread
 	Debugger(VERBOSE) << "Starting receive thread for UDP connection\n";
+	threadInitialized = false;
 	int res = pthread_create(&receiveThread, NULL, UdpConnection::ReceiveLoopHelper, this);
-
+	int cnt = 0;
+	while (threadInitialized == false) {
+		usleep(1000 * 100);
+		Debugger(VERBOSE) << "Waiting for receive thread\n";
+		cnt++;
+		if (cnt > 1000) {
+			Debugger(WARNING) << "Could not create receive thread in reasonable time\n";
+			threadInitialized = true;
+		}
+	}
+	threadInitialized = false;
 	if (res < 0)
 	{
 		Debugger(ERROR) << "Error creating receive thread. Return value is " << res << "\n";
@@ -93,8 +104,10 @@ bool UdpConnection::Send(const char* msg, unsigned int len) {
 }
 
 bool UdpConnection::CloseConnection() {
-	close(sock);
+	Debugger(INFO) << "Closing UDP connection\n";
 	pthread_cancel(receiveThread);
+	shutdown(sock, SHUT_RDWR);
+	close(sock);
 	return true;
 }
 
@@ -102,6 +115,7 @@ void* UdpConnection::ReceiveLoop()
 {
 	Debugger(INFO) << "Hello I'm the receive thread.\n";
 	Debugger(INFO) << "My callback is " << callback << "\n";
+	threadInitialized = true;
 	int res = 0;
 	char buf[4096];
 	struct sockaddr_in sender;
@@ -275,6 +289,7 @@ void SessionLayer::MessageReceived(const char* msg, unsigned int len)
 bool SessionLayer::CloseConnection() {
 	bool res = ProtocolLayer::CloseConnection();
 	sessId = 0;
+	Debugger(INFO) << "Resetting session ID\n";
 	return res;
 }
 
