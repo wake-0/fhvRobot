@@ -29,6 +29,8 @@
 extern "C" {
 
 #endif
+void closeReopen(void);
+
 // --------------------------
 // Session functions - to start and end the user program
 // --------------------------

@@ -58,8 +58,8 @@ void putByte(int fd, unsigned char addr, unsigned char data)
 
     if (write(fd, buf, 2) != 2) {
         printf("Error in write address 0x02\n");
-        close(fd);
-        exit(1);
+        closeReopen();
+        return;
     }
 }
 
@@ -74,14 +74,14 @@ unsigned char getByte(int fd, unsigned char addr)
     buf[0] = addr;
     if (write(fd, buf, 1) != 1) {
         printf("Error in write address 0x02\n");
-        close(fd);
-        exit(1);
+        closeReopen();
+        return 0;
     }
 
     if (read(fd, buf, 1) != 1) {
         printf("Error in read\n");
-        close(fd);
-        exit(1);
+        closeReopen();
+        return 0;
     }
     return buf[0];
 }
@@ -280,12 +280,12 @@ int DMCCstart(unsigned char capeAddr)
     fd = open(filename, O_RDWR);
     if (fd <0) {
         printf("Error: cannot open %s\n",filename);
-        exit(1);
+        return -1;
     }
     if (ioctl(fd, I2C_SLAVE, capeAddr) < 0) {
         printf("Error: cannot ioctl to addr 0x%x\n", capeAddr);
         close(fd);
-        exit(1);
+        return -1;
     }
 
     return fd;
@@ -412,17 +412,17 @@ void setMotorPower(int fd, unsigned int motor, int pwm)
     // Check for a valid motor selection
     if ((motor != 1) && (motor != 2)) {
         printf("Error: motor number must be 1 or 2\n");
-        exit(1);
+        return;
     }
 
     // Check for a valid power input (boundaries for motor control)
     if (pwm < -10000) {
         printf("min is -10000, %d is invalid\n",pwm);
-        exit(1);
+        return;
     }
     if (pwm > 10000) {
         printf("max is 10000, %d is invalid\n",pwm);
-        exit(1);
+        return;
     }
 
     // Set power to given motor
@@ -442,11 +442,11 @@ void setAllMotorPower(int fd, int pwm1, int pwm2)
     // Check for a valid power input (boundaries for motor control)
     if ((pwm1 < -10000) || (pwm2 < -10000)) {
         printf("Error: min power input is -10000\n");
-        exit(1);
+        return;
     }
     if ((pwm1 > 10000) || (pwm2 > 10000)) {
         printf("Error: max power input is 10000\n");
-        exit(1);
+        return;
     }
 
     // Set power to motor 1
@@ -1025,4 +1025,9 @@ void setPIDConstants(int fd, unsigned int motor, unsigned int posOrVel,
     } else {
         printf("Error: invalid motor number specified\n");
     }
+}
+
+void closeReopen()
+{
+    // NOTE: We should do nothing until we have serious problems actually doing nothing
 }
