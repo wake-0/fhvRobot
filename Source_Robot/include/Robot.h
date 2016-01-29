@@ -11,6 +11,7 @@
 #include "Debugger.h"
 #include "sensors/MPU9150.h"
 #include "sensors/FusionFilter.h"
+#include "sensors/Lidar.h"
 #include "GPIO/GPIOManager.h"
 #include "GPIO/GPIOConst.h"
 
@@ -25,10 +26,12 @@ private:
 	int session;
 	int motorLeftValue;
 	int motorRightValue;
+	float factor;
     pthread_t motorControlThread;
     MPU9150* mpu;
     FusionFilter* filter;
     GPIO::GPIOManager* manager;
+    Lidar* lidar;
     float calib[3];
 
     void* MotorControlLoop();
@@ -39,8 +42,14 @@ private:
     }
     bool GetOrientationPrecise(float* roll, float* pitch, float* yaw);
 public:
-	Robot(MPU9150* mpu, FusionFilter* filter, GPIO::GPIOManager* man);
+	Robot(MPU9150* mpu, FusionFilter* filter, GPIO::GPIOManager* man, Lidar* lidar);
 	virtual ~Robot();
+
+	void setFactor(float value) {
+		Debugger(INFO) << "Setting motor factor to " << value << "\n";
+		factor = value;
+	}
+	float getFactor() { return factor; }
 
 	bool MotorStop(bool forceAction);
 	bool MotorLeft(int percent, bool forceAction);
@@ -50,6 +59,11 @@ public:
 	bool GetOrientation_10(short* roll, short* pitch, short* yaw);
 
 	void TriggerLED();
+	bool IsLidarEnabled();
+	int ReadLidar();
+
+	int GetMotorRightValue() { return motorRightValue; }
+	int GetMotorLeftValue() { return motorLeftValue; }
 };
 
 }

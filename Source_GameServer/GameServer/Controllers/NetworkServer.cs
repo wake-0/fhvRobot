@@ -87,6 +87,11 @@ namespace GameServer.Controllers
                 communication.SendCommand(Commands.REQUEST_PERSIST_DATA, scoreManager.GetScoresAsXmlString(), true);            
             }
         }
+
+        internal void SendTimeMeasurementDismissed()
+        {
+            communication.SendCommand(Commands.TIME_MEASUREMENT_DISMISSED, "");
+        }
         #endregion
     }
 }

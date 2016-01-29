@@ -17,7 +17,7 @@
         android:textColor="@android:color/white"
         android:paddingRight="32dp"
         android:textSize="56sp"
-        android:text="fhv Robot"
+        android:text="FHVrobot"
         android:id="@+id/title"/>
 
     <LinearLayout

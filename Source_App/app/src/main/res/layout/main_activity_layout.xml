@@ -115,6 +115,28 @@
         android:background="#CC334D5C"
         android:layout_centerInParent="true"
         android:padding="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtTimeMeasurement"
+        android:textSize="25sp"
+        android:textColor="#FFFFFF"
+        android:shadowColor="#000000"
+        android:shadowDx="0.0"
+        android:shadowDy="0.0"
+        android:shadowRadius="2.0"
+        android:textStyle="bold"
+        android:background="#CC334D5C"
+        android:layout_alignParentTop="true"
+        android:text="00:00.00"
+        android:visibility="invisible"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"/>
     <app.robo.fhv.roboapp.views.custom.CompassView
         android:id="@+id/cmpRobotCompass"
         android:layout_width="wrap_content"
@@ -134,6 +156,70 @@
         android:layout_marginRight="5dp"
         android:layout_marginTop="60dp"
         android:layout_marginBottom="15dp" />
+
+    <ImageView
+        android:id="@+id/imgMessage"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:padding="6dp"
+        android:background="@drawable/transparent_oval"
+        android:src="@drawable/message"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="15dp" />
+
+    <ScrollView
+        android:id="@+id/lytMessages"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="50dp"
+        android:layout_alignTop="@id/imgMessage"
+        android:layout_width="200dp"
+        android:layout_height="180dp"
+        android:padding="5dp"
+        android:visibility="invisible"
+        android:background="@drawable/transparent_rectangle">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Echtzeit-Nachricht"
+                    android:gravity="center"/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="true"
+                    android:onClick="sendMessage"
+                    android:text="Cool!"/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="true"
+                    android:onClick="sendMessage"
+                    android:text="Kein Bild :("/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="true"
+                    android:onClick="sendMessage"
+                    android:text="Ich liebe euch"/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="true"
+                    android:onClick="sendMessage"
+                    android:text="Wo bin ich?"/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="true"
+                    android:onClick="sendMessage"
+                    android:text="Okay. Alles gut!"/>
+        </LinearLayout>
+    </ScrollView>
 
     <include
         layout="@layout/highscores_layout"

@@ -38,6 +38,7 @@ public class WelcomeActivity extends AppIntro2 implements Serializable {
         }
         instance = SharedPreferencesPersistence.getInstance();
         addSlide(new WelcomeSplashPage());
+        addSlide(new WelcomeAboutUs());
         addSlide(new WelcomeThatsMe());
         addSlide(new WelcomeHowItsDone());
         addSlide(new WelcomeLetsGo());
@@ -59,7 +60,7 @@ public class WelcomeActivity extends AppIntro2 implements Serializable {
                 long lastLogin = instance.getLastLoginTime();
                 // 1000ms * 3600s * 24h * 3 = 3 days
                 if(fs && lastLogin != 0 && (System.currentTimeMillis() - lastLogin < 1000*3600*24*3)) {
-                    getPager().setCurrentItem(3, true);
+                    getPager().setCurrentItem(4, true);
                 }
                 instance.persistLastLoginTime(System.currentTimeMillis());
                 countDownTimer.cancel();

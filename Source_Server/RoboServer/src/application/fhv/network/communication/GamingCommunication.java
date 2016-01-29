@@ -63,7 +63,7 @@ public class GamingCommunication extends Communication {
 	@Override
 	protected boolean isCommandToDelegate(int command) {
 		return command == Commands.FORWARD_GENERAL_MESSAGE || command == Commands.TIME_MEASUREMENT_STARTED
-				|| command == Commands.TIME_MEASUREMENT_STOPPED;
+				|| command == Commands.TIME_MEASUREMENT_STOPPED || command == Commands.TIME_MEASUREMENT_DISMISSED;
 	}
 
 }

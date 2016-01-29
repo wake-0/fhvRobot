@@ -13,6 +13,7 @@
 #include "sensors/I2C.h"
 #include "sensors/FusionFilter.h"
 #include "sensors/MPU9150.h"
+#include "sensors/Lidar.h"
 #include "GPIO/GPIOManager.h"
 
 namespace FhvRobot {
@@ -25,8 +26,12 @@ private:
 	bool running;
 	char serverAddress[255];
 	char* path;
+
+	bool christKindle;
+	bool blockForward;
+	int lastDistance;
 public:
-	Controller(char* path, MPU9150* mpu, FusionFilter* filter, GPIO::GPIOManager* gp);
+	Controller(char* path, MPU9150* mpu, FusionFilter* filter, GPIO::GPIOManager* gp, Lidar* lidar);
 	virtual ~Controller();
 
 	void Init();
@@ -37,6 +42,11 @@ public:
 	void CameraOff();
 	void ForceDisconnect();
 	void TriggerLED();
+
+	Robot* getRobot() { return &robot; }
+
+	void setBlockForward(bool value) { blockForward = value; }
+	void setChristKindle(bool value) { christKindle = value; }
 };
 
 } /* namespace FhvRobot */

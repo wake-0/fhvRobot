@@ -49,6 +49,10 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
         void stopSteering();
 
         void orientationChange(float roll, float pitch, float yaw);
+
+        void startTimer();
+        void stopTimer(String timeMessage);
+        void dismissTimer();
     }
 
     private static final String LOG_TAG = "CommunicationClient";
@@ -205,12 +209,14 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
                 callback.generalMessageReceived(serverMessage);
                 break;
             case Commands.TIME_MEASUREMENT_STARTED:
-                serverMessage = new String(applicationPDU.getPayload());
-                callback.generalMessageReceived(serverMessage);
+                callback.startTimer();
+                break;
+            case Commands.TIME_MEASUREMENT_DISMISSED:
+                callback.dismissTimer();
                 break;
             case Commands.TIME_MEASUREMENT_STOPPED:
                 serverMessage = new String(applicationPDU.getPayload());
-                callback.generalMessageReceived(serverMessage);
+                callback.stopTimer(serverMessage);
                 break;
             case Commands.CHANGE_NAME:
                 callback.registered();
@@ -269,6 +275,10 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
 
     public void sendDisconnect(ISendTaskFinished callback) {
         new SendTask(clientSocket, comManager, configuration, Flags.REQUEST_FLAG, Commands.REQUEST_DISCONNECT, callback).execute(new byte[0]);
+    }
+
+    public void sendMessage(String message) {
+        new SendTask(clientSocket, comManager, configuration, Flags.REQUEST_FLAG, Commands.GENERAL_MESSAGE, null).execute(message.getBytes());
     }
 
     private class SendTask extends AsyncTask<byte[], Void, Void> {

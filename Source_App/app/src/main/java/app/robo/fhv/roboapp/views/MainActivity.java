@@ -9,12 +9,17 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
@@ -53,18 +58,21 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
     private ImageView signalStrength;
     private ImageView highScores;
     private ImageView lamp;
+    private ImageView messages;
 
     private View lytHighscore;
     private ListView listHighscore;
 
     private TextView statusText;
     private TextView spectatorText;
+    private TextView timeText;
 
     private int stepSize = 10;
     private NetworkClient networkClient;
     private ValueAnimator leftSnapBackAnimator;
     private ValueAnimator rightSnapBackAnimator;
 
+    private View lytMessages;
     private CompassView compass;
 
     private boolean reconnectActivityStarted;
@@ -101,9 +109,29 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
         compass = (CompassView) findViewById(R.id.cmpRobotCompass);
 
         lytHighscore = findViewById(R.id.lytHighscoreLayout);
+        timeText = (TextView) findViewById(R.id.txtTimeMeasurement);
 
         sbLeft.setProgress(MOTOR_SEEK_BAR_ZERO_VALUE);
         sbRight.setProgress(MOTOR_SEEK_BAR_ZERO_VALUE);
+
+        lytMessages = (View) findViewById(R.id.lytMessages);
+        messages = (ImageView) findViewById(R.id.imgMessage);
+
+        messages.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (lytMessages.getVisibility() == View.VISIBLE) {
+                    Animation a = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out_animation);
+                    lytMessages.startAnimation(a);
+                    lytMessages.setVisibility(View.INVISIBLE);
+                } else {
+                    Animation a = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.bounce_animation);
+                    lytMessages.startAnimation(a);
+                    lytMessages.setVisibility(View.VISIBLE);
+                }
+                return false;
+            }
+        });
 
         try {
             networkClient = new NetworkClient(this, this, this);
@@ -225,6 +253,17 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
         Log.d(LOG_TAG, "Using player name " + playerName);
     }
 
+    public void sendMessage(View v) {
+        if (v instanceof Button == true) {
+            Button b = (Button)(v);
+            String message = b.getText().toString();
+            this.networkClient.getCommunicationClient().sendMessage(message);
+            Animation a = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out_animation);
+            lytMessages.startAnimation(a);
+            lytMessages.setVisibility(View.INVISIBLE);
+        }
+    }
+
     private void setSpectatorText(String value) {
         spectatorText.setVisibility(View.VISIBLE);
         spectatorText.setText(value);
@@ -280,7 +319,7 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                Animation animFadeOut = AnimationUtils.loadAnimation(MainActivity.this.getApplicationContext(), R.anim.fade_out_animation);
+                Animation animFadeOut = AnimationUtils.loadAnimation(MainActivity.this.getApplicationContext(), R.anim.fade_out_animation_delay);
                 statusText.setAlpha(1.0f);
                 statusText.setText(text);
                 statusText.startAnimation(animFadeOut);
@@ -314,43 +353,64 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+                showToast(message);
             }
         });
+    }
+
+    private void showToast(String message) {
+        showToast(message, Toast.LENGTH_LONG);
+    }
+
+    private void showToast(String message, int len) {
+        LayoutInflater inflater = getLayoutInflater();
+
+        View layout = inflater.inflate(R.layout.custom_toast,
+                (ViewGroup) findViewById(R.id.toast_layout_root));
+
+        TextView text = (TextView) layout.findViewById(R.id.text);
+        text.setText(message);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.BOTTOM, 0, 20);
+        toast.setDuration(len);
+        toast.setView(layout);
+        toast.show();
     }
 
     @Override
     public void signalStrengthChange(final SignalStrength newStrength) {
         if (newStrength == SignalStrength.DEAD_SIGNAL) {
+            if (reconnectActivityStarted) return;
+
+            reconnectActivityStarted = true;
+
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
                     switchToSpectatorMode();
-                    if (!reconnectActivityStarted)
-                        Toast.makeText(MainActivity.this, "Verbindung abgebrochen!", Toast.LENGTH_SHORT).show();
+                    showToast("Verbindung abgebrochen!", Toast.LENGTH_SHORT);
                 }
             });
             try {
-                Thread.sleep(1000);
+                Thread.sleep(1500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if (!reconnectActivityStarted) {
-                reconnectActivityStarted = true;
-                networkClient.disconnect();
-                Intent intent = new Intent(this, ReconnectActivity.class);
-                startActivityForResult(intent, ReconnectActivity.REQUEST_CODE);
-                return;
-            }
+
+            networkClient.disconnect();
+            Intent intent = new Intent(this, ReconnectActivity.class);
+            startActivityForResult(intent, ReconnectActivity.REQUEST_CODE);
+                            return;
+                        }
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    // TODO: It would be nice to alpha blend the new image
+                    signalStrength.setImageDrawable(signalStrengthMap.get(newStrength));
+                }
+            });
         }
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                // TODO: It would be nice to alpha blend the new image
-                signalStrength.setImageDrawable(signalStrengthMap.get(newStrength));
-            }
-        });
-    }
 
     @Override
     public void registered() {
@@ -364,49 +424,49 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
             return;
         }
 
-        isOperator = true;
+            isOperator = true;
 
-        new Handler(Looper.getMainLooper()).post(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        CountDownTimer countDownTimer = new CountDownTimer(5000, 1000) {
-                            @Override
-                            public void onTick(long millis) {
-                                if (!isOperator) {
-                                    return;
+            new Handler(Looper.getMainLooper()).post(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            CountDownTimer countDownTimer = new CountDownTimer(5000, 1000) {
+                                @Override
+                                public void onTick(long millis) {
+                                    if (!isOperator) {
+                                        return;
+                                    }
+
+                                    if (millis > 5000) {
+                                        setSpectatorText("Bereit machen!");
+                                    } else if (millis > 4000) {
+                                        setSpectatorText("3");
+                                    } else if (millis > 3000) {
+                                        setSpectatorText("2");
+                                    } else if (millis > 2000) {
+                                        setSpectatorText("1");
+                                    } else if (millis > 1000) {
+                                        setSpectatorText("LOS!");
+                                    }
                                 }
 
-                                if (millis > 5000) {
-                                    setSpectatorText("Bereit machen!");
-                                } else if (millis > 4000) {
-                                    setSpectatorText("3");
-                                } else if (millis > 3000) {
-                                    setSpectatorText("2");
-                                } else if (millis > 2000) {
-                                    setSpectatorText("1");
-                                } else if (millis > 1000) {
-                                    setSpectatorText("LOS!");
+                                @Override
+                                public void onFinish() {
+                                    if (isOperator) {
+                                        setSpectatorText("");
+                                        spectatorText.setVisibility(View.INVISIBLE);
+                                        sbLeft.setVisibility(View.VISIBLE);
+                                        sbRight.setVisibility(View.VISIBLE);
+                                        lamp.setVisibility(View.VISIBLE);
+                                        compass.setVisibility(View.VISIBLE);
+                                    }
+                                    this.cancel();
                                 }
-                            }
-
-                            @Override
-                            public void onFinish() {
-                                if (isOperator) {
-                                    setSpectatorText("");
-                                    spectatorText.setVisibility(View.INVISIBLE);
-                                    sbLeft.setVisibility(View.VISIBLE);
-                                    sbRight.setVisibility(View.VISIBLE);
-                                    lamp.setVisibility(View.VISIBLE);
-                                    compass.setVisibility(View.VISIBLE);
-                                }
-                                this.cancel();
-                            }
-                        };
-                        countDownTimer.start();
+                            };
+                            countDownTimer.start();
+                        }
                     }
-                }
-        );
+            );
     }
 
     @Override
@@ -446,6 +506,71 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
     }
 
     @Override
+    public void startTimer() {
+        new Handler(Looper.getMainLooper()).post(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        timeText.setText("00:00.00");
+                        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.bounce_animation);
+                        timeText.startAnimation(animation);
+                        timeText.setVisibility(View.VISIBLE);
+                        startTime = SystemClock.uptimeMillis();
+                        customHandler.postDelayed(updateTimerThread, 0);
+                    }
+                }
+        );
+    }
+
+    @Override
+    public void stopTimer(final String timeMessage) {
+        if (timeText.getVisibility() != View.VISIBLE) { return; }
+        new Handler(Looper.getMainLooper()).post(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        customHandler.removeCallbacks(updateTimerThread);
+                        timeText.setText(timeMessage);
+                        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.hide_animation_delayed);
+                        animation.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                timeText.setVisibility(View.INVISIBLE);
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+
+                            }
+                        });
+                        timeText.startAnimation(animation);
+                    }
+                }
+        );
+    }
+
+    @Override
+    public void dismissTimer() {
+        if (timeText.getVisibility() != View.VISIBLE) { return; }
+        new Handler(Looper.getMainLooper()).post(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.hide_animation);
+                        timeText.startAnimation(animation);
+                        timeText.setText("00:00.00");
+                        timeText.setVisibility(View.INVISIBLE);
+                    }
+                }
+        );
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
@@ -468,4 +593,30 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
                 }
         }
     }
+
+    private long startTime = 0L;
+    private Handler customHandler = new Handler();
+    long timeInMilliseconds = 0L;
+    long timeSwapBuff = 0L;
+    long updatedTime = 0L;
+
+    private Runnable updateTimerThread = new Runnable() {
+
+        public void run() {
+
+            timeInMilliseconds = SystemClock.uptimeMillis() - startTime;
+
+            updatedTime = timeSwapBuff + timeInMilliseconds;
+
+            int secs = (int) (updatedTime / 1000);
+            int mins = secs / 60;
+            secs = secs % 60;
+            int milliseconds = (int) (updatedTime % 100);
+            timeText.setText("" + String.format("%02d", mins) + ":"
+                    + String.format("%02d", secs) + "."
+                    + String.format("%02d", milliseconds));
+            customHandler.postDelayed(this, 55);
+        }
+
+    };
 }

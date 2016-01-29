@@ -244,7 +244,7 @@ public class CompassView extends View {
         Paint paint = new Paint();
         paint.setColor(Color.WHITE);
         paint.setStyle(Paint.Style.FILL);
-        paint.setTextSize(10);
+        paint.setTextSize(12);
 
         // draw minorticks
         for(int i = 0; i <= tickWidthInDegree; i++) {
