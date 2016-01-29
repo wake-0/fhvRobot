@@ -15,16 +15,19 @@
 #define DEFAULT_ROBOT_PORT		(998)
 #define TIMEOUT_MS				(5000)
 #define STREAM_APP				("fhvrobot_streaming")
-
+#define BLOCK_DISTANCE			(20)
 
 namespace FhvRobot {
 
 static std::string exec(char* cmd);
 
-Controller::Controller(char* path, MPU9150* mpu, FusionFilter* filter, GPIO::GPIOManager* gp) : robot(mpu, filter, gp) {
+Controller::Controller(char* path, MPU9150* mpu, FusionFilter* filter, GPIO::GPIOManager* gp, Lidar* lidar) : robot(mpu, filter, gp, lidar) {
 	this->path = path;
 	connection = NULL;
 	gpioManager = gp;
+	christKindle = false;
+	blockForward = false;
+	lastDistance = 0;
 	running = false;
 }
 
@@ -69,8 +72,29 @@ bool Controller::Start(char* serverIp, char* name) {
 	while(running)
 	{
 		for (int i = 0; i < 30; i++) {
+			// Read and send orientation data
 			robot.GetOrientation_10(&roll, &pitch, &yaw);
 			connection->SendOrientation(roll, pitch, yaw);
+
+			// Read lidar data
+			if (robot.IsLidarEnabled())
+			{
+				int dist = robot.ReadLidar();
+				lastDistance = dist;
+				if (lastDistance < BLOCK_DISTANCE && blockForward && christKindle == false) {
+					if (robot.GetMotorLeftValue() > 0) {
+						robot.MotorLeft(0, false);
+					}
+					if (robot.GetMotorRightValue() > 0) {
+						robot.MotorRight(0, false);
+					}
+				}
+				if (christKindle == true && lastDistance < 100) {
+					robot.MotorLeft((100 - lastDistance) * (-1), false);
+					robot.MotorRight((100 - lastDistance) * (-1), false);
+				}
+				Debugger(INFO) << "Lidar distance: " << dist << "\n";
+			}
 			usleep(1000000 / 30);
 		}
 		connection->SendHeartBeat();
@@ -92,6 +116,10 @@ bool Controller::Start(char* serverIp, char* name) {
 
 void Controller::MotorCommand(unsigned int motorNum, int motorSpeed)
 {
+	if (robot.IsLidarEnabled() && blockForward && lastDistance < BLOCK_DISTANCE)
+	{
+		return;
+	}
 	Debugger(VERBOSE) << "Controller got motor command " << motorNum << " with payload=" << motorSpeed << "\n";
 	if (motorNum == MOTOR_BOTH)
 	{

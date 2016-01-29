@@ -19,10 +19,11 @@
 
 namespace FhvRobot {
 
-Robot::Robot(MPU9150* __mpu, FusionFilter* __filter, GPIO::GPIOManager* gp) {
+Robot::Robot(MPU9150* __mpu, FusionFilter* __filter, GPIO::GPIOManager* gp, Lidar* __lidar) {
 	// Open session of DMCC library
 	factor = 1;
 	session = DMCCstart(0);
+	lidar = __lidar;
 	if (session < 0)
 	{
 		// TODO Throw exception
@@ -63,6 +64,11 @@ Robot::Robot(MPU9150* __mpu, FusionFilter* __filter, GPIO::GPIOManager* gp) {
 	usleep(100 * 1000);
 	TriggerLED();
 	usleep(100 * 1000);
+
+	if (lidar != NULL) {
+		Debugger(INFO) << "Initializing lidar\n";
+		lidar->InitLidar();
+	}
 }
 
 Robot::~Robot() {
@@ -185,6 +191,20 @@ void Robot::TriggerLED()
 	manager->setValue(pin, GPIO::HIGH);
 	usleep(5 * 1000);
 	manager->setValue(pin, GPIO::LOW);
+}
+
+bool Robot::IsLidarEnabled()
+{
+	return (lidar != NULL);
+}
+
+int Robot::ReadLidar()
+{
+	if (lidar == NULL)
+	{
+		return 0;
+	}
+	return lidar->ReadDistance();
 }
 
 } /* namespace FhvRobot */

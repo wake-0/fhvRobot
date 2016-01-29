@@ -3,6 +3,7 @@
 #include "../include/sensors/FusionFilter.h"
 #include "../include/sensors/MPU9150.h"
 #include "../include/sensors/I2C.h"
+#include "../include/sensors/Lidar.h"
 #include "../include/configuration/INIReader.h"
 #include "../include/GPIO/GPIOManager.h"
 #include <signal.h>
@@ -19,6 +20,7 @@ static void signalHandler(int sig);
 using namespace FhvRobot;
 
 static Controller* controller;
+static Lidar* lidar = NULL;
 
 #define DEFAULT_CONFIG_FILE		("config.ini")
 #define DEFAULT_SERVER_IP		("83.212.127.13")
@@ -58,7 +60,9 @@ int main(int argc, char** argv)
 	std::string serverAddress = DEFAULT_SERVER_IP;
 	std::string robotName = DEFAULT_ROBOT_NAME;
 	int motorFactor = 100;
-
+	bool enableLidar = false;
+	bool christKindle = false;
+	bool blockForward = false;
 	Debugger(VERBOSE) << "Reading config file " << configFile << "\n";
 	INIReader reader(configFile);
 	if (reader.ParseError() < 0) {
@@ -70,6 +74,10 @@ int main(int argc, char** argv)
 		Debugger(INFO) << "name=FHVrobot ; Robot's name\n";
 		Debugger(INFO) << "[motor]\n";
 		Debugger(INFO) << "factor=100 ; Factor to set max power of motor (0, 100]\n";
+		Debugger(INFO) << "[lidar]\n";
+		Debugger(INFO) << "enable=false ; Enable/disable usage of LIDAR\n";
+		Debugger(INFO) << "christ-kindle-mode=false ; Enable/disable usage of the famous christ kindle mode\n";
+		Debugger(INFO) << "block-forward=false ; Block forward movement at 20cm\n";
 		Debugger(INFO) << "Using default server ip: " << DEFAULT_SERVER_IP << "\n";
 	}
 	else
@@ -78,14 +86,23 @@ int main(int argc, char** argv)
 		robotName = reader.Get("robot", "name", DEFAULT_ROBOT_NAME);
 		motorFactor = reader.GetInteger("motor", "factor", 100);
 		motorFactor = (motorFactor < 0 || motorFactor > 100) ? 100 : motorFactor;
+		enableLidar = reader.GetBoolean("lidar", "enable", false);
+		christKindle = reader.GetBoolean("lidar", "christ-kindle-mode", false);
+		blockForward = reader.GetBoolean("lidar", "block-forward", false);
 	}
 
 	FusionFilter filter;
 	I2C i2c(I2C_2);
 	MPU9150 mpu(&i2c);
+	if (enableLidar) {
+		Debugger(INFO) << "Enabling Lidar sensor\n";
+		lidar = new Lidar(&i2c);
+	}
 	GPIO::GPIOManager* gp = GPIO::GPIOManager::getInstance();
-	controller = new Controller(dest, &mpu, &filter, gp);
+	controller = new Controller(dest, &mpu, &filter, gp, lidar);
 	controller->getRobot()->setFactor(motorFactor / 100.0f);
+	controller->setBlockForward(blockForward);
+	controller->setChristKindle(christKindle);
 	controller->Init();
 	bool running = true;
 	while (running)
@@ -101,6 +118,10 @@ int main(int argc, char** argv)
 	}
 	gp->~GPIOManager();
 	free(controller);
+	if (lidar != NULL)
+	{
+		free(lidar);
+	}
 	Debugger(INFO) << "Stopping robot\n";
 	return 0;
 }
