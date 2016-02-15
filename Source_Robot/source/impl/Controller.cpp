@@ -71,7 +71,7 @@ bool Controller::Start(char* serverIp, char* name) {
 	running = true;
 	while(running)
 	{
-		for (int i = 0; i < 30; i++) {
+		for (int i = 0; i < 20; i++) {
 			// Read and send orientation data
 			robot.GetOrientation_10(&roll, &pitch, &yaw);
 			connection->SendOrientation(roll, pitch, yaw);
@@ -80,6 +80,7 @@ bool Controller::Start(char* serverIp, char* name) {
 			if (robot.IsLidarEnabled())
 			{
 				int dist = robot.ReadLidar();
+				int tempDist = lastDistance;
 				lastDistance = dist;
 				if (lastDistance < BLOCK_DISTANCE && blockForward && christKindle == false) {
 					if (robot.GetMotorLeftValue() > 0) {
@@ -92,10 +93,12 @@ bool Controller::Start(char* serverIp, char* name) {
 				if (christKindle == true && lastDistance < 100) {
 					robot.MotorLeft((100 - lastDistance) * (-1), false);
 					robot.MotorRight((100 - lastDistance) * (-1), false);
+				} else if (christKindle == true && lastDistance > 100 && tempDist < 100) {
+					robot.MotorStop(false);
 				}
 				Debugger(INFO) << "Lidar distance: " << dist << "\n";
 			}
-			usleep(1000000 / 30);
+			usleep(1000000 / 20);
 		}
 		connection->SendHeartBeat();
 
