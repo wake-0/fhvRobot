@@ -1,0 +1,357 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Symbols LinesOfCode="1309" PostSharpLinesOfCode="0" xmlns="http://schemas.postsharp.org/2.0/symbols">
+  <Evolution Source="#1=F:[GameServer]GameServer.Mocks.TriggerSystemMock::&lt;IsSystemActive&gt;k__BackingField" Target="#2=F:[GameServer]GameServer.Mocks.TriggerSystemMock::&lt;IsSystemActive&gt;k__OriginalField" />
+  <Evolution Source="#2" Target="#3=P:[GameServer]GameServer.Mocks.TriggerSystemMock::{IsSystemActive}k__BackingField()" />
+  <Evolution Source="#4=F:[GameServer]GameServer.Services.CameraTriggerService::captureInProgress" Target="#5=F:[GameServer]GameServer.Services.CameraTriggerService::&lt;captureInProgress&gt;k__OriginalField" />
+  <Evolution Source="#5" Target="#6=P:[GameServer]GameServer.Services.CameraTriggerService::captureInProgress()" />
+  <Evolution Source="#7=F:[GameServer]GameServer.Services.CameraTriggerService::&lt;RegionOfInterestPoints&gt;k__BackingField" Target="#8=F:[GameServer]GameServer.Services.CameraTriggerService::&lt;RegionOfInterestPoints&gt;k__OriginalField" />
+  <Evolution Source="#8" Target="#9=P:[GameServer]GameServer.Services.CameraTriggerService::{RegionOfInterestPoints}k__BackingField()" />
+  <Evolution Source="#10=F:[GameServer]GameServer.Services.CameraTriggerService::&lt;FrameCallback&gt;k__BackingField" Target="#11=F:[GameServer]GameServer.Services.CameraTriggerService::&lt;FrameCallback&gt;k__OriginalField" />
+  <Evolution Source="#11" Target="#12=P:[GameServer]GameServer.Services.CameraTriggerService::{FrameCallback}k__BackingField()" />
+  <Evolution Source="#13=F:[GameServer]GameServer.Services.CameraTriggerService::&lt;CaptureDevices&gt;k__BackingField" Target="#14=F:[GameServer]GameServer.Services.CameraTriggerService::&lt;CaptureDevices&gt;k__OriginalField" />
+  <Evolution Source="#14" Target="#15=P:[GameServer]GameServer.Services.CameraTriggerService::{CaptureDevices}k__BackingField()" />
+  <Evolution Source="#16=F:[GameServer]GameServer.Services.CameraTriggerService::&lt;SelectedDeviceIndex&gt;k__BackingField" Target="#17=F:[GameServer]GameServer.Services.CameraTriggerService::&lt;SelectedDeviceIndex&gt;k__OriginalField" />
+  <Evolution Source="#17" Target="#18=P:[GameServer]GameServer.Services.CameraTriggerService::{SelectedDeviceIndex}k__BackingField()" />
+  <Evolution Source="#19=F:[GameServer]GameServer.Services.CameraTriggerService::&lt;TriggerBlockTimeMs&gt;k__BackingField" Target="#20=F:[GameServer]GameServer.Services.CameraTriggerService::&lt;TriggerBlockTimeMs&gt;k__OriginalField" />
+  <Evolution Source="#20" Target="#21=P:[GameServer]GameServer.Services.CameraTriggerService::{TriggerBlockTimeMs}k__BackingField()" />
+  <Evolution Source="#22=F:[GameServer]GameServer.ViewModels.SettingsViewModel::isTriggerSystemActive" Target="#23=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;isTriggerSystemActive&gt;k__OriginalField" />
+  <Evolution Source="#23" Target="#24=P:[GameServer]GameServer.ViewModels.SettingsViewModel::isTriggerSystemActive()" />
+  <Evolution Source="#25=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;ExampleText&gt;k__BackingField" Target="#26=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;ExampleText&gt;k__OriginalField" />
+  <Evolution Source="#26" Target="#27=P:[GameServer]GameServer.ViewModels.SettingsViewModel::{ExampleText}k__BackingField()" />
+  <Evolution Source="#28=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;SelectedScore&gt;k__BackingField" Target="#29=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;SelectedScore&gt;k__OriginalField" />
+  <Evolution Source="#29" Target="#30=P:[GameServer]GameServer.ViewModels.SettingsViewModel::{SelectedScore}k__BackingField()" />
+  <Evolution Source="#31=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;SendHighscoreCommand&gt;k__BackingField" Target="#32=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;SendHighscoreCommand&gt;k__OriginalField" />
+  <Evolution Source="#32" Target="#33=P:[GameServer]GameServer.ViewModels.SettingsViewModel::{SendHighscoreCommand}k__BackingField()" />
+  <Evolution Source="#34=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;SendOperatorCommand&gt;k__BackingField" Target="#35=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;SendOperatorCommand&gt;k__OriginalField" />
+  <Evolution Source="#35" Target="#36=P:[GameServer]GameServer.ViewModels.SettingsViewModel::{SendOperatorCommand}k__BackingField()" />
+  <Evolution Source="#37=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;SendMessageCommand&gt;k__BackingField" Target="#38=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;SendMessageCommand&gt;k__OriginalField" />
+  <Evolution Source="#38" Target="#39=P:[GameServer]GameServer.ViewModels.SettingsViewModel::{SendMessageCommand}k__BackingField()" />
+  <Evolution Source="#40=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;TestCommand&gt;k__BackingField" Target="#41=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;TestCommand&gt;k__OriginalField" />
+  <Evolution Source="#41" Target="#42=P:[GameServer]GameServer.ViewModels.SettingsViewModel::{TestCommand}k__BackingField()" />
+  <Evolution Source="#43=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;OpenCommand&gt;k__BackingField" Target="#44=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;OpenCommand&gt;k__OriginalField" />
+  <Evolution Source="#44" Target="#45=P:[GameServer]GameServer.ViewModels.SettingsViewModel::{OpenCommand}k__BackingField()" />
+  <Evolution Source="#46=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;SaveCommand&gt;k__BackingField" Target="#47=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;SaveCommand&gt;k__OriginalField" />
+  <Evolution Source="#47" Target="#48=P:[GameServer]GameServer.ViewModels.SettingsViewModel::{SaveCommand}k__BackingField()" />
+  <Evolution Source="#49=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;ShowTMWindowCommand&gt;k__BackingField" Target="#50=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;ShowTMWindowCommand&gt;k__OriginalField" />
+  <Evolution Source="#50" Target="#51=P:[GameServer]GameServer.ViewModels.SettingsViewModel::{ShowTMWindowCommand}k__BackingField()" />
+  <Evolution Source="#52=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;SaveScoreCommand&gt;k__BackingField" Target="#53=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;SaveScoreCommand&gt;k__OriginalField" />
+  <Evolution Source="#53" Target="#54=P:[GameServer]GameServer.ViewModels.SettingsViewModel::{SaveScoreCommand}k__BackingField()" />
+  <Evolution Source="#55=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;DeleteScoreCommand&gt;k__BackingField" Target="#56=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;DeleteScoreCommand&gt;k__OriginalField" />
+  <Evolution Source="#56" Target="#57=P:[GameServer]GameServer.ViewModels.SettingsViewModel::{DeleteScoreCommand}k__BackingField()" />
+  <Evolution Source="#58=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;DiscardScoreCommand&gt;k__BackingField" Target="#59=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;DiscardScoreCommand&gt;k__OriginalField" />
+  <Evolution Source="#59" Target="#60=P:[GameServer]GameServer.ViewModels.SettingsViewModel::{DiscardScoreCommand}k__BackingField()" />
+  <Evolution Source="#61=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;TriggerSystem&gt;k__BackingField" Target="#62=F:[GameServer]GameServer.ViewModels.SettingsViewModel::&lt;TriggerSystem&gt;k__OriginalField" />
+  <Evolution Source="#62" Target="#63=P:[GameServer]GameServer.ViewModels.SettingsViewModel::{TriggerSystem}k__BackingField()" />
+  <Evolution Source="#64=F:[GameServer]GameServer.Managers.ScoreManager::&lt;CurrentScore&gt;k__BackingField" Target="#65=F:[GameServer]GameServer.Managers.ScoreManager::&lt;CurrentScore&gt;k__OriginalField" />
+  <Evolution Source="#65" Target="#66=P:[GameServer]GameServer.Managers.ScoreManager::{CurrentScore}k__BackingField()" />
+  <Evolution Source="#67=F:[GameServer]GameServer.Managers.ScoreManager::&lt;TopScores&gt;k__BackingField" Target="#68=F:[GameServer]GameServer.Managers.ScoreManager::&lt;TopScores&gt;k__OriginalField" />
+  <Evolution Source="#68" Target="#69=P:[GameServer]GameServer.Managers.ScoreManager::{TopScores}k__BackingField()" />
+  <Evolution Source="#70=F:[GameServer]GameServer.Managers.ScoreManager::&lt;Scores&gt;k__BackingField" Target="#71=F:[GameServer]GameServer.Managers.ScoreManager::&lt;Scores&gt;k__OriginalField" />
+  <Evolution Source="#71" Target="#72=P:[GameServer]GameServer.Managers.ScoreManager::{Scores}k__BackingField()" />
+  <Evolution Source="#73=F:[GameServer]GameServer.Models.Score::&lt;Rank&gt;k__BackingField" Target="#74=F:[GameServer]GameServer.Models.Score::&lt;Rank&gt;k__OriginalField" />
+  <Evolution Source="#74" Target="#75=P:[GameServer]GameServer.Models.Score::{Rank}k__BackingField()" />
+  <Evolution Source="#76=F:[GameServer]GameServer.Models.Score::&lt;Name&gt;k__BackingField" Target="#77=F:[GameServer]GameServer.Models.Score::&lt;Name&gt;k__OriginalField" />
+  <Evolution Source="#77" Target="#78=P:[GameServer]GameServer.Models.Score::{Name}k__BackingField()" />
+  <Evolution Source="#79=F:[GameServer]GameServer.Models.Score::&lt;Duration&gt;k__BackingField" Target="#80=F:[GameServer]GameServer.Models.Score::&lt;Duration&gt;k__OriginalField" />
+  <Evolution Source="#80" Target="#81=P:[GameServer]GameServer.Models.Score::{Duration}k__BackingField()" />
+  <Evolution Source="#82=F:[GameServer]GameServer.Services.TimerService::&lt;TimerState&gt;k__BackingField" Target="#83=F:[GameServer]GameServer.Services.TimerService::&lt;TimerState&gt;k__OriginalField" />
+  <Evolution Source="#83" Target="#84=P:[GameServer]GameServer.Services.TimerService::{TimerState}k__BackingField()" />
+  <Evolution Source="#85=F:[GameServer]GameServer.Services.TimerService::&lt;CurrentSpan&gt;k__BackingField" Target="#86=F:[GameServer]GameServer.Services.TimerService::&lt;CurrentSpan&gt;k__OriginalField" />
+  <Evolution Source="#86" Target="#87=P:[GameServer]GameServer.Services.TimerService::{CurrentSpan}k__BackingField()" />
+  <Evolution Source="#88=F:[GameServer]GameServer.ViewModels.MainViewModel::&lt;ScoreManager&gt;k__BackingField" Target="#89=F:[GameServer]GameServer.ViewModels.MainViewModel::&lt;ScoreManager&gt;k__OriginalField" />
+  <Evolution Source="#89" Target="#90=P:[GameServer]GameServer.ViewModels.MainViewModel::{ScoreManager}k__BackingField()" />
+  <Evolution Source="#91=F:[GameServer]GameServer.ViewModels.MainViewModel::&lt;TimerService&gt;k__BackingField" Target="#92=F:[GameServer]GameServer.ViewModels.MainViewModel::&lt;TimerService&gt;k__OriginalField" />
+  <Evolution Source="#92" Target="#93=P:[GameServer]GameServer.ViewModels.MainViewModel::{TimerService}k__BackingField()" />
+  <Evolution Source="#94=F:[GameServer]GameServer.ViewModels.MainViewModel::&lt;OpenSettingsWindowCommand&gt;k__BackingField" Target="#95=F:[GameServer]GameServer.ViewModels.MainViewModel::&lt;OpenSettingsWindowCommand&gt;k__OriginalField" />
+  <Evolution Source="#95" Target="#96=P:[GameServer]GameServer.ViewModels.MainViewModel::{OpenSettingsWindowCommand}k__BackingField()" />
+  <Evolution Source="#97=F:[GameServer]GameServer.ViewModels.MainViewModel::&lt;SelectedScore&gt;k__BackingField" Target="#98=F:[GameServer]GameServer.ViewModels.MainViewModel::&lt;SelectedScore&gt;k__OriginalField" />
+  <Evolution Source="#98" Target="#99=P:[GameServer]GameServer.ViewModels.MainViewModel::{SelectedScore}k__BackingField()" />
+  <Evolution Source="#100=F:[GameServer]GameServer.ViewModels.MainViewModel::&lt;CurrentPlayer&gt;k__BackingField" Target="#101=F:[GameServer]GameServer.ViewModels.MainViewModel::&lt;CurrentPlayer&gt;k__OriginalField" />
+  <Evolution Source="#101" Target="#102=P:[GameServer]GameServer.ViewModels.MainViewModel::{CurrentPlayer}k__BackingField()" />
+  <Evolution Source="#103=F:[GameServer]GameServer.ViewModels.MainViewModel::&lt;CurrentBestTime&gt;k__BackingField" Target="#104=F:[GameServer]GameServer.ViewModels.MainViewModel::&lt;CurrentBestTime&gt;k__OriginalField" />
+  <Evolution Source="#104" Target="#105=P:[GameServer]GameServer.ViewModels.MainViewModel::{CurrentBestTime}k__BackingField()" />
+  <Class Class="#106=T:[PostSharp.Patterns.Model]PostSharp.Patterns.Model.NotifyPropertyChangedAttribute">
+    <Instance Declaration="#107=T:[GameServer]GameServer.Mocks.TriggerSystemMock" Id="5b6972ab02f5a63d">
+      <Target>
+        <JoinPoint Advising="#106" Description="#108=Introduces method QueryInterface" Ordinal="0" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#109=Introduces event PropertyChanged" LinesAvoided="1" />
+        <JoinPoint Advising="#106" Description="#110=Introduces method OnPropertyChanged" Ordinal="2" LinesAvoided="2" />
+        <JoinPoint Advising="#106" Description="#111=Introduces method OnChildPropertyChanging" Ordinal="3" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#112=Introduces method OnChildPropertyChanged" Ordinal="4" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#113=Introduces event ChildPropertyChanged" Ordinal="5" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#114=Introduces event ChildPropertyChanging" Ordinal="6" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#115=Introduces interface(s) IQueryInterface, INotifyPropertyChanged, INotifyChildPropertyChanged" Ordinal="7" LinesAvoided="0" />
+        <JoinPoint Advised="#116=M:[GameServer]GameServer.Mocks.TriggerSystemMock::get_IsSystemActive()" Advising="#106" Description="#117=Flushes the notification queue when the control flow exits the object" Ordinal="8" LinesAvoided="0" />
+        <JoinPoint Advised="#118=M:[GameServer]GameServer.Mocks.TriggerSystemMock::set_IsSystemActive(System.Boolean)" Advising="#106" Description="#117" Ordinal="9" LinesAvoided="0" />
+        <JoinPoint Advised="#119=M:[GameServer]GameServer.Mocks.TriggerSystemMock::add_TriggerRaised(System.EventHandler)" Advising="#106" Description="#117" Ordinal="10" LinesAvoided="0" />
+        <JoinPoint Advised="#120=M:[GameServer]GameServer.Mocks.TriggerSystemMock::remove_TriggerRaised(System.EventHandler)" Advising="#106" Description="#117" Ordinal="11" LinesAvoided="0" />
+        <JoinPoint Advised="#121=M:[GameServer]GameServer.Mocks.TriggerSystemMock::ActivateSystem()" Advising="#106" Description="#117" Ordinal="12" LinesAvoided="0" />
+        <JoinPoint Advised="#122=M:[GameServer]GameServer.Mocks.TriggerSystemMock::DeactivateSystem()" Advising="#106" Description="#117" Ordinal="13" LinesAvoided="0" />
+        <JoinPoint Advised="#2" Advising="#106" Description="#123=Enqueues change notifications for affected properties" Semantic="Setter" Ordinal="14" LinesAvoided="1" />
+      </Target>
+    </Instance>
+    <Instance Declaration="#124=T:[GameServer]GameServer.Services.CameraTriggerService" Id="5b6972ab0c4e35ba">
+      <Target>
+        <JoinPoint Advising="#106" Description="#112" Ordinal="15" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#111" Ordinal="16" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#114" Ordinal="17" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#110" Ordinal="18" LinesAvoided="2" />
+        <JoinPoint Advising="#106" Description="#109" Ordinal="19" LinesAvoided="1" />
+        <JoinPoint Advising="#106" Description="#113" Ordinal="20" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#108" Ordinal="21" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#115" Ordinal="22" LinesAvoided="0" />
+        <JoinPoint Advised="#125=M:[GameServer]GameServer.Services.CameraTriggerService::set_RegionOfInterestPoints(System.Collections.Generic.List{[System.Drawing]System.Drawing.Point})" Advising="#106" Description="#117" Semantic="Setter" Ordinal="23" LinesAvoided="0" />
+        <JoinPoint Advised="#126=M:[GameServer]GameServer.Services.CameraTriggerService::get_RegionOfInterestPoints()" Advising="#106" Description="#127=Activates notifications for the property" Semantic="Getter" Ordinal="24" LinesAvoided="0" />
+        <JoinPoint Advised="#126" Advising="#106" Description="#117" Semantic="Getter" Ordinal="25" LinesAvoided="0" />
+        <JoinPoint Advised="#128=M:[GameServer]GameServer.Services.CameraTriggerService::set_FrameCallback([GameServer]GameServer.Services.ICameraTriggerServiceFrameCallback)" Advising="#106" Description="#117" Semantic="Setter" Ordinal="26" LinesAvoided="0" />
+        <JoinPoint Advised="#129=M:[GameServer]GameServer.Services.CameraTriggerService::get_FrameCallback()" Advising="#106" Description="#127" Semantic="Getter" Ordinal="27" LinesAvoided="0" />
+        <JoinPoint Advised="#129" Advising="#106" Description="#117" Semantic="Getter" Ordinal="28" LinesAvoided="0" />
+        <JoinPoint Advised="#130=M:[GameServer]GameServer.Services.CameraTriggerService::get_CaptureDevices()" Advising="#106" Description="#127" Semantic="Getter" Ordinal="29" LinesAvoided="0" />
+        <JoinPoint Advised="#130" Advising="#106" Description="#117" Semantic="Getter" Ordinal="30" LinesAvoided="0" />
+        <JoinPoint Advised="#131=M:[GameServer]GameServer.Services.CameraTriggerService::set_CaptureDevices(System.Collections.Generic.List{System.String})" Advising="#106" Description="#117" Semantic="Setter" Ordinal="31" LinesAvoided="0" />
+        <JoinPoint Advised="#132=M:[GameServer]GameServer.Services.CameraTriggerService::add_TriggerRaised(System.EventHandler)" Advising="#106" Description="#117" Ordinal="32" LinesAvoided="0" />
+        <JoinPoint Advised="#133=M:[GameServer]GameServer.Services.CameraTriggerService::remove_TriggerRaised(System.EventHandler)" Advising="#106" Description="#117" Ordinal="33" LinesAvoided="0" />
+        <JoinPoint Advised="#134=M:[GameServer]GameServer.Services.CameraTriggerService::get_CaptureWidth()" Advising="#106" Description="#117" Ordinal="34" LinesAvoided="0" />
+        <JoinPoint Advised="#135=M:[GameServer]GameServer.Services.CameraTriggerService::get_CaptureHeight()" Advising="#106" Description="#117" Ordinal="35" LinesAvoided="0" />
+        <JoinPoint Advised="#136=M:[GameServer]GameServer.Services.CameraTriggerService::get_SelectedDeviceIndex()" Advising="#106" Description="#117" Ordinal="36" LinesAvoided="0" />
+        <JoinPoint Advised="#137=M:[GameServer]GameServer.Services.CameraTriggerService::set_SelectedDeviceIndex(System.Int32)" Advising="#106" Description="#117" Ordinal="37" LinesAvoided="0" />
+        <JoinPoint Advised="#138=M:[GameServer]GameServer.Services.CameraTriggerService::get_TriggerBlockTimeMs()" Advising="#106" Description="#117" Ordinal="38" LinesAvoided="0" />
+        <JoinPoint Advised="#139=M:[GameServer]GameServer.Services.CameraTriggerService::set_TriggerBlockTimeMs(System.Int64)" Advising="#106" Description="#117" Ordinal="39" LinesAvoided="0" />
+        <JoinPoint Advised="#140=M:[GameServer]GameServer.Services.CameraTriggerService::get_IsSystemActive()" Advising="#106" Description="#117" Ordinal="40" LinesAvoided="0" />
+        <JoinPoint Advised="#141=M:[GameServer]GameServer.Services.CameraTriggerService::SetCameraDevice(System.Int32)" Advising="#106" Description="#117" Ordinal="41" LinesAvoided="0" />
+        <JoinPoint Advised="#142=M:[GameServer]GameServer.Services.CameraTriggerService::ProcessFrame(System.Object, System.EventArgs)" Advising="#106" Description="#117" Ordinal="42" LinesAvoided="0" />
+        <JoinPoint Advised="#143=M:[GameServer]GameServer.Services.CameraTriggerService::CheckTrigger(System.Byte[], System.Int32, System.Int32)" Advising="#106" Description="#117" Ordinal="43" LinesAvoided="0" />
+        <JoinPoint Advised="#144=M:[GameServer]GameServer.Services.CameraTriggerService::DiffHistoryAverage()" Advising="#106" Description="#117" Ordinal="44" LinesAvoided="0" />
+        <JoinPoint Advised="#145=M:[GameServer]GameServer.Services.CameraTriggerService::ActivateSystem()" Advising="#106" Description="#117" Ordinal="45" LinesAvoided="0" />
+        <JoinPoint Advised="#146=M:[GameServer]GameServer.Services.CameraTriggerService::DeactivateSystem()" Advising="#106" Description="#117" Ordinal="46" LinesAvoided="0" />
+        <JoinPoint Advised="#5" Advising="#106" Description="#123" Semantic="Setter" Ordinal="47" LinesAvoided="1" />
+        <JoinPoint Advised="#8" Advising="#106" Description="#123" Semantic="Setter" Ordinal="48" LinesAvoided="1" />
+        <JoinPoint Advised="#11" Advising="#106" Description="#123" Semantic="Setter" Ordinal="49" LinesAvoided="1" />
+        <JoinPoint Advised="#14" Advising="#106" Description="#123" Semantic="Setter" Ordinal="50" LinesAvoided="1" />
+        <JoinPoint Advised="#17" Advising="#106" Description="#123" Semantic="Setter" Ordinal="51" LinesAvoided="1" />
+        <JoinPoint Advised="#20" Advising="#106" Description="#123" Semantic="Setter" Ordinal="52" LinesAvoided="1" />
+      </Target>
+    </Instance>
+    <Instance Declaration="#147=T:[GameServer]GameServer.ViewModels.SettingsViewModel" Id="5b6972ab84d3351e">
+      <Target>
+        <JoinPoint Advising="#106" Description="#114" Ordinal="53" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#113" Ordinal="54" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#111" Ordinal="55" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#112" Ordinal="56" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#109" Ordinal="57" LinesAvoided="1" />
+        <JoinPoint Advising="#106" Description="#108" Ordinal="58" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#110" Ordinal="59" LinesAvoided="2" />
+        <JoinPoint Advising="#106" Description="#115" Ordinal="60" LinesAvoided="0" />
+        <JoinPoint Advised="#148=M:[GameServer]GameServer.ViewModels.SettingsViewModel::set_ExampleText(System.String)" Advising="#106" Description="#117" Semantic="Setter" Ordinal="61" LinesAvoided="0" />
+        <JoinPoint Advised="#149=M:[GameServer]GameServer.ViewModels.SettingsViewModel::get_ExampleText()" Advising="#106" Description="#127" Semantic="Getter" Ordinal="62" LinesAvoided="0" />
+        <JoinPoint Advised="#149" Advising="#106" Description="#117" Semantic="Getter" Ordinal="63" LinesAvoided="0" />
+        <JoinPoint Advised="#150=M:[GameServer]GameServer.ViewModels.SettingsViewModel::set_SendHighscoreCommand(System.Windows.Input.ICommand)" Advising="#106" Description="#117" Semantic="Setter" Ordinal="64" LinesAvoided="0" />
+        <JoinPoint Advised="#151=M:[GameServer]GameServer.ViewModels.SettingsViewModel::get_SendHighscoreCommand()" Advising="#106" Description="#127" Semantic="Getter" Ordinal="65" LinesAvoided="0" />
+        <JoinPoint Advised="#151" Advising="#106" Description="#117" Semantic="Getter" Ordinal="66" LinesAvoided="0" />
+        <JoinPoint Advised="#152=M:[GameServer]GameServer.ViewModels.SettingsViewModel::get_SendOperatorCommand()" Advising="#106" Description="#127" Semantic="Getter" Ordinal="67" LinesAvoided="0" />
+        <JoinPoint Advised="#152" Advising="#106" Description="#117" Semantic="Getter" Ordinal="68" LinesAvoided="0" />
+        <JoinPoint Advised="#153=M:[GameServer]GameServer.ViewModels.SettingsViewModel::set_SendOperatorCommand(System.Windows.Input.ICommand)" Advising="#106" Description="#117" Semantic="Setter" Ordinal="69" LinesAvoided="0" />
+        <JoinPoint Advised="#154=M:[GameServer]GameServer.ViewModels.SettingsViewModel::get_SendMessageCommand()" Advising="#106" Description="#127" Semantic="Getter" Ordinal="70" LinesAvoided="0" />
+        <JoinPoint Advised="#154" Advising="#106" Description="#117" Semantic="Getter" Ordinal="71" LinesAvoided="0" />
+        <JoinPoint Advised="#155=M:[GameServer]GameServer.ViewModels.SettingsViewModel::set_SendMessageCommand(System.Windows.Input.ICommand)" Advising="#106" Description="#117" Semantic="Setter" Ordinal="72" LinesAvoided="0" />
+        <JoinPoint Advised="#156=M:[GameServer]GameServer.ViewModels.SettingsViewModel::set_TestCommand(System.Windows.Input.ICommand)" Advising="#106" Description="#117" Semantic="Setter" Ordinal="73" LinesAvoided="0" />
+        <JoinPoint Advised="#157=M:[GameServer]GameServer.ViewModels.SettingsViewModel::get_TestCommand()" Advising="#106" Description="#127" Semantic="Getter" Ordinal="74" LinesAvoided="0" />
+        <JoinPoint Advised="#157" Advising="#106" Description="#117" Semantic="Getter" Ordinal="75" LinesAvoided="0" />
+        <JoinPoint Advised="#158=M:[GameServer]GameServer.ViewModels.SettingsViewModel::set_OpenCommand(System.Windows.Input.ICommand)" Advising="#106" Description="#117" Semantic="Setter" Ordinal="76" LinesAvoided="0" />
+        <JoinPoint Advised="#159=M:[GameServer]GameServer.ViewModels.SettingsViewModel::get_OpenCommand()" Advising="#106" Description="#127" Semantic="Getter" Ordinal="77" LinesAvoided="0" />
+        <JoinPoint Advised="#159" Advising="#106" Description="#117" Semantic="Getter" Ordinal="78" LinesAvoided="0" />
+        <JoinPoint Advised="#160=M:[GameServer]GameServer.ViewModels.SettingsViewModel::set_SaveCommand(System.Windows.Input.ICommand)" Advising="#106" Description="#117" Semantic="Setter" Ordinal="79" LinesAvoided="0" />
+        <JoinPoint Advised="#161=M:[GameServer]GameServer.ViewModels.SettingsViewModel::get_SaveCommand()" Advising="#106" Description="#127" Semantic="Getter" Ordinal="80" LinesAvoided="0" />
+        <JoinPoint Advised="#161" Advising="#106" Description="#117" Semantic="Getter" Ordinal="81" LinesAvoided="0" />
+        <JoinPoint Advised="#162=M:[GameServer]GameServer.ViewModels.SettingsViewModel::set_ShowTMWindowCommand(System.Windows.Input.ICommand)" Advising="#106" Description="#117" Semantic="Setter" Ordinal="82" LinesAvoided="0" />
+        <JoinPoint Advised="#163=M:[GameServer]GameServer.ViewModels.SettingsViewModel::get_ShowTMWindowCommand()" Advising="#106" Description="#127" Semantic="Getter" Ordinal="83" LinesAvoided="0" />
+        <JoinPoint Advised="#163" Advising="#106" Description="#117" Semantic="Getter" Ordinal="84" LinesAvoided="0" />
+        <JoinPoint Advised="#164=M:[GameServer]GameServer.ViewModels.SettingsViewModel::get_SaveScoreCommand()" Advising="#106" Description="#127" Semantic="Getter" Ordinal="85" LinesAvoided="0" />
+        <JoinPoint Advised="#164" Advising="#106" Description="#117" Semantic="Getter" Ordinal="86" LinesAvoided="0" />
+        <JoinPoint Advised="#165=M:[GameServer]GameServer.ViewModels.SettingsViewModel::set_SaveScoreCommand(System.Windows.Input.ICommand)" Advising="#106" Description="#117" Semantic="Setter" Ordinal="87" LinesAvoided="0" />
+        <JoinPoint Advised="#166=M:[GameServer]GameServer.ViewModels.SettingsViewModel::set_DeleteScoreCommand(System.Windows.Input.ICommand)" Advising="#106" Description="#117" Semantic="Setter" Ordinal="88" LinesAvoided="0" />
+        <JoinPoint Advised="#167=M:[GameServer]GameServer.ViewModels.SettingsViewModel::get_DeleteScoreCommand()" Advising="#106" Description="#127" Semantic="Getter" Ordinal="89" LinesAvoided="0" />
+        <JoinPoint Advised="#167" Advising="#106" Description="#117" Semantic="Getter" Ordinal="90" LinesAvoided="0" />
+        <JoinPoint Advised="#168=M:[GameServer]GameServer.ViewModels.SettingsViewModel::set_DiscardScoreCommand(System.Windows.Input.ICommand)" Advising="#106" Description="#117" Semantic="Setter" Ordinal="91" LinesAvoided="0" />
+        <JoinPoint Advised="#169=M:[GameServer]GameServer.ViewModels.SettingsViewModel::get_DiscardScoreCommand()" Advising="#106" Description="#127" Semantic="Getter" Ordinal="92" LinesAvoided="0" />
+        <JoinPoint Advised="#169" Advising="#106" Description="#117" Semantic="Getter" Ordinal="93" LinesAvoided="0" />
+        <JoinPoint Advised="#170=M:[GameServer]GameServer.ViewModels.SettingsViewModel::get_TriggerSystem()" Advising="#106" Description="#127" Semantic="Getter" Ordinal="94" LinesAvoided="0" />
+        <JoinPoint Advised="#170" Advising="#106" Description="#117" Semantic="Getter" Ordinal="95" LinesAvoided="0" />
+        <JoinPoint Advised="#171=M:[GameServer]GameServer.ViewModels.SettingsViewModel::set_TriggerSystem([GameServer]GameServer.Interfaces.ITriggerSystem)" Advising="#106" Description="#117" Semantic="Setter" Ordinal="96" LinesAvoided="0" />
+        <JoinPoint Advised="#172=M:[GameServer]GameServer.ViewModels.SettingsViewModel::get_IsTriggerSystemActive()" Advising="#106" Description="#117" Ordinal="97" LinesAvoided="0" />
+        <JoinPoint Advised="#173=M:[GameServer]GameServer.ViewModels.SettingsViewModel::set_IsTriggerSystemActive(System.Boolean)" Advising="#106" Description="#117" Ordinal="98" LinesAvoided="0" />
+        <JoinPoint Advised="#174=M:[GameServer]GameServer.ViewModels.SettingsViewModel::get_SelectedScore()" Advising="#106" Description="#117" Ordinal="99" LinesAvoided="0" />
+        <JoinPoint Advised="#175=M:[GameServer]GameServer.ViewModels.SettingsViewModel::set_SelectedScore(System.Int32)" Advising="#106" Description="#117" Ordinal="100" LinesAvoided="0" />
+        <JoinPoint Advised="#176=M:[GameServer]GameServer.ViewModels.SettingsViewModel::DiscardScore()" Advising="#106" Description="#117" Ordinal="101" LinesAvoided="0" />
+        <JoinPoint Advised="#177=M:[GameServer]GameServer.ViewModels.SettingsViewModel::SaveCurrentScore()" Advising="#106" Description="#117" Ordinal="102" LinesAvoided="0" />
+        <JoinPoint Advised="#178=M:[GameServer]GameServer.ViewModels.SettingsViewModel::DeleteScore()" Advising="#106" Description="#117" Ordinal="103" LinesAvoided="0" />
+        <JoinPoint Advised="#179=M:[GameServer]GameServer.ViewModels.SettingsViewModel::SetTestData()" Advising="#106" Description="#117" Ordinal="104" LinesAvoided="0" />
+        <JoinPoint Advised="#180=M:[GameServer]GameServer.ViewModels.SettingsViewModel::SendMessage(System.Object)" Advising="#106" Description="#117" Ordinal="105" LinesAvoided="0" />
+        <JoinPoint Advised="#181=M:[GameServer]GameServer.ViewModels.SettingsViewModel::SendOperator(System.Object)" Advising="#106" Description="#117" Ordinal="106" LinesAvoided="0" />
+        <JoinPoint Advised="#182=M:[GameServer]GameServer.ViewModels.SettingsViewModel::SendHighscore(System.Object)" Advising="#106" Description="#117" Ordinal="107" LinesAvoided="0" />
+        <JoinPoint Advised="#183=M:[GameServer]GameServer.ViewModels.SettingsViewModel::SaveScore()" Advising="#106" Description="#117" Ordinal="108" LinesAvoided="0" />
+        <JoinPoint Advised="#184=M:[GameServer]GameServer.ViewModels.SettingsViewModel::LoadScore()" Advising="#106" Description="#117" Ordinal="109" LinesAvoided="0" />
+        <JoinPoint Advised="#185=M:[GameServer]GameServer.ViewModels.SettingsViewModel::ShowTimeMeasurementWindow()" Advising="#106" Description="#117" Ordinal="110" LinesAvoided="0" />
+        <JoinPoint Advised="#186=M:[GameServer]GameServer.ViewModels.SettingsViewModel::{#ctor}b__0(System.Object)" Advising="#106" Description="#117" Ordinal="111" LinesAvoided="0" />
+        <JoinPoint Advised="#187=M:[GameServer]GameServer.ViewModels.SettingsViewModel::{#ctor}b__1(System.Object)" Advising="#106" Description="#117" Ordinal="112" LinesAvoided="0" />
+        <JoinPoint Advised="#188=M:[GameServer]GameServer.ViewModels.SettingsViewModel::{#ctor}b__2(System.Object)" Advising="#106" Description="#117" Ordinal="113" LinesAvoided="0" />
+        <JoinPoint Advised="#189=M:[GameServer]GameServer.ViewModels.SettingsViewModel::{#ctor}b__3(System.Object)" Advising="#106" Description="#117" Ordinal="114" LinesAvoided="0" />
+        <JoinPoint Advised="#190=M:[GameServer]GameServer.ViewModels.SettingsViewModel::{#ctor}b__4(System.Object)" Advising="#106" Description="#117" Ordinal="115" LinesAvoided="0" />
+        <JoinPoint Advised="#191=M:[GameServer]GameServer.ViewModels.SettingsViewModel::{#ctor}b__5(System.Object)" Advising="#106" Description="#117" Ordinal="116" LinesAvoided="0" />
+        <JoinPoint Advised="#192=M:[GameServer]GameServer.ViewModels.SettingsViewModel::{#ctor}b__6(System.Object)" Advising="#106" Description="#117" Ordinal="117" LinesAvoided="0" />
+        <JoinPoint Advised="#23" Advising="#106" Description="#123" Semantic="Setter" Ordinal="118" LinesAvoided="1" />
+        <JoinPoint Advised="#26" Advising="#106" Description="#123" Semantic="Setter" Ordinal="119" LinesAvoided="1" />
+        <JoinPoint Advised="#29" Advising="#106" Description="#123" Semantic="Setter" Ordinal="120" LinesAvoided="1" />
+        <JoinPoint Advised="#32" Advising="#106" Description="#123" Semantic="Setter" Ordinal="121" LinesAvoided="1" />
+        <JoinPoint Advised="#35" Advising="#106" Description="#123" Semantic="Setter" Ordinal="122" LinesAvoided="1" />
+        <JoinPoint Advised="#38" Advising="#106" Description="#123" Semantic="Setter" Ordinal="123" LinesAvoided="1" />
+        <JoinPoint Advised="#41" Advising="#106" Description="#123" Semantic="Setter" Ordinal="124" LinesAvoided="1" />
+        <JoinPoint Advised="#44" Advising="#106" Description="#123" Semantic="Setter" Ordinal="125" LinesAvoided="1" />
+        <JoinPoint Advised="#47" Advising="#106" Description="#123" Semantic="Setter" Ordinal="126" LinesAvoided="1" />
+        <JoinPoint Advised="#50" Advising="#106" Description="#123" Semantic="Setter" Ordinal="127" LinesAvoided="1" />
+        <JoinPoint Advised="#53" Advising="#106" Description="#123" Semantic="Setter" Ordinal="128" LinesAvoided="1" />
+        <JoinPoint Advised="#56" Advising="#106" Description="#123" Semantic="Setter" Ordinal="129" LinesAvoided="1" />
+        <JoinPoint Advised="#59" Advising="#106" Description="#123" Semantic="Setter" Ordinal="130" LinesAvoided="1" />
+        <JoinPoint Advised="#62" Advising="#106" Description="#123" Semantic="Setter" Ordinal="131" LinesAvoided="1" />
+      </Target>
+    </Instance>
+    <Instance Declaration="#193=T:[GameServer]GameServer.Managers.PersistencyManager" Id="5b6972ab50d13421">
+      <Target>
+        <JoinPoint Advising="#106" Description="#109" Ordinal="132" LinesAvoided="1" />
+        <JoinPoint Advising="#106" Description="#108" Ordinal="133" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#114" Ordinal="134" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#113" Ordinal="135" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#111" Ordinal="136" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#112" Ordinal="137" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#110" Ordinal="138" LinesAvoided="2" />
+        <JoinPoint Advising="#106" Description="#115" Ordinal="139" LinesAvoided="0" />
+        <JoinPoint Advised="#194=M:[GameServer]GameServer.Managers.PersistencyManager::SaveScores(System.Collections.Generic.IEnumerable{[GameServer]GameServer.Models.Score}, System.String)" Advising="#106" Description="#117" Ordinal="140" LinesAvoided="0" />
+        <JoinPoint Advised="#195=M:[GameServer]GameServer.Managers.PersistencyManager::LoadScores(System.String)" Advising="#106" Description="#117" Ordinal="141" LinesAvoided="0" />
+      </Target>
+    </Instance>
+    <Instance Declaration="#196=T:[GameServer]GameServer.Managers.ScoreManager" Id="5b6972ab9aa1bb1b">
+      <Target>
+        <JoinPoint Advising="#106" Description="#110" Ordinal="142" LinesAvoided="2" />
+        <JoinPoint Advising="#106" Description="#113" Ordinal="143" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#111" Ordinal="144" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#112" Ordinal="145" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#114" Ordinal="146" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#108" Ordinal="147" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#109" Ordinal="148" LinesAvoided="1" />
+        <JoinPoint Advising="#106" Description="#115" Ordinal="149" LinesAvoided="0" />
+        <JoinPoint Advised="#197=M:[GameServer]GameServer.Managers.ScoreManager::get_CurrentScore()" Advising="#106" Description="#127" Semantic="Getter" Ordinal="150" LinesAvoided="0" />
+        <JoinPoint Advised="#197" Advising="#106" Description="#117" Semantic="Getter" Ordinal="151" LinesAvoided="0" />
+        <JoinPoint Advised="#198=M:[GameServer]GameServer.Managers.ScoreManager::set_CurrentScore([GameServer]GameServer.Models.Score)" Advising="#106" Description="#117" Semantic="Setter" Ordinal="152" LinesAvoided="0" />
+        <JoinPoint Advised="#199=M:[GameServer]GameServer.Managers.ScoreManager::get_TopScores()" Advising="#106" Description="#127" Semantic="Getter" Ordinal="153" LinesAvoided="0" />
+        <JoinPoint Advised="#199" Advising="#106" Description="#117" Semantic="Getter" Ordinal="154" LinesAvoided="0" />
+        <JoinPoint Advised="#200=M:[GameServer]GameServer.Managers.ScoreManager::set_TopScores(System.Collections.ObjectModel.ObservableCollection{[GameServer]GameServer.Models.Score})" Advising="#106" Description="#117" Semantic="Setter" Ordinal="155" LinesAvoided="0" />
+        <JoinPoint Advised="#201=M:[GameServer]GameServer.Managers.ScoreManager::get_Scores()" Advising="#106" Description="#127" Semantic="Getter" Ordinal="156" LinesAvoided="0" />
+        <JoinPoint Advised="#201" Advising="#106" Description="#117" Semantic="Getter" Ordinal="157" LinesAvoided="0" />
+        <JoinPoint Advised="#202=M:[GameServer]GameServer.Managers.ScoreManager::set_Scores(System.Collections.ObjectModel.ObservableCollection{[GameServer]GameServer.Models.Score})" Advising="#106" Description="#117" Semantic="Setter" Ordinal="158" LinesAvoided="0" />
+        <JoinPoint Advised="#203=M:[GameServer]GameServer.Managers.ScoreManager::Add([GameServer]GameServer.Models.Score)" Advising="#106" Description="#117" Ordinal="159" LinesAvoided="0" />
+        <JoinPoint Advised="#204=M:[GameServer]GameServer.Managers.ScoreManager::DeleteScore(System.Int32)" Advising="#106" Description="#117" Ordinal="160" LinesAvoided="0" />
+        <JoinPoint Advised="#205=M:[GameServer]GameServer.Managers.ScoreManager::UpdateRank()" Advising="#106" Description="#117" Ordinal="161" LinesAvoided="0" />
+        <JoinPoint Advised="#206=M:[GameServer]GameServer.Managers.ScoreManager::GetAllScores()" Advising="#106" Description="#117" Ordinal="162" LinesAvoided="0" />
+        <JoinPoint Advised="#207=M:[GameServer]GameServer.Managers.ScoreManager::SetAllScores(System.Collections.Generic.IEnumerable{[GameServer]GameServer.Models.Score})" Advising="#106" Description="#117" Ordinal="163" LinesAvoided="0" />
+        <JoinPoint Advised="#208=M:[GameServer]GameServer.Managers.ScoreManager::GetScoresAsXmlString()" Advising="#106" Description="#117" Ordinal="164" LinesAvoided="0" />
+        <JoinPoint Advised="#209=M:[GameServer]GameServer.Managers.ScoreManager::Clear()" Advising="#106" Description="#117" Ordinal="165" LinesAvoided="0" />
+        <JoinPoint Advised="#210=M:[GameServer]GameServer.Managers.ScoreManager::InsertScoreAtPosition(System.Collections.ObjectModel.ObservableCollection{[GameServer]GameServer.Models.Score}, [GameServer]GameServer.Models.Score)" Advising="#106" Description="#117" Ordinal="166" LinesAvoided="0" />
+        <JoinPoint Advised="#211=M:[GameServer]GameServer.Managers.ScoreManager::{Clear}b__4()" Advising="#106" Description="#117" Ordinal="167" LinesAvoided="0" />
+        <JoinPoint Advised="#65" Advising="#106" Description="#123" Semantic="Setter" Ordinal="168" LinesAvoided="1" />
+        <JoinPoint Advised="#68" Advising="#106" Description="#123" Semantic="Setter" Ordinal="169" LinesAvoided="1" />
+        <JoinPoint Advised="#71" Advising="#106" Description="#123" Semantic="Setter" Ordinal="170" LinesAvoided="1" />
+      </Target>
+    </Instance>
+    <Instance Declaration="#212=T:[GameServer]GameServer.Models.Score" Id="5b6972ab3572fb00">
+      <Target>
+        <JoinPoint Advising="#106" Description="#110" Ordinal="171" LinesAvoided="2" />
+        <JoinPoint Advising="#106" Description="#113" Ordinal="172" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#111" Ordinal="173" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#112" Ordinal="174" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#114" Ordinal="175" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#108" Ordinal="176" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#109" Ordinal="177" LinesAvoided="1" />
+        <JoinPoint Advising="#106" Description="#115" Ordinal="178" LinesAvoided="0" />
+        <JoinPoint Advised="#213=M:[GameServer]GameServer.Models.Score::set_Name(System.String)" Advising="#106" Description="#117" Semantic="Setter" Ordinal="179" LinesAvoided="0" />
+        <JoinPoint Advised="#214=M:[GameServer]GameServer.Models.Score::get_Name()" Advising="#106" Description="#127" Semantic="Getter" Ordinal="180" LinesAvoided="0" />
+        <JoinPoint Advised="#214" Advising="#106" Description="#117" Semantic="Getter" Ordinal="181" LinesAvoided="0" />
+        <JoinPoint Advised="#215=M:[GameServer]GameServer.Models.Score::get_Rank()" Advising="#106" Description="#117" Ordinal="182" LinesAvoided="0" />
+        <JoinPoint Advised="#216=M:[GameServer]GameServer.Models.Score::set_Rank(System.Int32)" Advising="#106" Description="#117" Ordinal="183" LinesAvoided="0" />
+        <JoinPoint Advised="#217=M:[GameServer]GameServer.Models.Score::get_Duration()" Advising="#106" Description="#117" Ordinal="184" LinesAvoided="0" />
+        <JoinPoint Advised="#218=M:[GameServer]GameServer.Models.Score::set_Duration(System.TimeSpan)" Advising="#106" Description="#117" Ordinal="185" LinesAvoided="0" />
+        <JoinPoint Advised="#74" Advising="#106" Description="#123" Semantic="Setter" Ordinal="186" LinesAvoided="1" />
+        <JoinPoint Advised="#77" Advising="#106" Description="#123" Semantic="Setter" Ordinal="187" LinesAvoided="1" />
+        <JoinPoint Advised="#80" Advising="#106" Description="#123" Semantic="Setter" Ordinal="188" LinesAvoided="1" />
+      </Target>
+    </Instance>
+    <Instance Declaration="#219=T:[GameServer]GameServer.Services.TimerService" Id="5b6972abef18a58e">
+      <Target>
+        <JoinPoint Advising="#106" Description="#108" Ordinal="189" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#109" Ordinal="190" LinesAvoided="1" />
+        <JoinPoint Advising="#106" Description="#111" Ordinal="191" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#112" Ordinal="192" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#110" Ordinal="193" LinesAvoided="2" />
+        <JoinPoint Advising="#106" Description="#114" Ordinal="194" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#113" Ordinal="195" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#115" Ordinal="196" LinesAvoided="0" />
+        <JoinPoint Advised="#220=M:[GameServer]GameServer.Services.TimerService::add_TimeTracked(System.EventHandler{[GameServer]GameServer.Services.TimeTrackedEventArgs})" Advising="#106" Description="#117" Ordinal="197" LinesAvoided="0" />
+        <JoinPoint Advised="#221=M:[GameServer]GameServer.Services.TimerService::remove_TimeTracked(System.EventHandler{[GameServer]GameServer.Services.TimeTrackedEventArgs})" Advising="#106" Description="#117" Ordinal="198" LinesAvoided="0" />
+        <JoinPoint Advised="#222=M:[GameServer]GameServer.Services.TimerService::get_TimerState()" Advising="#106" Description="#117" Ordinal="199" LinesAvoided="0" />
+        <JoinPoint Advised="#223=M:[GameServer]GameServer.Services.TimerService::set_TimerState([GameServer]GameServer.Services.TimerState)" Advising="#106" Description="#117" Ordinal="200" LinesAvoided="0" />
+        <JoinPoint Advised="#224=M:[GameServer]GameServer.Services.TimerService::get_CurrentSpan()" Advising="#106" Description="#117" Ordinal="201" LinesAvoided="0" />
+        <JoinPoint Advised="#225=M:[GameServer]GameServer.Services.TimerService::set_CurrentSpan(System.TimeSpan)" Advising="#106" Description="#117" Ordinal="202" LinesAvoided="0" />
+        <JoinPoint Advised="#226=M:[GameServer]GameServer.Services.TimerService::TimerElapsed(System.Object, System.Timers.ElapsedEventArgs)" Advising="#106" Description="#117" Ordinal="203" LinesAvoided="0" />
+        <JoinPoint Advised="#227=M:[GameServer]GameServer.Services.TimerService::CalculateCurrentSpan(System.DateTime, System.DateTime)" Advising="#106" Description="#117" Ordinal="204" LinesAvoided="0" />
+        <JoinPoint Advised="#228=M:[GameServer]GameServer.Services.TimerService::ToggleStartStop()" Advising="#106" Description="#117" Ordinal="205" LinesAvoided="0" />
+        <JoinPoint Advised="#229=M:[GameServer]GameServer.Services.TimerService::Reset()" Advising="#106" Description="#117" Ordinal="206" LinesAvoided="0" />
+        <JoinPoint Advised="#230=M:[GameServer]GameServer.Services.TimerService::OnTimeTracked()" Advising="#106" Description="#117" Ordinal="207" LinesAvoided="0" />
+        <JoinPoint Advised="#83" Advising="#106" Description="#123" Semantic="Setter" Ordinal="208" LinesAvoided="1" />
+        <JoinPoint Advised="#86" Advising="#106" Description="#123" Semantic="Setter" Ordinal="209" LinesAvoided="1" />
+      </Target>
+    </Instance>
+    <Instance Declaration="#231=T:[GameServer]GameServer.ViewModels.MainViewModel" Id="5b6972abac8d554a">
+      <Target>
+        <JoinPoint Advising="#106" Description="#112" Ordinal="210" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#111" Ordinal="211" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#114" Ordinal="212" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#110" Ordinal="213" LinesAvoided="2" />
+        <JoinPoint Advising="#106" Description="#109" Ordinal="214" LinesAvoided="1" />
+        <JoinPoint Advising="#106" Description="#113" Ordinal="215" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#108" Ordinal="216" LinesAvoided="0" />
+        <JoinPoint Advising="#106" Description="#115" Ordinal="217" LinesAvoided="0" />
+        <JoinPoint Advised="#232=M:[GameServer]GameServer.ViewModels.MainViewModel::get_ScoreManager()" Advising="#106" Description="#127" Semantic="Getter" Ordinal="218" LinesAvoided="0" />
+        <JoinPoint Advised="#232" Advising="#106" Description="#117" Semantic="Getter" Ordinal="219" LinesAvoided="0" />
+        <JoinPoint Advised="#233=M:[GameServer]GameServer.ViewModels.MainViewModel::set_ScoreManager([GameServer]GameServer.Managers.ScoreManager)" Advising="#106" Description="#117" Semantic="Setter" Ordinal="220" LinesAvoided="0" />
+        <JoinPoint Advised="#234=M:[GameServer]GameServer.ViewModels.MainViewModel::set_TimerService([GameServer]GameServer.Services.TimerService)" Advising="#106" Description="#117" Semantic="Setter" Ordinal="221" LinesAvoided="0" />
+        <JoinPoint Advised="#235=M:[GameServer]GameServer.ViewModels.MainViewModel::get_TimerService()" Advising="#106" Description="#127" Semantic="Getter" Ordinal="222" LinesAvoided="0" />
+        <JoinPoint Advised="#235" Advising="#106" Description="#117" Semantic="Getter" Ordinal="223" LinesAvoided="0" />
+        <JoinPoint Advised="#236=M:[GameServer]GameServer.ViewModels.MainViewModel::get_OpenSettingsWindowCommand()" Advising="#106" Description="#127" Semantic="Getter" Ordinal="224" LinesAvoided="0" />
+        <JoinPoint Advised="#236" Advising="#106" Description="#117" Semantic="Getter" Ordinal="225" LinesAvoided="0" />
+        <JoinPoint Advised="#237=M:[GameServer]GameServer.ViewModels.MainViewModel::set_OpenSettingsWindowCommand(System.Windows.Input.ICommand)" Advising="#106" Description="#117" Semantic="Setter" Ordinal="226" LinesAvoided="0" />
+        <JoinPoint Advised="#238=M:[GameServer]GameServer.ViewModels.MainViewModel::set_CurrentPlayer(System.String)" Advising="#106" Description="#117" Semantic="Setter" Ordinal="227" LinesAvoided="0" />
+        <JoinPoint Advised="#239=M:[GameServer]GameServer.ViewModels.MainViewModel::get_CurrentPlayer()" Advising="#106" Description="#127" Semantic="Getter" Ordinal="228" LinesAvoided="0" />
+        <JoinPoint Advised="#239" Advising="#106" Description="#117" Semantic="Getter" Ordinal="229" LinesAvoided="0" />
+        <JoinPoint Advised="#240=M:[GameServer]GameServer.ViewModels.MainViewModel::get_SelectedScore()" Advising="#106" Description="#117" Ordinal="230" LinesAvoided="0" />
+        <JoinPoint Advised="#241=M:[GameServer]GameServer.ViewModels.MainViewModel::set_SelectedScore(System.Int32)" Advising="#106" Description="#117" Ordinal="231" LinesAvoided="0" />
+        <JoinPoint Advised="#242=M:[GameServer]GameServer.ViewModels.MainViewModel::get_CurrentBestTime()" Advising="#106" Description="#117" Ordinal="232" LinesAvoided="0" />
+        <JoinPoint Advised="#243=M:[GameServer]GameServer.ViewModels.MainViewModel::set_CurrentBestTime(System.TimeSpan)" Advising="#106" Description="#117" Ordinal="233" LinesAvoided="0" />
+        <JoinPoint Advised="#244=M:[GameServer]GameServer.ViewModels.MainViewModel::LoadDefaultScores()" Advising="#106" Description="#117" Ordinal="234" LinesAvoided="0" />
+        <JoinPoint Advised="#245=M:[GameServer]GameServer.ViewModels.MainViewModel::SaveDefaultScores()" Advising="#106" Description="#117" Ordinal="235" LinesAvoided="0" />
+        <JoinPoint Advised="#246=M:[GameServer]GameServer.ViewModels.MainViewModel::TimeTracked(System.Object, [GameServer]GameServer.Services.TimeTrackedEventArgs)" Advising="#106" Description="#117" Ordinal="236" LinesAvoided="0" />
+        <JoinPoint Advised="#247=M:[GameServer]GameServer.ViewModels.MainViewModel::TimeTrigger(System.Object, System.EventArgs)" Advising="#106" Description="#117" Ordinal="237" LinesAvoided="0" />
+        <JoinPoint Advised="#248=M:[GameServer]GameServer.ViewModels.MainViewModel::OnUpdateCurrentPlayerTimerElapsed(System.Object, System.Timers.ElapsedEventArgs)" Advising="#106" Description="#117" Ordinal="238" LinesAvoided="0" />
+        <JoinPoint Advised="#249=M:[GameServer]GameServer.ViewModels.MainViewModel::OpenSettingsWindow(System.Object)" Advising="#106" Description="#117" Ordinal="239" LinesAvoided="0" />
+        <JoinPoint Advised="#250=M:[GameServer]GameServer.ViewModels.MainViewModel::NewPlayerReceived(System.Object, System.String)" Advising="#106" Description="#117" Ordinal="240" LinesAvoided="0" />
+        <JoinPoint Advised="#89" Advising="#106" Description="#123" Semantic="Setter" Ordinal="241" LinesAvoided="1" />
+        <JoinPoint Advised="#92" Advising="#106" Description="#123" Semantic="Setter" Ordinal="242" LinesAvoided="1" />
+        <JoinPoint Advised="#95" Advising="#106" Description="#123" Semantic="Setter" Ordinal="243" LinesAvoided="1" />
+        <JoinPoint Advised="#98" Advising="#106" Description="#123" Semantic="Setter" Ordinal="244" LinesAvoided="1" />
+        <JoinPoint Advised="#101" Advising="#106" Description="#123" Semantic="Setter" Ordinal="245" LinesAvoided="1" />
+        <JoinPoint Advised="#104" Advising="#106" Description="#123" Semantic="Setter" Ordinal="246" LinesAvoided="1" />
+      </Target>
+    </Instance>
+  </Class>
+  <Annotation Target="#251=M:[PostSharp.Patterns.Model]PostSharp.Patterns.Model.NotifyPropertyChangedAttribute::InitializeAspectInstance(PostSharp.Aspects.Advices.AspectInitializationReason)" Arguments="#252=2" Description="#253=PostSharp estimates that 2 line(s) of code are saved every time this advice is applied. Use the [LinesOfCodeAvoided] attribute on the aspect or specify the LinesOfCodeAvoided property on the advice attribute to override this value." />
+  <Annotation Target="#254=P:[GameServer]GameServer.Services.CameraTriggerService::IsSystemActive()" Description="#255=The IsSystemActive property depends on captureInProgress." />
+  <Annotation Target="#256=P:[GameServer]GameServer.ViewModels.SettingsViewModel::IsTriggerSystemActive()" Description="#257=The IsTriggerSystemActive property depends on isTriggerSystemActive." />
+</Symbols>
