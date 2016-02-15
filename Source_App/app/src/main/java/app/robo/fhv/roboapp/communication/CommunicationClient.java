@@ -74,11 +74,11 @@ public class CommunicationClient implements Runnable, IDataReceivedHandler<Appli
     private static final int HEARTBEAT_TIME = 1 * 1000;
 
     // Constructor
-    public CommunicationClient(ICommunicationCallback callback, IHighScoreManager highScoreManager) throws SocketException, UnknownHostException {
+    public CommunicationClient(ICommunicationCallback callback, IHighScoreManager highScoreManager, String serverAddress) throws SocketException, UnknownHostException {
         this.highScoreManager = highScoreManager;
         this.clientSocket = new DatagramSocket();
         this.callback = callback;
-        this.configManager = new ConfigurationManager();
+        this.configManager = new ConfigurationManager(serverAddress);
         this.comManager = new CommunicationManager(configManager);
 
         // Configuration is setup by default

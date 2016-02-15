@@ -3,6 +3,8 @@ package app.robo.fhv.roboapp.persistence;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import app.robo.fhv.roboapp.communication.GlobalSettings;
+
 public class SharedPreferencesPersistence {
 
     private static SharedPreferencesPersistence instance;
@@ -58,6 +60,20 @@ public class SharedPreferencesPersistence {
                 SHARED_PREFERENCES_ID, Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = prefs.edit();
         edit.putString("lastLoginName", name);
+        edit.commit();
+    }
+
+    public String getServerAddress() {
+        SharedPreferences prefs = context.getSharedPreferences(
+                SHARED_PREFERENCES_ID, Context.MODE_PRIVATE);
+        return prefs.getString("serverAddress", GlobalSettings.SERVER_ADDRESS);
+    }
+
+    public void persistServerAddress(String serverAddress) {
+        SharedPreferences prefs = context.getSharedPreferences(
+                SHARED_PREFERENCES_ID, Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = prefs.edit();
+        edit.putString("serverAddress", serverAddress);
         edit.commit();
     }
 }

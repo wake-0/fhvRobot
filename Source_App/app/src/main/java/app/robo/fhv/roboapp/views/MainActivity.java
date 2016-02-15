@@ -35,6 +35,7 @@ import app.robo.fhv.roboapp.communication.MediaStreaming;
 import app.robo.fhv.roboapp.communication.NetworkClient;
 import app.robo.fhv.roboapp.communication.SignalStrength;
 import app.robo.fhv.roboapp.domain.Score;
+import app.robo.fhv.roboapp.persistence.SharedPreferencesPersistence;
 import app.robo.fhv.roboapp.utils.ScoreArrayAdapter;
 import app.robo.fhv.roboapp.utils.XmlHelper;
 import app.robo.fhv.roboapp.views.custom.CompassView;
@@ -76,6 +77,7 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
     private CompassView compass;
 
     private boolean reconnectActivityStarted;
+    private String serverAddress;
 
     @Override
     protected void onPause() {
@@ -92,6 +94,8 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_layout);
+
+        serverAddress = SharedPreferencesPersistence.getInstance().getServerAddress();
 
         initSignalStrengthHashMap();
 
@@ -134,7 +138,7 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
         });
 
         try {
-            networkClient = new NetworkClient(this, this, this);
+            networkClient = new NetworkClient(this, this, this, serverAddress);
             networkClient.start();
         } catch (Exception e) {
             e.printStackTrace();
@@ -583,7 +587,7 @@ public class MainActivity extends FragmentActivity implements CommunicationClien
                         break;
                     case ReconnectActivity.RESULT_CODE_RECONNECT:
                         try {
-                            networkClient = new NetworkClient(this, this, this);
+                            networkClient = new NetworkClient(this, this, this, serverAddress);
                             networkClient.start();
                         } catch (Exception e) {
                             e.printStackTrace();

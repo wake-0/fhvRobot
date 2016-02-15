@@ -22,11 +22,11 @@ public class ConfigurationManager implements IConfigurationManager {
     private Configuration configuration;
 
     // Constructor
-    public ConfigurationManager() {
+    public ConfigurationManager(String serverAddress) {
 
         int sessionId = ConfigurationSettings.DEFAULT_SESSION_ID;
         int port = GlobalSettings.SERVER_PORT;
-        String address = GlobalSettings.SERVER_ADDRESS;
+        String address = serverAddress;
 
         configuration = new Configuration(sessionId, port, address);
         configurations = new ArrayList<>();

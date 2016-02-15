@@ -12,8 +12,8 @@ public class NetworkClient {
     private final MediaStreaming mediaStreaming;
     private CommunicationClient communicationClient;
 
-    public NetworkClient(CommunicationClient.ICommunicationCallback commCallback, MediaStreaming.IFrameReceived frameCallback, IHighScoreManager highScoreManager) throws SocketException, UnknownHostException {
-        communicationClient = new CommunicationClient(commCallback, highScoreManager);
+    public NetworkClient(CommunicationClient.ICommunicationCallback commCallback, MediaStreaming.IFrameReceived frameCallback, IHighScoreManager highScoreManager, String serverAddress) throws SocketException, UnknownHostException {
+        communicationClient = new CommunicationClient(commCallback, highScoreManager, serverAddress);
         mediaStreaming = new MediaStreaming(GlobalSettings.MEDIA_STREAMING_INPUT_PORT, frameCallback);
     }
 
