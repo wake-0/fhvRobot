@@ -1,25 +1,8 @@
 /******************************************************************
+* Base version of the program from:
+* [Mras2an] (2013)
 *
-* Exemple to "Webcam IP" with UDP for Linux embedded.
-* I suggest you to optimize this code because it has many
-* modification to improve these performances.
-*
-* Developed and modified by Mras2an for the HD3000 camera.
-*
-* This software is provided as is and it comes with no warranties
-* of any type. v4l original source : gdansk, UDP original source :
-* igm, jpeg : Thomas G, OpenCV : OpenCV doc.
-*
-* LICENSE TERMS:
-* Redistribution and use in source and binary forms, with or
-* without modification, are permitted provided that the following
-* conditions are met:
-* 1\ please cite:
-* [Mras2an] (2013) This project use: v4l driver,compression and
-* decompression JPEG, UDP protocol transfer, openCV image show.
-* Retrieved from http://www.youtube.com/watch?v=eAylw-LBKrA
-* and http://beagleboard.org/project/Streaming+video+BBB/
-*
+* Adapted for FHVrobot 2015
 ******************************************************************/
 #include "../../include/streaming/camIpCli.h"
 
@@ -145,24 +128,6 @@ int main(int argc, char** argv)
         exit(EXIT_FAILURE);
     }
 
-    /* NOTE: Not working for our webcam
-    int quality = 5;
-	struct v4l2_jpegcompression comp = {
-	    .quality = quality,
-	};
-
-	if (-1 == xioctl( webcam, VIDIOC_G_JPEGCOMP, &comp)) {
-	    if ( errno != EINVAL) errno_exit("VIDIOC_G_JPEGCOMP");
-	    fprintf(stderr,"driver does not support VIDIOC_G_JPEGCOMP\n");
-	    comp.quality = quality;
-	} else {
-	    comp.quality = quality;
-	    if (-1 == xioctl( webcam, VIDIOC_S_JPEGCOMP, &comp)) errno_exit("VIDIOC_S_JPEGCOMP");
-	    if (-1 == xioctl( webcam, VIDIOC_G_JPEGCOMP, &comp)) errno_exit("VIDIOC_G_JPEGCOMP");
-	    fprintf(stderr,"jpegcomp quality came out at %d\n", comp.quality);
-	}
-	*/
-
     unsigned int min = form.fmt.pix.width * 2;
     if (form.fmt.pix.bytesperline < min)
         form.fmt.pix.bytesperline = min;
@@ -202,7 +167,7 @@ int main(int argc, char** argv)
         }
 
         for (i = 0; i < n_buffers; ++i)
-	{
+        {
             struct v4l2_buffer buf;
             memset(&buf, 0, sizeof(buf));
             buf.type        = V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -222,7 +187,7 @@ int main(int argc, char** argv)
                 fprintf(stderr, "ERROR: MemoryMap failed for buffer %d of %d\n", i, n_buffers);
                 exit (EXIT_FAILURE);
             }
-	}
+        }
         for (i = 0; i < n_buffers; ++i)
         {
             struct v4l2_buffer buf;
